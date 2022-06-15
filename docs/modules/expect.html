@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>libsystem</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><strong>expect</strong></li>
+  <li><a href="../modules/filesystem.html">filesystem</a></li>
+  <li><a href="../modules/graphics.html">graphics</a></li>
+  <li><a href="../modules/hardware.html">hardware</a></li>
+  <li><a href="../modules/keys.html">keys</a></li>
+  <li><a href="../modules/log.html">log</a></li>
+  <li><a href="../modules/network.html">network</a></li>
+  <li><a href="../modules/pretty.html">pretty</a></li>
+  <li><a href="../modules/process.html">process</a></li>
+  <li><a href="../modules/terminal.html">terminal</a></li>
+  <li><a href="../modules/util.html">util</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>expect</code></h1>
+<p>The expect module provides error checking functions for other libraries.</p>
+<p></p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#expect">expect (index, value, ...)</a></td>
+	<td class="summary">Check that a numbered argument matches the expected type(s).</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#field">field (tbl, key, ...)</a></td>
+	<td class="summary">Check that a key in a table matches the expected type(s).</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#range">range (num[, min=-math.huge[, max=math.huge]])</a></td>
+	<td class="summary">Check that a number is between the specified minimum and maximum values.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "expect"></a>
+    <strong>expect (index, value, ...)</strong>
+    </dt>
+    <dd>
+    Check that a numbered argument matches the expected type(s).  If the type
+ doesn't match, throw an error.
+ This function supports custom types by checking the __name metaproperty.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">number</span></span>
+         The index of the argument to check
+        </li>
+        <li><span class="parameter">value</span>
+            <span class="types"><span class="type">any</span></span>
+         The value to check
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The types to check for
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">any</span></span>
+        `value`
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "field"></a>
+    <strong>field (tbl, key, ...)</strong>
+    </dt>
+    <dd>
+    Check that a key in a table matches the expected type(s).  If the type
+ doesn't match, throw an error.
+ This function supports custom types by checking the __name metaproperty.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">tbl</span>
+            <span class="types"><span class="type">any</span></span>
+         The table (or other indexable value) to search through
+        </li>
+        <li><span class="parameter">key</span>
+            <span class="types"><span class="type">any</span></span>
+         The key of the table to check
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The types to check for
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">any</span></span>
+        The indexed value in the table
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "range"></a>
+    <strong>range (num[, min=-math.huge[, max=math.huge]])</strong>
+    </dt>
+    <dd>
+    Check that a number is between the specified minimum and maximum values.  If
+ the number is out of bounds, throw an error.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">num</span>
+            <span class="types"><span class="type">number</span></span>
+         The number to check
+        </li>
+        <li><span class="parameter">min</span>
+            <span class="types"><span class="type">number</span></span>
+         The minimum value of the number (inclusive)
+         (<em>default</em> -math.huge)
+        </li>
+        <li><span class="parameter">max</span>
+            <span class="types"><span class="type">number</span></span>
+         The maximum value of the number (inclusive)
+         (<em>default</em> math.huge)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        `num`
+    </ol>
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2022-06-14 22:41:37 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

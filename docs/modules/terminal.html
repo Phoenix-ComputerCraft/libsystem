@@ -1,0 +1,586 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>libsystem</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Tables">Tables</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/expect.html">expect</a></li>
+  <li><a href="../modules/filesystem.html">filesystem</a></li>
+  <li><a href="../modules/graphics.html">graphics</a></li>
+  <li><a href="../modules/hardware.html">hardware</a></li>
+  <li><a href="../modules/keys.html">keys</a></li>
+  <li><a href="../modules/log.html">log</a></li>
+  <li><a href="../modules/network.html">network</a></li>
+  <li><a href="../modules/pretty.html">pretty</a></li>
+  <li><a href="../modules/process.html">process</a></li>
+  <li><strong>terminal</strong></li>
+  <li><a href="../modules/util.html">util</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>terminal</code></h1>
+<p>The terminal module defines functions to allow interacting with the terminal
+ and screen, as well as handling user input.</p>
+<p></p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#toEscape">toEscape (color[, background=false])</a></td>
+	<td class="summary">Converts a <a href="../modules/terminal.html#colors">terminal.colors</a> constant to an ANSI escape code.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#write">write (...)</a></td>
+	<td class="summary">Writes text to the standard output stream.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#writeerr">writeerr (...)</a></td>
+	<td class="summary">Writes text to the standard error stream.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#read">read (n)</a></td>
+	<td class="summary">Reads a number of characters from the standard input stream.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#readline">readline ()</a></td>
+	<td class="summary">Reads a single line of text from the standard input stream.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#termctl">termctl (flags)</a></td>
+	<td class="summary">Sets certain terminal control flags on the current TTY if available.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#openterm">openterm ()</a></td>
+	<td class="summary">Opens the current output TTY in exclusive text mode, allowing direct
+ manipulation of the screen buffer.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#opengfx">opengfx ()</a></td>
+	<td class="summary">Opens the current output TTY in exclusive graphics mode, allowing direct
+ manipulation of the pixels if available.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#mktty">mktty (width, height)</a></td>
+	<td class="summary">Creates a new virtual TTY with the specified size.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#stdin">stdin (handle)</a></td>
+	<td class="summary">Sets the standard input of the current process.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#stdout">stdout (handle)</a></td>
+	<td class="summary">Sets the standard output of the current process.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#stderr">stderr (handle)</a></td>
+	<td class="summary">Sets the standard error of the current process.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#istty">istty ()</a></td>
+	<td class="summary">Returns whether the current stdout is linked to a TTY.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#termsize">termsize ()</a></td>
+	<td class="summary">Returns the current size of the TTY if available.</td>
+	</tr>
+</table>
+<h2><a href="#Tables">Tables</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#colors">colors</a></td>
+	<td class="summary">Constants for colors.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "toEscape"></a>
+    <strong>toEscape (color[, background=false])</strong>
+    </dt>
+    <dd>
+    Converts a <a href="../modules/terminal.html#colors">terminal.colors</a> constant to an ANSI escape code.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">color</span>
+            <span class="types"><span class="type">number</span></span>
+         The color to convert
+        </li>
+        <li><span class="parameter">background</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Whether the escape should set the background
+         (<em>default</em> false)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        The escape code generated for the color
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "write"></a>
+    <strong>write (...)</strong>
+    </dt>
+    <dd>
+    Writes text to the standard output stream.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+         The entries to write. Each one will be separated by tabs (`\t`).
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "writeerr"></a>
+    <strong>writeerr (...)</strong>
+    </dt>
+    <dd>
+    Writes text to the standard error stream.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+         The entries to write. Each one will be separated by tabs (`\t`).
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "read"></a>
+    <strong>read (n)</strong>
+    </dt>
+    <dd>
+    Reads a number of characters from the standard input stream.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">n</span>
+            <span class="types"><span class="type">number</span></span>
+         The number of characters to read
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a> or <span class="type">nil</span></span>
+        The text read, or nil if EOF was reached.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "readline"></a>
+    <strong>readline ()</strong>
+    </dt>
+    <dd>
+    Reads a single line of text from the standard input stream.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a> or <span class="type">nil</span></span>
+        The text read, or nil if EOF was reached.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "termctl"></a>
+    <strong>termctl (flags)</strong>
+    </dt>
+    <dd>
+    Sets certain terminal control flags on the current TTY if available.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">flags</span>
+            <span class="types">optional <span class="type">=boolean,delay?=boolean,echo?=boolean,keypad?=boolean,nlcr?=boolean,raw?=boolean}</span></span>
+        ? The flags to set, or nil to just query.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">{cbreak=boolean,delay=boolean,echo=boolean,keypad=boolean,nlcr=boolean,raw=boolean}</span> or <span class="type">nil</span></span>
+        The flags that are currently set on the TTY, or nil if no TTY is available.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "openterm"></a>
+    <strong>openterm ()</strong>
+    </dt>
+    <dd>
+    Opens the current output TTY in exclusive text mode, allowing direct
+ manipulation of the screen buffer.  Only one process may open the terminal at
+ a time. Once opened, the screen will be cleared, and stdout will be sent to
+ an off-screen buffer to be shown once the terminal is closed. The terminal
+ will automatically be closed on process exit.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/terminal.html#Terminal">Terminal</a></span>
+        A terminal object for the current TTY.
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+        If the terminal could not be opened.</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        An error message describing why the terminal couldn't be opened.</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "opengfx"></a>
+    <strong>opengfx ()</strong>
+    </dt>
+    <dd>
+    Opens the current output TTY in exclusive graphics mode, allowing direct
+ manipulation of the pixels if available.  Only one process may open the terminal
+ at a time. Once opened, the screen will be cleared, and stdout will be sent to
+ an off-screen buffer to be shown once the terminal is closed. The terminal
+ will automatically be closed on process exit. This only works on CraftOS-PC.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/terminal.html#GFXTerminal">GFXTerminal</a></span>
+        A graphical terminal object for the current TTY.
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+        If the terminal could not be opened.</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        An error message describing why the terminal couldn't be opened.</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "mktty"></a>
+    <strong>mktty (width, height)</strong>
+    </dt>
+    <dd>
+    Creates a new virtual TTY with the specified size.  This can later be used in
+ a call to stdin/stdout/stderr.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">width</span>
+            <span class="types"><span class="type">number</span></span>
+         The width of the new TTY.
+        </li>
+        <li><span class="parameter">height</span>
+            <span class="types"><span class="type">number</span></span>
+         The height of the new TTY.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/terminal.html#TTY">TTY</a></span>
+        A new TTY object which is registered with the kernel.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "stdin"></a>
+    <strong>stdin (handle)</strong>
+    </dt>
+    <dd>
+    Sets the standard input of the current process.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">handle</span>
+            <span class="types"><span class="type">number</span>, <a class="type" href="../modules/terminal.html#TTY">TTY</a>, <span class="type">FileHandle</span> or <span class="type">nil</span></span>
+         The input handle to switch to, as
+ either a physical TTY, a virtual TTY, a file, or nil.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "stdout"></a>
+    <strong>stdout (handle)</strong>
+    </dt>
+    <dd>
+    Sets the standard output of the current process.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">handle</span>
+            <span class="types"><span class="type">number</span>, <a class="type" href="../modules/terminal.html#TTY">TTY</a>, <span class="type">FileHandle</span> or <span class="type">nil</span></span>
+         The output handle to switch to, as
+ either a physical TTY, a virtual TTY, a file, or nil.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "stderr"></a>
+    <strong>stderr (handle)</strong>
+    </dt>
+    <dd>
+    Sets the standard error of the current process.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">handle</span>
+            <span class="types"><span class="type">number</span>, <a class="type" href="../modules/terminal.html#TTY">TTY</a>, <span class="type">FileHandle</span> or <span class="type">nil</span></span>
+         The output handle to switch to, as
+ either a physical TTY, a virtual TTY, a file, or nil.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "istty"></a>
+    <strong>istty ()</strong>
+    </dt>
+    <dd>
+    Returns whether the current stdout is linked to a TTY.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        Whether the current stdout is linked to a TTY.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "termsize"></a>
+    <strong>termsize ()</strong>
+    </dt>
+    <dd>
+    Returns the current size of the TTY if available.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">number</span></span>
+        The width of the screen.</li>
+        <li>
+           <span class="types"><span class="type">number</span></span>
+        The height of the screen.</li>
+    </ol>
+     <h3>Or</h3>
+    <ol>
+
+           <span class="types"><span class="type">nil</span></span>
+        If the current stdout is not a screen.
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Tables"></a>Tables</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "colors"></a>
+    <strong>colors</strong>
+    </dt>
+    <dd>
+    Constants for colors.  This includes both normal and British spelling.
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">white</span>
+
+        </li>
+        <li><span class="parameter">orange</span>
+
+        </li>
+        <li><span class="parameter">magenta</span>
+
+        </li>
+        <li><span class="parameter">lightBlue</span>
+
+        </li>
+        <li><span class="parameter">yellow</span>
+
+        </li>
+        <li><span class="parameter">lime</span>
+
+        </li>
+        <li><span class="parameter">pink</span>
+
+        </li>
+        <li><span class="parameter">gray</span>
+
+        </li>
+        <li><span class="parameter">grey</span>
+
+        </li>
+        <li><span class="parameter">lightGray</span>
+
+        </li>
+        <li><span class="parameter">lightGrey</span>
+
+        </li>
+        <li><span class="parameter">cyan</span>
+
+        </li>
+        <li><span class="parameter">purple</span>
+
+        </li>
+        <li><span class="parameter">blue</span>
+
+        </li>
+        <li><span class="parameter">brown</span>
+
+        </li>
+        <li><span class="parameter">green</span>
+
+        </li>
+        <li><span class="parameter">red</span>
+
+        </li>
+        <li><span class="parameter">black</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2022-06-14 22:41:37 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

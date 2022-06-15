@@ -1,0 +1,544 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>libsystem</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Tables">Tables</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/expect.html">expect</a></li>
+  <li><a href="../modules/filesystem.html">filesystem</a></li>
+  <li><a href="../modules/graphics.html">graphics</a></li>
+  <li><a href="../modules/hardware.html">hardware</a></li>
+  <li><a href="../modules/keys.html">keys</a></li>
+  <li><strong>log</strong></li>
+  <li><a href="../modules/network.html">network</a></li>
+  <li><a href="../modules/pretty.html">pretty</a></li>
+  <li><a href="../modules/process.html">process</a></li>
+  <li><a href="../modules/terminal.html">terminal</a></li>
+  <li><a href="../modules/util.html">util</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>log</code></h1>
+<p>The log module exposes functions for interacting with the logging subsystem.</p>
+<p>
+ The default system log is available under the root `log` table. Other logs
+ created through <a href="../modules/log.html#create">log.create</a> can be accessed by indexing the `log` table with
+ the name of the log, e.g. `log.mylog.info("hello")`. Both the main and
+ subtables may also be called directly, e.g. `log("test")` or `log.mylog("hello")`.
+</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#log">log ([options], ...)</a></td>
+	<td class="summary">Writes a message to the log.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#debug">debug ([options], ...)</a></td>
+	<td class="summary">Writes a debug message to the log.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#info">info ([options], ...)</a></td>
+	<td class="summary">Writes an info message to the log.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#notice">notice ([options], ...)</a></td>
+	<td class="summary">Writes a notice message to the log.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#warning">warning ([options], ...)</a></td>
+	<td class="summary">Writes a warning message to the log.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#error">error ([options], ...)</a></td>
+	<td class="summary">Writes an error message to the log.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#critical">critical ([options], ...)</a></td>
+	<td class="summary">Writes a critical error message to the log.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#traceback">traceback ([message])</a></td>
+	<td class="summary">Writes a traceback error message to the log.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create">create (name[, streamed[, file]])</a></td>
+	<td class="summary">Creates a new log.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#remove">remove (name)</a></td>
+	<td class="summary">Removes a previously created log.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#open">open (name[, filter])</a></td>
+	<td class="summary">Opens a log for listening to messages.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#close">close (name)</a></td>
+	<td class="summary">Closes a log or stream for listening.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#setTTY">setTTY (name, tty[, level])</a></td>
+	<td class="summary">Sets the TTY to output a log to.</td>
+	</tr>
+</table>
+<h2><a href="#Tables">Tables</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#levels">levels</a></td>
+	<td class="summary">Constants for log levels.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "log"></a>
+    <strong>log ([options], ...)</strong>
+    </dt>
+    <dd>
+    Writes a message to the log.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">options</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         A table of options to supply. See the documentation
+ for the syslog syscall for more information.
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">any</span></span>
+         The values to print to the log, which will be concatenated as
+ strings with \t.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "debug"></a>
+    <strong>debug ([options], ...)</strong>
+    </dt>
+    <dd>
+    Writes a debug message to the log.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">options</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         A table of options to supply. See the documentation
+ for the syslog syscall for more information.
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">any</span></span>
+         The values to print to the log, which will be concatenated as
+ strings with \t.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "info"></a>
+    <strong>info ([options], ...)</strong>
+    </dt>
+    <dd>
+    Writes an info message to the log.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">options</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         A table of options to supply. See the documentation
+ for the syslog syscall for more information.
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">any</span></span>
+         The values to print to the log, which will be concatenated as
+ strings with \t.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "notice"></a>
+    <strong>notice ([options], ...)</strong>
+    </dt>
+    <dd>
+    Writes a notice message to the log.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">options</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         A table of options to supply. See the documentation
+ for the syslog syscall for more information.
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">any</span></span>
+         The values to print to the log, which will be concatenated as
+ strings with \t.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "warning"></a>
+    <strong>warning ([options], ...)</strong>
+    </dt>
+    <dd>
+    Writes a warning message to the log.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">options</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         A table of options to supply. See the documentation
+ for the syslog syscall for more information.
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">any</span></span>
+         The values to print to the log, which will be concatenated as
+ strings with \t.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "error"></a>
+    <strong>error ([options], ...)</strong>
+    </dt>
+    <dd>
+    Writes an error message to the log.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">options</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         A table of options to supply. See the documentation
+ for the syslog syscall for more information.
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">any</span></span>
+         The values to print to the log, which will be concatenated as
+ strings with \t.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "critical"></a>
+    <strong>critical ([options], ...)</strong>
+    </dt>
+    <dd>
+    Writes a critical error message to the log.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">options</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         A table of options to supply. See the documentation
+ for the syslog syscall for more information.
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">any</span></span>
+         The values to print to the log, which will be concatenated as
+ strings with \t.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "traceback"></a>
+    <strong>traceback ([message])</strong>
+    </dt>
+    <dd>
+    Writes a traceback error message to the log.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">message</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         A message to attach to the traceback
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create"></a>
+    <strong>create (name[, streamed[, file]])</strong>
+    </dt>
+    <dd>
+    Creates a new log.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The name of the log to create
+        </li>
+        <li><span class="parameter">streamed</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Whether to make the log available for streaming
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">file</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The path to the file to write the log to
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "remove"></a>
+    <strong>remove (name)</strong>
+    </dt>
+    <dd>
+    Removes a previously created log.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The log to remove
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "open"></a>
+    <strong>open (name[, filter])</strong>
+    </dt>
+    <dd>
+    Opens a log for listening to messages.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The name of the log to listen to
+        </li>
+        <li><span class="parameter">filter</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         A filter command to filter messages with (see the
+ openlog syscall docs for more info)
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        An ID to identify the logged messages with
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "close"></a>
+    <strong>close (name)</strong>
+    </dt>
+    <dd>
+    Closes a log or stream for listening.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a> or <span class="type">number</span></span>
+         The log name to close (closes all streams), or an
+ ID returned by <a href="../modules/log.html#open">log.open</a>.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "setTTY"></a>
+    <strong>setTTY (name, tty[, level])</strong>
+    </dt>
+    <dd>
+    Sets the TTY to output a log to.  (Requires root)
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The log to set the TTY of
+        </li>
+        <li><span class="parameter">tty</span>
+            <span class="types"><span class="type">TTY</span> or <span class="type">nil</span></span>
+         The TTY to use, or `nil` to disable
+        </li>
+        <li><span class="parameter">level</span>
+            <span class="types"><span class="type">number</span></span>
+         The minimum log level to show messages
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Tables"></a>Tables</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "levels"></a>
+    <strong>levels</strong>
+    </dt>
+    <dd>
+    Constants for log levels.
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">debug</span>
+
+        </li>
+        <li><span class="parameter">info</span>
+
+        </li>
+        <li><span class="parameter">notice</span>
+
+        </li>
+        <li><span class="parameter">warning</span>
+
+        </li>
+        <li><span class="parameter">error</span>
+
+        </li>
+        <li><span class="parameter">critical</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2022-06-14 22:41:37 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

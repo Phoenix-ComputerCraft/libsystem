@@ -1,0 +1,408 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>libsystem</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/expect.html">expect</a></li>
+  <li><a href="../modules/filesystem.html">filesystem</a></li>
+  <li><strong>graphics</strong></li>
+  <li><a href="../modules/hardware.html">hardware</a></li>
+  <li><a href="../modules/keys.html">keys</a></li>
+  <li><a href="../modules/log.html">log</a></li>
+  <li><a href="../modules/network.html">network</a></li>
+  <li><a href="../modules/pretty.html">pretty</a></li>
+  <li><a href="../modules/process.html">process</a></li>
+  <li><a href="../modules/terminal.html">terminal</a></li>
+  <li><a href="../modules/util.html">util</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>graphics</code></h1>
+<p>The graphics module provides functions to draw primitive geometry on a locked
+ terminal object.</p>
+<p> It supports both text and graphics mode terminals.
+ The state of text terminals is preserved, so using these functions doesn't
+ change the cursor position or colors.
+</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#drawPixel">drawPixel (term, x, y, color)</a></td>
+	<td class="summary">Draws a single pixel on screen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#drawLine">drawLine (term, x1, y1, x2, y2, color)</a></td>
+	<td class="summary">Draws a line between two points.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#drawBox">drawBox (term, x, y, width, height, color)</a></td>
+	<td class="summary">Draws an outlined rectangle on screen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#drawFilledBox">drawFilledBox (term, x, y, width, height, color)</a></td>
+	<td class="summary">Draws a filled rectangle on screen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#drawCircle">drawCircle (term, x, y, width, height, color[, startAngle=0[, arcCircumference=2*math.pi]])</a></td>
+	<td class="summary">Draws an outlined circle (or arc) on screen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#drawFilledTriangle">drawFilledTriangle (term, x1, y1, x2, y2, x3, y3, color)</a></td>
+	<td class="summary">Draws a filled triangle on screen.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#drawImage">drawImage (term, x, y, image)</a></td>
+	<td class="summary">Draws an image on screen.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "drawPixel"></a>
+    <strong>drawPixel (term, x, y, color)</strong>
+    </dt>
+    <dd>
+    Draws a single pixel on screen.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">term</span>
+            <span class="types"><span class="type">Terminal</span> or <span class="type">GFXTerminal</span></span>
+         The terminal to draw on
+        </li>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">number</span></span>
+         The X coordinate to draw at
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">number</span></span>
+         The Y coordinate to draw at
+        </li>
+        <li><span class="parameter">color</span>
+            <span class="types"><span class="type">number</span></span>
+         The color to draw with
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "drawLine"></a>
+    <strong>drawLine (term, x1, y1, x2, y2, color)</strong>
+    </dt>
+    <dd>
+    Draws a line between two points.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">term</span>
+            <span class="types"><span class="type">Terminal</span> or <span class="type">GFXTerminal</span></span>
+         The terminal to draw on
+        </li>
+        <li><span class="parameter">x1</span>
+            <span class="types"><span class="type">number</span></span>
+         The start X coordinate to draw at
+        </li>
+        <li><span class="parameter">y1</span>
+            <span class="types"><span class="type">number</span></span>
+         The start Y coordinate to draw at
+        </li>
+        <li><span class="parameter">x2</span>
+            <span class="types"><span class="type">number</span></span>
+         The end X coordinate to draw at
+        </li>
+        <li><span class="parameter">y2</span>
+            <span class="types"><span class="type">number</span></span>
+         The end Y coordinate to draw at
+        </li>
+        <li><span class="parameter">color</span>
+            <span class="types"><span class="type">number</span></span>
+         The color to draw with
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "drawBox"></a>
+    <strong>drawBox (term, x, y, width, height, color)</strong>
+    </dt>
+    <dd>
+    Draws an outlined rectangle on screen.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">term</span>
+            <span class="types"><span class="type">Terminal</span> or <span class="type">GFXTerminal</span></span>
+         The terminal to draw on
+        </li>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">number</span></span>
+         The upper-left X coordinate to draw at
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">number</span></span>
+         The upper-left Y coordinate to draw at
+        </li>
+        <li><span class="parameter">width</span>
+            <span class="types"><span class="type">number</span></span>
+         The width of the rectangle
+        </li>
+        <li><span class="parameter">height</span>
+            <span class="types"><span class="type">number</span></span>
+         The height of the rectangle
+        </li>
+        <li><span class="parameter">color</span>
+            <span class="types"><span class="type">number</span></span>
+         The color to draw with
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "drawFilledBox"></a>
+    <strong>drawFilledBox (term, x, y, width, height, color)</strong>
+    </dt>
+    <dd>
+    Draws a filled rectangle on screen.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">term</span>
+            <span class="types"><span class="type">Terminal</span> or <span class="type">GFXTerminal</span></span>
+         The terminal to draw on
+        </li>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">number</span></span>
+         The upper-left X coordinate to draw at
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">number</span></span>
+         The upper-left Y coordinate to draw at
+        </li>
+        <li><span class="parameter">width</span>
+            <span class="types"><span class="type">number</span></span>
+         The width of the rectangle
+        </li>
+        <li><span class="parameter">height</span>
+            <span class="types"><span class="type">number</span></span>
+         The height of the rectangle
+        </li>
+        <li><span class="parameter">color</span>
+            <span class="types"><span class="type">number</span></span>
+         The color to draw with
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "drawCircle"></a>
+    <strong>drawCircle (term, x, y, width, height, color[, startAngle=0[, arcCircumference=2*math.pi]])</strong>
+    </dt>
+    <dd>
+    Draws an outlined circle (or arc) on screen.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">term</span>
+            <span class="types"><span class="type">Terminal</span> or <span class="type">GFXTerminal</span></span>
+         The terminal to draw on
+        </li>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">number</span></span>
+         The upper-left X coordinate to draw at
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">number</span></span>
+         The upper-left Y coordinate to draw at
+        </li>
+        <li><span class="parameter">width</span>
+            <span class="types"><span class="type">number</span></span>
+         The width of the circle
+        </li>
+        <li><span class="parameter">height</span>
+            <span class="types"><span class="type">number</span></span>
+         The height of the circle
+        </li>
+        <li><span class="parameter">color</span>
+            <span class="types"><span class="type">number</span></span>
+         The color to draw with
+        </li>
+        <li><span class="parameter">startAngle</span>
+            <span class="types"><span class="type">number</span></span>
+         The angle to start from in radians (starting at the right side)
+         (<em>default</em> 0)
+        </li>
+        <li><span class="parameter">arcCircumference</span>
+            <span class="types"><span class="type">number</span></span>
+         The amount of the arc to draw in radians
+         (<em>default</em> 2*math.pi)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "drawFilledTriangle"></a>
+    <strong>drawFilledTriangle (term, x1, y1, x2, y2, x3, y3, color)</strong>
+    </dt>
+    <dd>
+    Draws a filled triangle on screen.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">term</span>
+            <span class="types"><span class="type">Terminal</span> or <span class="type">GFXTerminal</span></span>
+         The terminal to draw on
+        </li>
+        <li><span class="parameter">x1</span>
+            <span class="types"><span class="type">number</span></span>
+         The first X coordinate to draw at
+        </li>
+        <li><span class="parameter">y1</span>
+            <span class="types"><span class="type">number</span></span>
+         The first Y coordinate to draw at
+        </li>
+        <li><span class="parameter">x2</span>
+            <span class="types"><span class="type">number</span></span>
+         The second X coordinate to draw at
+        </li>
+        <li><span class="parameter">y2</span>
+            <span class="types"><span class="type">number</span></span>
+         The second Y coordinate to draw at
+        </li>
+        <li><span class="parameter">x3</span>
+            <span class="types"><span class="type">number</span></span>
+         The third X coordinate to draw at
+        </li>
+        <li><span class="parameter">y3</span>
+            <span class="types"><span class="type">number</span></span>
+         The third Y coordinate to draw at
+        </li>
+        <li><span class="parameter">color</span>
+            <span class="types"><span class="type">number</span></span>
+         The color to draw with
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "drawImage"></a>
+    <strong>drawImage (term, x, y, image)</strong>
+    </dt>
+    <dd>
+    Draws an image on screen.  The image may be either a valid graphics mode
+ pixel region (using either string or table rows), or a blit table with
+ {text, text color, background color} table rows (text mode only).
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">term</span>
+            <span class="types"><span class="type">Terminal</span> or <span class="type">GFXTerminal</span></span>
+         The terminal to draw on
+        </li>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">number</span></span>
+         The X coordinate to draw at
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">number</span></span>
+         The Y coordinate to draw at
+        </li>
+        <li><span class="parameter">image</span>
+            <span class="types"><span class="type">number</span></span>
+         The image to draw
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2022-06-14 22:41:37 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

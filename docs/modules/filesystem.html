@@ -1,0 +1,757 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>libsystem</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Class_FileStat">Class FileStat </a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/expect.html">expect</a></li>
+  <li><strong>filesystem</strong></li>
+  <li><a href="../modules/graphics.html">graphics</a></li>
+  <li><a href="../modules/hardware.html">hardware</a></li>
+  <li><a href="../modules/keys.html">keys</a></li>
+  <li><a href="../modules/log.html">log</a></li>
+  <li><a href="../modules/network.html">network</a></li>
+  <li><a href="../modules/pretty.html">pretty</a></li>
+  <li><a href="../modules/process.html">process</a></li>
+  <li><a href="../modules/terminal.html">terminal</a></li>
+  <li><a href="../modules/util.html">util</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>filesystem</code></h1>
+<p>The filesystem module implements common operations for working with the
+ filesystem, including wrappers for syscalls.</p>
+<p></p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#open">open (path, mode)</a></td>
+	<td class="summary">Opens a file for reading or writing.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#list">list (path)</a></td>
+	<td class="summary">Returns a list of files in a directory.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#stat">stat (path)</a></td>
+	<td class="summary">Returns a table with various information about a file or directory.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#remove">remove (path)</a></td>
+	<td class="summary">Deletes a file or directory at a path, removing any subentries if present.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#rename">rename (from, to)</a></td>
+	<td class="summary">Moves a file or directory on the same filesystem.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#mkdir">mkdir (path)</a></td>
+	<td class="summary">Creates a directory, making any parent paths that don't exist.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#chmod">chmod (path, user, mode)</a></td>
+	<td class="summary">Changes the permissions (mode) of the file at a path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#chown">chown (path, user)</a></td>
+	<td class="summary">Changes the owner of a file or directory.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#mount">mount (type, src, dest[, options])</a></td>
+	<td class="summary">Mounts a filesystem of the specified type to a directory.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#unmount">unmount (path)</a></td>
+	<td class="summary">Unmounts a mounted filesystem.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#combine">combine (...)</a></td>
+	<td class="summary">Combines the specified path components into a single path, canonicalizing any links and ./..</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#copy">copy (from, to)</a></td>
+	<td class="summary">Copies a file or directory.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#move">move (from, to)</a></td>
+	<td class="summary">Moves a file or directory, allowing cross-filesystem operations.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#basename">basename (path)</a></td>
+	<td class="summary">Returns the file name for a path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#dirname">dirname (path)</a></td>
+	<td class="summary">Returns the parent directory for a path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#find">find (wildcard)</a></td>
+	<td class="summary">Searches the filesystem for paths matching a glob-style wildcard.</td>
+	</tr>
+</table>
+<h2><a href="#Class_FileStat">Class FileStat </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#FileStat.type">FileStat.type</a></td>
+	<td class="summary">Stores the type of file: one of "file", "directory", "link", "special"</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#FileStat.size">FileStat.size</a></td>
+	<td class="summary">The size of the file</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#FileStat.created">FileStat.created</a></td>
+	<td class="summary">The creation date of the file, in milliseconds since January 1, 1970</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#FileStat.modified">FileStat.modified</a></td>
+	<td class="summary">The modification date of the file, in milliseconds since January 1, 1970</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#FileStat.owner">FileStat.owner</a></td>
+	<td class="summary">The owner of the file</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#FileStat.permissions">FileStat.permissions</a></td>
+	<td class="summary">The permissions of the file for each user, indexed by user name</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#FileStat.worldPermissions">FileStat.worldPermissions</a></td>
+	<td class="summary">The permissions of the file for all users not in <a href="../modules/filesystem.html#FileStat.permissions">FileStat.permissions</a></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#FileStat.special">FileStat.special</a></td>
+	<td class="summary">Any additional data from the filesystem</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "open"></a>
+    <strong>open (path, mode)</strong>
+    </dt>
+    <dd>
+    Opens a file for reading or writing.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The path to the file to open
+        </li>
+        <li><span class="parameter">mode</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The mode to open the file in: [rwa]b?
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">FileHandle</span></span>
+        The file handle, which has the same functions as CraftOS file handles
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+        If the file could not be opened</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        An error message describing why the file couldn't be opened</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "list"></a>
+    <strong>list (path)</strong>
+    </dt>
+    <dd>
+    Returns a list of files in a directory.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The path to query
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        A list of files and folders in the directory
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "stat"></a>
+    <strong>stat (path)</strong>
+    </dt>
+    <dd>
+    Returns a table with various information about a file or directory.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The path to query
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/filesystem.html#FileStat">FileStat</a></span>
+        A table with information about the path
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "remove"></a>
+    <strong>remove (path)</strong>
+    </dt>
+    <dd>
+    Deletes a file or directory at a path, removing any subentries if present.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The path to remove
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "rename"></a>
+    <strong>rename (from, to)</strong>
+    </dt>
+    <dd>
+    Moves a file or directory on the same filesystem.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">from</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The original file to move
+        </li>
+        <li><span class="parameter">to</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The new path for the file
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "mkdir"></a>
+    <strong>mkdir (path)</strong>
+    </dt>
+    <dd>
+    Creates a directory, making any parent paths that don't exist.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The directory to create
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "chmod"></a>
+    <strong>chmod (path, user, mode)</strong>
+    </dt>
+    <dd>
+    Changes the permissions (mode) of the file at a path.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The path to modify
+        </li>
+        <li><span class="parameter">user</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a> or <span class="type">nil</span></span>
+         The user to modify, or nil to modify world permissions
+        </li>
+        <li><span class="parameter">mode</span>
+            <span class="types">optional <span class="type">=boolean,write?=boolean,execute?=boolean}</span></span>
+         The new permissions, as either an octal bitmask, a string in the format "[+-=][rwx]+" or "[r-][w-][x-]", or a table with the permissions to set (any `nil` arguments are left unset).
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "chown"></a>
+    <strong>chown (path, user)</strong>
+    </dt>
+    <dd>
+    Changes the owner of a file or directory.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The path to modify
+        </li>
+        <li><span class="parameter">user</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The new owner of the file
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "mount"></a>
+    <strong>mount (type, src, dest[, options])</strong>
+    </dt>
+    <dd>
+    Mounts a filesystem of the specified type to a directory.  This can only be run by root.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">type</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The type of filesystem to mount
+        </li>
+        <li><span class="parameter">src</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The source of the mount (depends on the FS type)
+        </li>
+        <li><span class="parameter">dest</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The destination directory to mount to
+        </li>
+        <li><span class="parameter">options</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         A table of options to pass to the filesystem
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "unmount"></a>
+    <strong>unmount (path)</strong>
+    </dt>
+    <dd>
+    Unmounts a mounted filesystem.  This can only be run by root.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The filesystem to unmount
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "combine"></a>
+    <strong>combine (...)</strong>
+    </dt>
+    <dd>
+    Combines the specified path components into a single path, canonicalizing any links and ./..  paths.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The path components to combine
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        The combined and canonicalized path
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "copy"></a>
+    <strong>copy (from, to)</strong>
+    </dt>
+    <dd>
+    Copies a file or directory.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">from</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The path to copy from
+        </li>
+        <li><span class="parameter">to</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The path to copy to
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "move"></a>
+    <strong>move (from, to)</strong>
+    </dt>
+    <dd>
+    Moves a file or directory, allowing cross-filesystem operations.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">from</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The path to move from
+        </li>
+        <li><span class="parameter">to</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The path to move to
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "basename"></a>
+    <strong>basename (path)</strong>
+    </dt>
+    <dd>
+    Returns the file name for a path.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The path to use
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        The file name of the path
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "dirname"></a>
+    <strong>dirname (path)</strong>
+    </dt>
+    <dd>
+    Returns the parent directory for a path.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The path to use
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        The parent directory of the path
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "find"></a>
+    <strong>find (wildcard)</strong>
+    </dt>
+    <dd>
+    Searches the filesystem for paths matching a glob-style wildcard.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">wildcard</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The pathspec to match
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        A list of matching file paths
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header has-description"><a name="Class_FileStat"></a>Class FileStat </h2>
+
+          <div class="section-description">
+          A table which stores file statistics.
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "FileStat.type"></a>
+    <strong>FileStat.type</strong>
+    </dt>
+    <dd>
+    Stores the type of file: one of "file", "directory", "link", "special"
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "FileStat.size"></a>
+    <strong>FileStat.size</strong>
+    </dt>
+    <dd>
+    The size of the file
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "FileStat.created"></a>
+    <strong>FileStat.created</strong>
+    </dt>
+    <dd>
+    The creation date of the file, in milliseconds since January 1, 1970
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "FileStat.modified"></a>
+    <strong>FileStat.modified</strong>
+    </dt>
+    <dd>
+    The modification date of the file, in milliseconds since January 1, 1970
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "FileStat.owner"></a>
+    <strong>FileStat.owner</strong>
+    </dt>
+    <dd>
+    The owner of the file
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "FileStat.permissions"></a>
+    <strong>FileStat.permissions</strong>
+    </dt>
+    <dd>
+    The permissions of the file for each user, indexed by user name
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">read</span>
+        Whether the file can be read
+        </li>
+        <li><span class="parameter">write</span>
+        Whether the file can be written to
+        </li>
+        <li><span class="parameter">execute</span>
+        Whether the file can be executed
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "FileStat.worldPermissions"></a>
+    <strong>FileStat.worldPermissions</strong>
+    </dt>
+    <dd>
+    The permissions of the file for all users not in <a href="../modules/filesystem.html#FileStat.permissions">FileStat.permissions</a>
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">read</span>
+        Whether the file can be read
+        </li>
+        <li><span class="parameter">write</span>
+        Whether the file can be written to
+        </li>
+        <li><span class="parameter">execute</span>
+        Whether the file can be executed
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "FileStat.special"></a>
+    <strong>FileStat.special</strong>
+    </dt>
+    <dd>
+    Any additional data from the filesystem
+
+
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2022-06-14 22:41:37 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
