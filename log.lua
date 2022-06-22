@@ -4,7 +4,7 @@
 -- the name of the log, e.g. `log.mylog.info("hello")`. Both the main and
 -- subtables may also be called directly, e.g. `log("test")` or `log.mylog("hello")`.
 --
--- @module log
+-- @module system.log
 
 local util = require "util"
 
@@ -129,11 +129,13 @@ log.levels = {
 -- @tparam string name The name of the log to create
 -- @tparam[opt] boolean streamed Whether to make the log available for streaming
 -- @tparam[opt] string file The path to the file to write the log to
+-- @treturn table A logger object from `log.*`
 function log.create(name, streamed, file)
     expect(1, name, "string")
     expect(2, streamed, "boolean", "nil")
     expect(3, file, "string", "nil")
-    return util.syscall.mklog(name, streamed, file)
+    util.syscall.mklog(name, streamed, file)
+    return makeLogs(name)
 end
 
 --- Removes a previously created log.

@@ -1,7 +1,7 @@
 --- The process module allows querying various properties about the current
 -- process, as well as creating, modifying, and searching other processes.
 --
--- @module process
+-- @module system.process
 
 local expect = require "expect"
 local util = require "util"
@@ -78,6 +78,15 @@ end
 function process.exec(path, ...)
     expect(1, path, "string")
     return util.syscall.exec(path, ...)
+end
+
+--- Starts a new process from the specified path.
+-- @tparam string path The path to the file to execute.
+-- @tparam any ... Any arguments to pass to the file.
+-- @treturn number The PID of the new process.
+function process.start(path, ...)
+    expect(1, path, "string")
+    return util.syscall.fork(function(...) return coroutine.yield("syscall", "exec", ...) end, path, path, ...)
 end
 
 --- Creates a new thread running the specified function with arguments.

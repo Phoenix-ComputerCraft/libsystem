@@ -3,7 +3,7 @@
 -- The state of text terminals is preserved, so using these functions doesn't
 -- change the cursor position or colors.
 --
--- @module graphics
+-- @module system.graphics
 
 local expect = require "expect"
 local util = require "util"

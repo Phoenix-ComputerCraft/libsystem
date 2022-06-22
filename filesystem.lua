@@ -1,7 +1,7 @@
 --- The filesystem module implements common operations for working with the
 -- filesystem, including wrappers for syscalls.
 --
--- @module filesystem
+-- @module system.filesystem
 
 local util = require "util"
 local expect = require "expect"

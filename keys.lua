@@ -3,7 +3,7 @@
 -- uses the same names as the CraftOS `keys` API, so porting programs should be
 -- trivial.
 --
--- @module keys
+-- @module system.keys
 
 local keys = {}
 

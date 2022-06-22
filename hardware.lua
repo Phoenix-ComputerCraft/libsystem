@@ -1,7 +1,7 @@
 --- The hardware module implements functions for operating on peripherals and
 -- other hardware devices.
 --
--- @module hardware
+-- @module system.hardware
 
 local expect = require "expect"
 local util = require "util"

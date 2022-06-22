@@ -2,7 +2,7 @@
 -- with local and Internet-connected computers, as well as managing the network
 -- stack configuration.
 --
--- @module network
+-- @module system.network
 
 local util = require "util"
 local expect = require "expect"

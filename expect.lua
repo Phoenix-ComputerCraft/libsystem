@@ -1,6 +1,6 @@
 --- The expect module provides error checking functions for other libraries.
 --
--- @module expect
+-- @module system.expect
 
 local expect = {}
 

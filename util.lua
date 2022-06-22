@@ -1,7 +1,7 @@
 --- The util module contains various functions that don't have any specific
 -- system function, or help improve the usability of the general system.
 --
--- @module util
+-- @module system.util
 
 local expect = require "expect"
 
@@ -118,6 +118,15 @@ function util.filterEvent(...)
         local event, param = coroutine.yield()
         for _, v in ipairs(types) do if event == v then return event, param end end
     end
+end
+
+--- Queues an event to loop back to the process.
+-- @tparam string event The event name to send
+-- @tparam table param The parameter table to send with the event
+function util.queueEvent(event, param)
+    expect(1, event, "string")
+    expect(2, param, "table")
+    return util.syscall.queueEvent(event, param)
 end
 
 --- Splits a string into components.

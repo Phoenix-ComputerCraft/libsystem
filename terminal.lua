@@ -1,7 +1,7 @@
 --- The terminal module defines functions to allow interacting with the terminal
 -- and screen, as well as handling user input.
 --
--- @module terminal
+-- @module system.terminal
 
 local expect = require "expect"
 local util = require "util"

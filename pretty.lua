@@ -39,7 +39,7 @@ The structure of this module is based on [A Prettier Printer][prettier].
 
 [prettier]: https://homepages.inf.ed.ac.uk/wadler/papers/prettier/prettier.pdf "A Prettier Printer"
 
-@module pretty
+@module system.pretty
 @usage Print a table to the terminal
 
     local pretty = require "system.pretty"
