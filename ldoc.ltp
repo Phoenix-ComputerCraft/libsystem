@@ -1,0 +1,116 @@
+# local iter = ldoc.modules.iter
+# local function M(txt,item) return ldoc.markup(txt,item,ldoc.plain) end
+# local lev1, lev2, lev3 = "#", "##", "###"
+# local argnames = {field = "Fields", table = "Fields", ["function"] = "Arguments"}
+# for kind, items in ldoc.kinds() do
+#  local kitem = ldoc.kinds:get_item(kind)
+#  if kitem then
+$(lev1) $(ldoc.descript(kitem))
+
+#  end
+#   for item in items() do
+---
+layout: default
+title: $(ldoc.display_name(item))
+parent: $(ldoc.project)
+---
+
+$(lev1) $(ldoc.display_name(item))
+$(ldoc.descript(item))
+
+# end
+# end
+# for kind, items in module.kinds() do
+#  local kitem = module.kinds:get_item(kind)
+#  if kitem then
+$(lev1) $(ldoc.display_name(kitem))
+$(ldoc.descript(kitem))
+
+#  end
+#  for item in items() do
+#    local title = ldoc.display_name(item):match("^%S+")
+#    local args, retval = {}
+#    local type = module.kinds:type_of(item).type
+#    if item.params and #item.params > 0 then
+#      local n = 1
+#      for param in iter(item.params) do
+#        local name,tp,def = item:display_name_of(param), item:type_of_param(param), item:default_of_param(param)
+#        local s = ("%s `%s`: %s"):format(type == "table" and "-" or n .. ".", name, M(item.params.map[param],item):gsub("^%s+", ""))
+#        if def == true then
+#          s = s .. " (optional)"
+#          if type == "function" then title = title .. (#args == 0 and "(" or ", ") .. name .. ": " .. tp .. "?" end
+#        elseif def then
+#          s = s .. " (defaults to " .. def .. ")"
+#          if type == "function" then title = title .. (#args == 0 and "([" or "[, ") .. name .. ": " .. tp .. " = " .. def .. "]" end
+#        elseif tp ~= '' then
+#          if type == "function" then title = title .. (#args == 0 and "(" or ", ") .. name .. ": " .. tp end
+#        elseif type == "function" then
+#          title = title .. (#args == 0 and "(" or ", ") .. name
+#        end
+#        args[#args+1] = s
+#        n = n + 1
+#      end
+#      if type == "function" then title = title .. ")" end
+#    else
+#      args = nil
+#      if type == "function" then title = title .. "()" end
+#    end
+#    if item.retgroups then
+#      retval = {}
+#      local groups = item.retgroups
+#      title = title .. ": "
+#      for i,group in ldoc.ipairs(groups) do
+#        local retgrp = {}
+#        local first = true
+#        for r in group:iter() do
+#          local type = item:return_type(r)
+#          if type ~= '' then
+#            title = title .. (first and "" or ", ") .. type
+#          end
+#          retgrp[#retgrp+1] = M(r.text,item)
+#          first = false
+#        end -- for r
+#        if i < #groups then
+#          title = title .. " / "
+#        end
+#        retval[#retval+1] = retgrp
+#      end -- for group
+#    end -- if returns
+$(lev2) `$(title)`
+$(ldoc.descript(item))
+
+#    if type ~= "table" or args then
+$(lev3) $(argnames[type])
+#      if args then
+#        for i = 1, #args do
+$(args[i])
+#        end
+#      else
+This function does not take any arguments.
+#      end
+
+#    end
+#    if type == "function" then
+$(lev3) Return Values
+#      if retval then
+#        if #retval == 1 and #retval[1] == 1 then
+$(retval[1][1])
+#        else
+This function may return the following values:
+#          for i = 1, #retval do
+#            for j = 1, #retval[i] do
+$(j). $(retval[i][j])
+#            end
+#            if i < #retval then
+
+Or:
+#            end
+#          end
+#        end
+#      else
+This function does not return anything.
+#      end
+
+#    end
+#  end
+# end

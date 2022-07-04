@@ -9,16 +9,19 @@ local util = require "util"
 local process = {}
 
 --- Returns the process ID of the current process.
+-- @treturn number The process ID of the current process
 function process.getpid()
     return util.syscall.getpid()
 end
 
 --- Returns the process ID of the parent process, if available.
+-- @treturn number The process ID of the parent process, if available
 function process.getppid()
     return util.syscall.getppid()
 end
 
 --- Returns the username the process is running under.
+-- @treturn string The username the process is running under
 function process.getuser()
     return util.syscall.getuser()
 end
@@ -32,21 +35,25 @@ end
 
 --- Returns the amount of time this process has executed. This may not be
 -- entirely accurate due to a lack of precision in the system clock.
+-- @treturn number The amount of time this process has executed
 function process.clock()
     return util.syscall.clock()
 end
 
 --- Returns the environment table for the current process.
+-- @treturn table The environment table for the current process
 function process.getenv()
     return util.syscall.getenv()
 end
 
 --- Returns the name of the current process.
+-- @treturn string The name of the current process
 function process.getname()
     return util.syscall.getname()
 end
 
 --- Returns the working directory of the current process.
+-- @treturn string The working directory of the current process
 function process.getcwd()
     return util.syscall.getcwd()
 end
@@ -64,7 +71,7 @@ end
 -- new process's environment.
 -- @tparam string name? The name of the new process.
 -- @tparam any ... Any arguments to pass to the function.
--- @treturn The PID of the new process.
+-- @treturn number The PID of the new process.
 function process.fork(func, name, ...)
     expect(1, func, "function")
     expect(2, name, "string", "nil")
@@ -107,6 +114,9 @@ end
 --- Creates a new thread running the specified function with arguments.
 -- Threads in the same process share the same environment, event queue, and
 -- other properties.
+-- @tparam function func The function to start
+-- @tparam any ... Any arguments to pass to the function
+-- @treturn number The ID of the new thread
 function process.newthread(func, ...)
     expect(1, func, "function")
     return util.syscall.newthread(func, ...)
@@ -120,13 +130,14 @@ function process.exit(code)
 end
 
 --- Returns a list of all valid PIDs.
+-- @treturn table A list of all valid PIDs
 function process.getplist()
     return util.syscall.getplist()
 end
 
 --- Returns a table with various information about the specified process.
 -- @tparam number pid The process ID to query.
--- @treturn { id = number, name = string, user = string, parent? = number, dir = string, stdin? = number, stdout? = number, stderr? = number, cputime = number, systime = number, threads = { [number] = { id = number, name = string, status = string } } }|nil The process information, or nil if the process doesn't exist.
+-- @treturn {id=number,name=string,user=string,parent?=number,dir=string,stdin?=number,stdout?=number,stderr?=number,cputime=number,systime=number,threads={[number]={id=number,name=string,status=string}}}|nil The process information, or nil if the process doesn't exist.
 function process.getpinfo(pid)
     expect(1, pid, "number")
     return util.syscall.getpinfo(pid)

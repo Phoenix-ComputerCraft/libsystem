@@ -24,9 +24,11 @@ local util = require "util"
 local framebuffer = {}
 
 --- Empty objects for use when creating framebuffers with no parents.
+-- @field text Used to create a text mode Terminal framebuffer
+-- @field graphics Used to create a graphics mode GFXTerminal framebuffer
 framebuffer.empty = {
-    text = {}, --- Used to create a text mode Terminal framebuffer
-    graphics = {}, --- Used to create a graphics mode GFXTerminal framebuffer
+    text = {}, -- Used to create a text mode Terminal framebuffer
+    graphics = {}, -- Used to create a graphics mode GFXTerminal framebuffer
 }
 
 --- Creates a new window object.
