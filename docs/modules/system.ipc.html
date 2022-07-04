@@ -1,0 +1,408 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>libsystem</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Tables">Tables</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/system.expect.html">system.expect</a></li>
+  <li><a href="../modules/system.filesystem.html">system.filesystem</a></li>
+  <li><a href="../modules/system.framebuffer.html">system.framebuffer</a></li>
+  <li><a href="../modules/system.graphics.html">system.graphics</a></li>
+  <li><a href="../modules/system.hardware.html">system.hardware</a></li>
+  <li><strong>system.ipc</strong></li>
+  <li><a href="../modules/system.keys.html">system.keys</a></li>
+  <li><a href="../modules/system.log.html">system.log</a></li>
+  <li><a href="../modules/system.network.html">system.network</a></li>
+  <li><a href="../modules/system.pretty.html">system.pretty</a></li>
+  <li><a href="../modules/system.process.html">system.process</a></li>
+  <li><a href="../modules/system.sync.html">system.sync</a></li>
+  <li><a href="../modules/system.terminal.html">system.terminal</a></li>
+  <li><a href="../modules/system.util.html">system.util</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>system.ipc</code></h1>
+<p>The IPC module provides functions for sending messages to other processes.</p>
+<p></p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#kill">kill (pid, signal)</a></td>
+	<td class="summary">Sends a basic signal to a process.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sigaction">sigaction (signal, fn)</a></td>
+	<td class="summary">Sets the handler for a signal.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sendEvent">sendEvent (pid, event, param)</a></td>
+	<td class="summary">Sends a remote event to a process.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#register">register (name)</a></td>
+	<td class="summary">Registers the current process as the receiver of a service name.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#lookup">lookup (name)</a></td>
+	<td class="summary">Returns the ID of the process that receives a service name.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sendServiceEvent">sendServiceEvent (name, event, param)</a></td>
+	<td class="summary">Sends an event to the owner of a service.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#receiveEvent">receiveEvent ([pid[, event[, timeout]]])</a></td>
+	<td class="summary">Waits for a remote event, filtering for processes or event names, with an optional timeout.</td>
+	</tr>
+</table>
+<h2><a href="#Tables">Tables</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#signal">signal</a></td>
+	<td class="summary">Constants for signal numbers</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "kill"></a>
+    <strong>kill (pid, signal)</strong>
+    </dt>
+    <dd>
+    Sends a basic signal to a process.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">pid</span>
+            <span class="types"><span class="type">number</span></span>
+         The PID of the process to send to
+        </li>
+        <li><span class="parameter">signal</span>
+            <span class="types"><span class="type">number</span></span>
+         The signal to send to the process
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "sigaction"></a>
+    <strong>sigaction (signal, fn)</strong>
+    </dt>
+    <dd>
+    Sets the handler for a signal.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">signal</span>
+            <span class="types"><span class="type">number</span></span>
+         The signal to modify
+        </li>
+        <li><span class="parameter">fn</span>
+            <span class="types"><span class="type">function</span> or <span class="type">nil</span></span>
+         The function to call, or `nil` to remove
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "sendEvent"></a>
+    <strong>sendEvent (pid, event, param)</strong>
+    </dt>
+    <dd>
+    Sends a remote event to a process.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">pid</span>
+            <span class="types"><span class="type">number</span></span>
+         The PID of the process to send to
+        </li>
+        <li><span class="parameter">event</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The event name to send
+        </li>
+        <li><span class="parameter">param</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         The parameter table to send with the event
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        Whether the event was sent
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "register"></a>
+    <strong>register (name)</strong>
+    </dt>
+    <dd>
+    Registers the current process as the receiver of a service name.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The service name to register for
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        Whether the service was registered
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "lookup"></a>
+    <strong>lookup (name)</strong>
+    </dt>
+    <dd>
+    Returns the ID of the process that receives a service name.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The service to lookup
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span> or <span class="type">nil</span></span>
+        The PID of the process that owns it (if available)
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "sendServiceEvent"></a>
+    <strong>sendServiceEvent (name, event, param)</strong>
+    </dt>
+    <dd>
+    Sends an event to the owner of a service.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The service to send to
+        </li>
+        <li><span class="parameter">event</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The event name to send
+        </li>
+        <li><span class="parameter">param</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         The parameter table to send with the event
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        Whether the event was sent
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "receiveEvent"></a>
+    <strong>receiveEvent ([pid[, event[, timeout]]])</strong>
+    </dt>
+    <dd>
+    Waits for a remote event, filtering for processes or event names, with an optional timeout.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">pid</span>
+            <span class="types"><span class="type">number</span></span>
+         The PID to wait for an event from
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">event</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The event to filter for
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">timeout</span>
+            <span class="types"><span class="type">number</span></span>
+         The maximum number of seconds to wait for
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        The event name received</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        The parameters for the event</li>
+    </ol>
+     <h3>Or</h3>
+    <ol>
+
+           <span class="types"><span class="type">nil</span></span>
+        If the function timed out
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Tables"></a>Tables</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "signal"></a>
+    <strong>signal</strong>
+    </dt>
+    <dd>
+    Constants for signal numbers
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">SIGHUP</span>
+
+        </li>
+        <li><span class="parameter">SIGINT</span>
+
+        </li>
+        <li><span class="parameter">SIGQUIT</span>
+
+        </li>
+        <li><span class="parameter">SIGTRAP</span>
+
+        </li>
+        <li><span class="parameter">SIGABRT</span>
+
+        </li>
+        <li><span class="parameter">SIGKILL</span>
+
+        </li>
+        <li><span class="parameter">SIGPIPE</span>
+
+        </li>
+        <li><span class="parameter">SIGTERM</span>
+
+        </li>
+        <li><span class="parameter">SIGCONT</span>
+
+        </li>
+        <li><span class="parameter">SIGSTOP</span>
+
+        </li>
+        <li><span class="parameter">SIGTTIN</span>
+
+        </li>
+        <li><span class="parameter">SIGTTOU</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2022-07-04 00:14:10 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

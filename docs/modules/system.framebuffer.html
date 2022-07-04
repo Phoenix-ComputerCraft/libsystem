@@ -1,0 +1,252 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>libsystem</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Tables">Tables</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/system.expect.html">system.expect</a></li>
+  <li><a href="../modules/system.filesystem.html">system.filesystem</a></li>
+  <li><strong>system.framebuffer</strong></li>
+  <li><a href="../modules/system.graphics.html">system.graphics</a></li>
+  <li><a href="../modules/system.hardware.html">system.hardware</a></li>
+  <li><a href="../modules/system.ipc.html">system.ipc</a></li>
+  <li><a href="../modules/system.keys.html">system.keys</a></li>
+  <li><a href="../modules/system.log.html">system.log</a></li>
+  <li><a href="../modules/system.network.html">system.network</a></li>
+  <li><a href="../modules/system.pretty.html">system.pretty</a></li>
+  <li><a href="../modules/system.process.html">system.process</a></li>
+  <li><a href="../modules/system.sync.html">system.sync</a></li>
+  <li><a href="../modules/system.terminal.html">system.terminal</a></li>
+  <li><a href="../modules/system.util.html">system.util</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>system.framebuffer</code></h1>
+<p>The framebuffer library provides functions to make "window" and "framebuffer"
+ objects.</p>
+<p> These objects imitate a Terminal object (as returned by
+ <a href="../modules/system.terminal.html#openterm">system.terminal.openterm</a>) or GFXTerminal object (as returned by
+ <a href="../modules/system.terminal.html#opengfx">system.terminal.opengfx</a>) that may or may not draw to a parent object.
+ Windows and framebuffers may be used as parents to other windows and
+ framebuffers, in addition to the root terminal object.
+<p> A framebuffer object holds its own state, can be redrawn onto the parent
+ terminal even if the parent is changed, can be removed from the parent and
+ used independently, and its contents can be accessed from code. A window
+ object simply changes the coordinates of writing methods, and is entirely
+ dependent on the parent.
+<p> The type of object returned by each function is dependent on the parent
+ passed in. If a Terminal object is passed, a Terminal object is created; if a
+ GFXTerminal object is passed, a GFXTerminal object is created. When creating
+ a framebuffer with no parent, the <a href="../modules/system.framebuffer.html#empty">empty</a> fields are used to specify the type.
+</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#window">window (parent, x, y, width, height)</a></td>
+	<td class="summary">Creates a new window object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#framebuffer">framebuffer (parent, wx, wy, w, h[, visible])</a></td>
+	<td class="summary">Creates a new framebuffer object.</td>
+	</tr>
+</table>
+<h2><a href="#Tables">Tables</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#empty">empty</a></td>
+	<td class="summary">Empty objects for use when creating framebuffers with no parents.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#graphics">graphics</a></td>
+	<td class="summary">Used to create a text mode Terminal framebuffer</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "window"></a>
+    <strong>window (parent, x, y, width, height)</strong>
+    </dt>
+    <dd>
+    Creates a new window object.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">parent</span>
+            <span class="types"><span class="type">Terminal</span> or <span class="type">GFXTerminal</span></span>
+         The parent object to render to
+        </li>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">number</span></span>
+         The X coordinate in the parent to start at
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">number</span></span>
+         The Y coordinate in the parent to start at
+        </li>
+        <li><span class="parameter">width</span>
+            <span class="types"><span class="type">number</span></span>
+         The width of the window
+        </li>
+        <li><span class="parameter">height</span>
+            <span class="types"><span class="type">number</span></span>
+         The height of the window
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">Terminal</span> or <span class="type">GFXTerminal</span></span>
+        The new window object
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "framebuffer"></a>
+    <strong>framebuffer (parent, wx, wy, w, h[, visible])</strong>
+    </dt>
+    <dd>
+    Creates a new framebuffer object.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">parent</span>
+            <span class="types"><span class="type">Terminal</span> or <span class="type">GFXTerminal</span></span>
+         The parent object to render to, or a member of <a href="../modules/system.framebuffer.html#empty">empty</a> to not use a parent
+        </li>
+        <li><span class="parameter">wx</span>
+            <span class="types"><span class="type">number</span> or <span class="type">nil</span></span>
+         The X coordinate in the parent to start at (`nil` if there's no parent)
+        </li>
+        <li><span class="parameter">wy</span>
+            <span class="types"><span class="type">number</span> or <span class="type">nil</span></span>
+         The Y coordinate in the parent to start at (`nil` if there's no parent)
+        </li>
+        <li><span class="parameter">w</span>
+            <span class="types"><span class="type">number</span></span>
+         The width of the framebuffer
+        </li>
+        <li><span class="parameter">h</span>
+            <span class="types"><span class="type">number</span></span>
+         The height of the framebuffer
+        </li>
+        <li><span class="parameter">visible</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Whether the window should be visible upon creation
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">Terminal</span> or <span class="type">GFXTerminal</span></span>
+        The new framebuffer object
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Tables"></a>Tables</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "empty"></a>
+    <strong>empty</strong>
+    </dt>
+    <dd>
+    Empty objects for use when creating framebuffers with no parents.
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">text</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "graphics"></a>
+    <strong>graphics</strong>
+    </dt>
+    <dd>
+    Used to create a text mode Terminal framebuffer
+
+
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2022-07-04 00:14:10 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

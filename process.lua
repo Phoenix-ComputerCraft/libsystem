@@ -89,6 +89,21 @@ function process.start(path, ...)
     return util.syscall.fork(function(...) return coroutine.yield("syscall", "exec", ...) end, path, path, ...)
 end
 
+--- Runs a program from the specified path in a new process, waiting until it completes.
+-- @tparam string path The path to the file to execute
+-- @tparam any ... Any arguments to pass to the file
+-- @treturn[1] true When the process succeeded
+-- @treturn[1] any The return value from the process
+-- @treturn[2] false When the process errored
+-- @treturn[2] string The error message from the process
+function process.run(path, ...)
+    expect(1, path, "string")
+    local pid = util.syscall.fork(function(...) return coroutine.yield("syscall", "exec", ...) end, path, path, ...)
+    local event, param
+    repeat event, param = coroutine.yield() until event == "process_complete" and param.id == pid
+    return param.error == nil, param.error or param.value
+end
+
 --- Creates a new thread running the specified function with arguments.
 -- Threads in the same process share the same environment, event queue, and
 -- other properties.

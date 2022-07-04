@@ -202,6 +202,45 @@ function filesystem.find(wildcard)
     return retval
 end
 
+--- Convenience function for determining whether a file exists.
+-- This simply checks that @{stat} does not return `nil`.
+-- @tparam string path The path to check
+-- @treturn boolean Whether the path exists
+function filesystem.exists(path)
+    expect(1, path, "string")
+    return filesystem.stat(path) ~= nil
+end
+
+--- Returns whether the path exists and is a file.
+-- @tparam string path The path to check
+-- @treturn boolean Whether the path is a file
+function filesystem.isFile(path)
+    expect(1, path, "string")
+    local s = filesystem.stat(path)
+    if not s then return false end
+    return s.type == "file"
+end
+
+--- Returns whether the path exists and is a directory.
+-- @tparam string path The path to check
+-- @treturn boolean Whether the path is a directory
+function filesystem.isDir(path)
+    expect(1, path, "string")
+    local s = filesystem.stat(path)
+    if not s then return false end
+    return s.type == "directory"
+end
+
+--- Returns whether the path exists and is a link.
+-- @tparam string path The path to check
+-- @treturn boolean Whether the path is a link
+function filesystem.isLink(path)
+    expect(1, path, "string")
+    local s = filesystem.stat(path)
+    if not s then return false end
+    return s.type == "link"
+end
+
 --- A table which stores file statistics.
 -- @type FileStat
 local FileStat = {}

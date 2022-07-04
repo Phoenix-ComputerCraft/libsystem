@@ -6,6 +6,7 @@
 --
 -- @module system.log
 
+local expect = require "expect"
 local util = require "util"
 
 local function selflog(self, ...) return self.log(...) end

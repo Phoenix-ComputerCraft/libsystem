@@ -1,0 +1,668 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>libsystem</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Class_mutex">Class mutex </a></li>
+<li><a href="#Class_semaphore">Class semaphore </a></li>
+<li><a href="#Class_conditionVariable">Class conditionVariable </a></li>
+<li><a href="#Class_barrier">Class barrier </a></li>
+<li><a href="#Class_rwlock">Class rwlock </a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/system.expect.html">system.expect</a></li>
+  <li><a href="../modules/system.filesystem.html">system.filesystem</a></li>
+  <li><a href="../modules/system.framebuffer.html">system.framebuffer</a></li>
+  <li><a href="../modules/system.graphics.html">system.graphics</a></li>
+  <li><a href="../modules/system.hardware.html">system.hardware</a></li>
+  <li><a href="../modules/system.ipc.html">system.ipc</a></li>
+  <li><a href="../modules/system.keys.html">system.keys</a></li>
+  <li><a href="../modules/system.log.html">system.log</a></li>
+  <li><a href="../modules/system.network.html">system.network</a></li>
+  <li><a href="../modules/system.pretty.html">system.pretty</a></li>
+  <li><a href="../modules/system.process.html">system.process</a></li>
+  <li><strong>system.sync</strong></li>
+  <li><a href="../modules/system.terminal.html">system.terminal</a></li>
+  <li><a href="../modules/system.util.html">system.util</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>system.sync</code></h1>
+<p>The sync library exposes interfaces for various synchronization structures.</p>
+<p></p>
+
+
+<h2><a href="#Class_mutex">Class mutex </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#sync.mutex.new">sync.mutex.new ([recursive])</a></td>
+	<td class="summary">Creates a new mutex.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sync.mutex:lock">sync.mutex:lock ()</a></td>
+	<td class="summary">Locks the mutex, waiting if it's currently owned by another thread.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sync.mutex:unlock">sync.mutex:unlock ()</a></td>
+	<td class="summary">Unlocks the mutex.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sync.mutex:tryLock">sync.mutex:tryLock ()</a></td>
+	<td class="summary">Tries to lock the thread, returning false if it could not be locked.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sync.mutex:tryLockFor">sync.mutex:tryLockFor (timeout)</a></td>
+	<td class="summary">Locks the mutex, waiting until it's unlocked or until the specified timeout.</td>
+	</tr>
+</table>
+<h2><a href="#Class_semaphore">Class semaphore </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#sync.semaphore.new">sync.semaphore.new ([init=1])</a></td>
+	<td class="summary">Creates a new semaphore.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sync.semaphore:acquire">sync.semaphore:acquire ()</a></td>
+	<td class="summary">Acquires a resource from the semaphore, waiting until there is one available.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sync.semaphore:tryAcquireFor">sync.semaphore:tryAcquireFor (timeout)</a></td>
+	<td class="summary">Acquires a resource from the semaphore, waiting until there is one available or until a timeout.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sync.semaphore:release">sync.semaphore:release ()</a></td>
+	<td class="summary">Releases a resource to the semaphore.</td>
+	</tr>
+</table>
+<h2><a href="#Class_conditionVariable">Class conditionVariable </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#sync.conditionVariable.new">sync.conditionVariable.new ()</a></td>
+	<td class="summary">Creates a new condition variable.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sync.conditionVariable:wait">sync.conditionVariable:wait ()</a></td>
+	<td class="summary">Waits for a notification from another thread.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sync.conditionVariable:waitFor">sync.conditionVariable:waitFor (timeout)</a></td>
+	<td class="summary">Waits for a notification from another thread, or until a timeout occurs.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sync.conditionVariable:notifyOne">sync.conditionVariable:notifyOne ()</a></td>
+	<td class="summary">Notifies a single (unspecified) thread to continue.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sync.conditionVariable:notifyAll">sync.conditionVariable:notifyAll ()</a></td>
+	<td class="summary">Notifies all waiting threads to continue.</td>
+	</tr>
+</table>
+<h2><a href="#Class_barrier">Class barrier </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#sync.barrier.new">sync.barrier.new (count)</a></td>
+	<td class="summary">Creates a new barrier object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sync.barrier:wait">sync.barrier:wait ()</a></td>
+	<td class="summary">Adds one to the thread wait count, and waits until it meets the limit.</td>
+	</tr>
+</table>
+<h2><a href="#Class_rwlock">Class rwlock </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#sync.rwLock.new">sync.rwLock.new ()</a></td>
+	<td class="summary">Creates a new RW lock.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sync.rwLock:lockRead">sync.rwLock:lockRead ()</a></td>
+	<td class="summary">Acquires the lock for reading, waiting for the write lock to be released first.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sync.rwLock:unlockRead">sync.rwLock:unlockRead ()</a></td>
+	<td class="summary">Releases the lock for reading.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sync.rwLock:lockWrite">sync.rwLock:lockWrite ()</a></td>
+	<td class="summary">Acquires the lock for writing, waiting for the read and write locks to be released.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sync.rwLock:unlockWrite">sync.rwLock:unlockWrite ()</a></td>
+	<td class="summary">Releases the lock for writing.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#rwlock:lockGuard">rwlock:lockGuard (mutex, fn, ...)</a></td>
+	<td class="summary">Calls a function, ensuring that the mutex is locked before calling and unlocked
+ after calling, even if the function returns early or throws an error.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header has-description"><a name="Class_mutex"></a>Class mutex </h2>
+
+          <div class="section-description">
+          A mutex is an object that controls access to a variable across multiple threads.
+ It ensures only one thread accesses a resource at a time by blocking other
+ threads from locking the mutex until the current thread unlocks it.
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "sync.mutex.new"></a>
+    <strong>sync.mutex.new ([recursive])</strong>
+    </dt>
+    <dd>
+    Creates a new mutex.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">recursive</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Whether to make the mutex recursive
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/system.sync.html#mutex">mutex</a></span>
+        The new mutex object
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "sync.mutex:lock"></a>
+    <strong>sync.mutex:lock ()</strong>
+    </dt>
+    <dd>
+    Locks the mutex, waiting if it's currently owned by another thread.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "sync.mutex:unlock"></a>
+    <strong>sync.mutex:unlock ()</strong>
+    </dt>
+    <dd>
+    Unlocks the mutex.  This is only valid from the thread that owns the lock.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "sync.mutex:tryLock"></a>
+    <strong>sync.mutex:tryLock ()</strong>
+    </dt>
+    <dd>
+    Tries to lock the thread, returning false if it could not be locked.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        Whether the mutex is now locked
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "sync.mutex:tryLockFor"></a>
+    <strong>sync.mutex:tryLockFor (timeout)</strong>
+    </dt>
+    <dd>
+    Locks the mutex, waiting until it's unlocked or until the specified timeout.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">timeout</span>
+            <span class="types"><span class="type">number</span></span>
+         The number of seconds to wait
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        Whether the mutex is now locked
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header has-description"><a name="Class_semaphore"></a>Class semaphore </h2>
+
+          <div class="section-description">
+          A semaphore controls access to a limited number of resources.  A function may
+ acquire a resource from the semaphore, decrementing its available count. If
+ the count is zero, it waits until another function releases a resource, at
+ which point it will acquire it and return.
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "sync.semaphore.new"></a>
+    <strong>sync.semaphore.new ([init=1])</strong>
+    </dt>
+    <dd>
+    Creates a new semaphore.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">init</span>
+            <span class="types"><span class="type">number</span></span>
+         The initial count of the semaphore
+         (<em>default</em> 1)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/system.sync.html#semaphore">semaphore</a></span>
+        The new semaphore object
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "sync.semaphore:acquire"></a>
+    <strong>sync.semaphore:acquire ()</strong>
+    </dt>
+    <dd>
+    Acquires a resource from the semaphore, waiting until there is one available.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "sync.semaphore:tryAcquireFor"></a>
+    <strong>sync.semaphore:tryAcquireFor (timeout)</strong>
+    </dt>
+    <dd>
+    Acquires a resource from the semaphore, waiting until there is one available or until a timeout.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">timeout</span>
+            <span class="types"><span class="type">number</span></span>
+         The number of seconds to wait
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        Whether the resource was acquired
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "sync.semaphore:release"></a>
+    <strong>sync.semaphore:release ()</strong>
+    </dt>
+    <dd>
+    Releases a resource to the semaphore.  This can be called from any thread.
+
+
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header has-description"><a name="Class_conditionVariable"></a>Class conditionVariable </h2>
+
+          <div class="section-description">
+          A condition variable allows threads to wait until another thread notifies
+ them to resume.
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "sync.conditionVariable.new"></a>
+    <strong>sync.conditionVariable.new ()</strong>
+    </dt>
+    <dd>
+    Creates a new condition variable.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/system.sync.html#conditionVariable">conditionVariable</a></span>
+        The new condition variable.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "sync.conditionVariable:wait"></a>
+    <strong>sync.conditionVariable:wait ()</strong>
+    </dt>
+    <dd>
+    Waits for a notification from another thread.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "sync.conditionVariable:waitFor"></a>
+    <strong>sync.conditionVariable:waitFor (timeout)</strong>
+    </dt>
+    <dd>
+    Waits for a notification from another thread, or until a timeout occurs.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">timeout</span>
+            <span class="types"><span class="type">number</span></span>
+         The number of seconds to wait
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        Whether a notification occurred
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "sync.conditionVariable:notifyOne"></a>
+    <strong>sync.conditionVariable:notifyOne ()</strong>
+    </dt>
+    <dd>
+    Notifies a single (unspecified) thread to continue.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "sync.conditionVariable:notifyAll"></a>
+    <strong>sync.conditionVariable:notifyAll ()</strong>
+    </dt>
+    <dd>
+    Notifies all waiting threads to continue.
+
+
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header has-description"><a name="Class_barrier"></a>Class barrier </h2>
+
+          <div class="section-description">
+          A barrier is a lock that waits for a specific number of threads to wait on
+ the object, at which point all threads will be released together.
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "sync.barrier.new"></a>
+    <strong>sync.barrier.new (count)</strong>
+    </dt>
+    <dd>
+    Creates a new barrier object.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">count</span>
+            <span class="types"><span class="type">number</span></span>
+         The number of threads to wait for
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/system.sync.html#barrier">barrier</a></span>
+        A new barrier object
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "sync.barrier:wait"></a>
+    <strong>sync.barrier:wait ()</strong>
+    </dt>
+    <dd>
+    Adds one to the thread wait count, and waits until it meets the limit.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        Whether this call directly resulted in the barrier being met
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header has-description"><a name="Class_rwlock"></a>Class rwlock </h2>
+
+          <div class="section-description">
+          A readers-writer lock implements two related locks: a read lock, which can
+ be held by multiple threads, and a write lock, which can only be held by one
+ thread.  Multiple threads can hold a read lock, but a write lock blocks both
+ read and write locks.
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "sync.rwLock.new"></a>
+    <strong>sync.rwLock.new ()</strong>
+    </dt>
+    <dd>
+    Creates a new RW lock.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/system.sync.html#rwlock">rwlock</a></span>
+        The new RW lock
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "sync.rwLock:lockRead"></a>
+    <strong>sync.rwLock:lockRead ()</strong>
+    </dt>
+    <dd>
+    Acquires the lock for reading, waiting for the write lock to be released first.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "sync.rwLock:unlockRead"></a>
+    <strong>sync.rwLock:unlockRead ()</strong>
+    </dt>
+    <dd>
+    Releases the lock for reading.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "sync.rwLock:lockWrite"></a>
+    <strong>sync.rwLock:lockWrite ()</strong>
+    </dt>
+    <dd>
+    Acquires the lock for writing, waiting for the read and write locks to be released.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "sync.rwLock:unlockWrite"></a>
+    <strong>sync.rwLock:unlockWrite ()</strong>
+    </dt>
+    <dd>
+    Releases the lock for writing.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "rwlock:lockGuard"></a>
+    <strong>rwlock:lockGuard (mutex, fn, ...)</strong>
+    </dt>
+    <dd>
+    Calls a function, ensuring that the mutex is locked before calling and unlocked
+ after calling, even if the function returns early or throws an error.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">mutex</span>
+            <span class="types"><a class="type" href="../modules/system.sync.html#mutex">mutex</a></span>
+         The mutex to lock
+        </li>
+        <li><span class="parameter">fn</span>
+            <span class="types"><span class="type">function</span></span>
+         The function to call
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">any</span></span>
+         Any parameters to pass
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">any...</span></span>
+        The return values from the function
+    </ol>
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2022-07-04 00:14:10 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

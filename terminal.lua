@@ -186,6 +186,7 @@ function Terminal.getBackgroundColor() end
 function Terminal.setBackgroundColor(color) end
 function Terminal.getPaletteColor(color) end
 function Terminal.setPaletteColor(color, r, g, b) end
+function Terminal.getLine(y) end
 
 --- The GFXTerminal type allows interfacing with the screen in exclusive graphics
 -- mode. It provides the same functions as CraftOS-PC does in mode 2, and can be

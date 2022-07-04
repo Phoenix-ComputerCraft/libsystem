@@ -61,7 +61,7 @@ function expect.range(num, min, max)
     expect.expect(1, num, "number")
     expect.expect(2, min, "number", "nil")
     expect.expect(3, max, "number", "nil")
-    if max < min then error("bad argument #3 (min must be less than or equal to max)", 2) end
+    if max and min and max < min then error("bad argument #3 (min must be less than or equal to max)", 2) end
     if num ~= num or num < (min or -math.huge) or num > (max or math.huge) then error(("number outside of range (expected %s to be within %s and %s)"):format(num, min or -math.huge, max or math.huge), 3) end
     return num
 end

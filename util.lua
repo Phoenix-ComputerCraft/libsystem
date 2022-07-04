@@ -211,7 +211,7 @@ end
 function util.type(value)
     local t = type(value)
     if t == "table" then
-        local mt = getmetatable(t)
+        local mt = getmetatable(value)
         if mt and mt.__name then return mt.__name end
     end
     return t
