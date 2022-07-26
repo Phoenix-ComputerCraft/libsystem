@@ -99,9 +99,9 @@ function ipc.receiveEvent(pid, event, timeout)
     local tm
     if timeout then tm = util.timer(timeout) end
     while true do
-        local event, param = coroutine.yield()
-        if event == "timer" and param.id == tm then return nil
-        elseif event == "remote_event" and (pid == nil or pid == param.sender) and (event == nil or event == param.type) then
+        local ev, param = coroutine.yield()
+        if ev == "timer" and param.id == tm then return nil
+        elseif ev == "remote_event" and (pid == nil or pid == param.sender) and (event == nil or event == param.type) then
             if tm then util.cancel(tm) end
             return param.type, param.data
         end

@@ -24,11 +24,19 @@ end, __newindex = function() end})
 -- all subsequent arguments are added to the list.
 -- @tparam {[string]=string|boolean|nil} arguments A list of arguments that
 -- the program accepts. Single-character arguments are handled through `-a`, and
--- longer arguments are handled through `--argument`. If the value is a truthy
--- value, this argument requires a parameter; if the value is `"number"`, the
--- argument requires a number parameter; if the value is `false`, the argument
--- does not take a parameter; if the value is `nil`, the argument does not exist
--- and will throw an error if passed.
+-- longer arguments are handled through `--argument`. The value of the entry
+-- specifies how the argument is handled:
+-- * If the value is a truthy value, this argument requires a parameter.
+-- * If the value is `"number"`, the argument requires a number parameter.
+-- * If the value is `"multiple"`, the argument can be specified multiple times,
+--   and will require a parameter. The values returned will be in a table.
+-- * If the value is `"multiple number"`, the argument can be specified multiple
+--   times, and will require a number parameter. These are also in a table.
+-- * If the value is `false`, the argument does not take a parameter.
+-- * If the value is `nil`, the argument does not exist and will throw an error
+--   if passed.
+-- * If the value starts with `@`, the parameter is an alias and will be stored
+--   in that argument instead, following the same rules as that argument as well.
 -- @tparam string ... The arguments as passed to the program.
 -- @treturn[1] {[string]=string|number|boolean|nil,string...} The arguments
 -- as parsed from the arguments table as key-value entries, plus positional
@@ -45,20 +53,30 @@ function util.argparse(arguments, ...)
             if arguments[nextArg] == "number" then
                 retval[nextArg] = tonumber(arg)
                 if not retval[nextArg] then return nil, "parameter passed to argument '" .. nextArg .. "' is not a number" end
+            elseif arguments[nextArg] == "multiple" then
+                retval[nextArg] = retval[nextArg] or {}
+                retval[nextArg][#retval[nextArg]+1] = arg
+            elseif arguments[nextArg] == "multiple number" then
+                arg = tonumber(arg)
+                if not arg then return nil, "parameter passed to argument '" .. nextArg .. "' is not a number" end
+                retval[nextArg] = retval[nextArg] or {}
+                retval[nextArg][#retval[nextArg]+1] = arg
             else retval[nextArg] = arg end
             nextArg = nil
         elseif arg:match "^%-+$" then
             local args = table.pack(...)
-            local s = #retval+1
-            for j = 0, args.n-i do retval[s+j] = args[i+j] end
+            local s = arg == "-" and #retval+1 or #retval
+            for j = arg == "-" and 0 or 1, args.n-i do retval[s+j] = args[i+j] end
             break
         elseif arg:sub(1, 2) == "--" then
             local n = arg:sub(3)
+            while type(arguments[n]) == "string" and arguments[n]:match "^@" do n = arguments[n]:sub(2) end
             if arguments[n] then nextArg = n
             elseif arguments[n] == false then retval[n] = true
             else return nil, "unrecognized argument '--" .. n .. "'" end
         elseif arg:sub(1, 1) == "-" then
             for n in arg:sub(2):gmatch "." do
+                while type(arguments[n]) == "string" and arguments[n]:match "^@" do n = arguments[n]:sub(2) end
                 if arguments[n] then
                     if nextArg then return nil, "no parameter passed to argument '" .. nextArg .. "'" end
                     nextArg = n
@@ -132,12 +150,22 @@ end
 --- Splits a string into components.
 -- @tparam string str The string to split
 -- @tparam[opt="%s"] string sep The delimiter match class to split by
+-- @tparam[opt=false] boolean includeEmpty Whether to include empty matches
 -- @treturn {string...} The components of the string
-function util.split(str, sep)
+function util.split(str, sep, includeEmpty)
     expect(1, str, "string")
     expect(2, sep, "string", "nil")
     local t = {}
-    for match in str:gmatch("[^" .. (sep or "%s") .. "]+") do t[#t+1] = match end
+    if includeEmpty then
+        local s, n = 1, str:find("[" .. sep .. "]")
+        while s do
+            t[#t+1] = str:sub(s, n and n - 1)
+            s = n and n + 1
+            n = str:find("[" .. sep .. "]", s)
+        end
+    else
+        for match in str:gmatch("[^" .. (sep or "%s") .. "]+") do t[#t+1] = match end
+    end
     return t
 end
 

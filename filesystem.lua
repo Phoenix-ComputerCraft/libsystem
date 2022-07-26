@@ -67,8 +67,8 @@ function filesystem.chmod(path, user, mode)
     expect(1, path, "string")
     expect(2, user, "string", "nil")
     expect(3, mode, "number", "string", "table")
-    if type(mode) == "string" and not mode:match "^[+-=][rwx]+$" and not mode:match "^[r-][w-][x-]$" then
-        error("bad argument #2 (invalid mode)", 2)
+    if type(mode) == "string" and not mode:match "^[%+%-=][rwxs]+$" and not mode:match "^[r%-][w%-][xs%-]$" then
+        error("bad argument #3 (invalid mode)", 2)
     elseif type(mode) == "table" then
         expect.field(mode, "read", "boolean", "nil")
         expect.field(mode, "write", "boolean", "nil")
@@ -116,7 +116,8 @@ end
 --- Copies a file or directory.
 -- @tparam string from The path to copy from
 -- @tparam string to The path to copy to
-function filesystem.copy(from, to)
+-- @tparam[opt] boolean preserve Whether to preserve permissions when copying
+function filesystem.copy(from, to, preserve)
     expect(1, from, "string")
     expect(2, to, "string")
     local stat = filesystem.stat(from)
@@ -136,6 +137,11 @@ function filesystem.copy(from, to)
         tofile.close()
         fromfile.close()
     end
+    if preserve then
+        filesystem.chmod(to, nil, stat.worldPermissions)
+        for k, v in pairs(stat.permissions) do filesystem.chmod(to, k, v) end
+        if stat.owner then filesystem.chown(to, stat.owner) end
+    end
 end
 
 --- Moves a file or directory, allowing cross-filesystem operations.
@@ -144,7 +150,11 @@ end
 function filesystem.move(from, to)
     expect(1, from, "string")
     expect(2, to, "string")
-    local fromstat, tostat = assert(filesystem.stat(from)), assert(filesystem.stat(to))
+    local fromstat = assert(filesystem.stat(from), "File not found")
+    local tostat = filesystem.stat(to)
+    if tostat then error("File already exists", 2) end
+    local path = filesystem.dirname(to)
+    repeat tostat, path = filesystem.stat(path), filesystem.dirname(path) until tostat
     if fromstat.mountpoint == tostat.mountpoint then
         return filesystem.rename(from, to)
     end
@@ -165,8 +175,8 @@ end
 -- @treturn string The parent directory of the path
 function filesystem.dirname(path)
     expect(1, path, "string")
-    local p = filesystem.combine(path):match "^(.*)[^/]*$"
-    if p == "" then
+    local p = filesystem.combine(path):match "^(.*)/[^/]*$"
+    if p == "" or p == nil then
         if path:sub(1, 1) == "/" then return "/"
         else return "." end
     else return p end

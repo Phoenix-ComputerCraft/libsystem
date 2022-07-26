@@ -146,7 +146,8 @@ function terminal.stderr(handle)
     return util.syscall.stderr(handle)
 end
 
---- Returns whether the current stdout is linked to a TTY.
+--- Returns whether the current stdio are linked to a TTY.
+-- @treturn boolean Whether the current stdin is linked to a TTY.
 -- @treturn boolean Whether the current stdout is linked to a TTY.
 function terminal.istty()
     return util.syscall.istty()
