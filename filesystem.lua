@@ -141,6 +141,7 @@ function filesystem.copy(from, to, preserve)
         filesystem.chmod(to, nil, stat.worldPermissions)
         for k, v in pairs(stat.permissions) do filesystem.chmod(to, k, v) end
         if stat.owner then filesystem.chown(to, stat.owner) end
+        if stat.setuser then pcall(filesystem.chmod, to, stat.owner, "+s") end
     end
 end
 
@@ -155,11 +156,26 @@ function filesystem.move(from, to)
     if tostat then error("File already exists", 2) end
     local path = filesystem.dirname(to)
     repeat tostat, path = filesystem.stat(path), filesystem.dirname(path) until tostat
-    if fromstat.mountpoint == tostat.mountpoint then
-        return filesystem.rename(from, to)
+    if fromstat.type == "directory" then
+        local list = filesystem.list(from)
+        filesystem.mkdir(to)
+        for _, v in ipairs(list) do filesystem.move(filesystem.combine(from, v), filesystem.combine(to, v)) end
+    else
+        -- try to move without using more space: delete the old file before writing the new one
+        local fromfile, err = filesystem.open(from, "rb")
+        if not fromfile then error(err, 2) end
+        local data = fromfile.readAll()
+        fromfile.close()
+        local tofile, err = filesystem.open(to, "wb")
+        if not tofile then error(err, 2) end
+        filesystem.remove(from)
+        if data then tofile.write(data) end
+        tofile.close()
     end
-    filesystem.copy(from, to)
-    filesystem.remove(from)
+    filesystem.chmod(to, nil, fromstat.worldPermissions)
+    for k, v in pairs(fromstat.permissions) do filesystem.chmod(to, k, v) end
+    if fromstat.owner then filesystem.chown(to, fromstat.owner) end
+    if fromstat.setuser then pcall(filesystem.chmod, to, fromstat.owner, "+s") end
 end
 
 --- Returns the file name for a path.
@@ -249,6 +265,22 @@ function filesystem.isLink(path)
     local s = filesystem.stat(path)
     if not s then return false end
     return s.type == "link"
+end
+
+--- Returns the effective permissions on a file or stat entry for the selected user.
+-- @tparam string|FileStat file The file path or stat to check
+-- @tparam[opt] string user The user to check for (defaults to the current user)
+-- @treturn {read:boolean,write:boolean,execute:boolean}|nil The permissions for the user, or `nil` if the file doesn't exist
+function filesystem.effectivePermissions(file, user)
+    expect(1, file, "string", "table")
+    user = expect(2, user, "number", "nil") or util.syscall.getpid()
+    if type(file) == "string" then
+        file = util.syscall.stat(file)
+        if not file then return nil end
+    end
+    expect.field(file, "permissions", "table")
+    expect.field(file, "worldPermissions", "table")
+    return file.permissions[user] or file.worldPermissions
 end
 
 --- A table which stores file statistics.

@@ -37,6 +37,11 @@ end, __newindex = function() end})
 --   if passed.
 -- * If the value starts with `@`, the parameter is an alias and will be stored
 --   in that argument instead, following the same rules as that argument as well.
+-- Special parameters to the parser can be added in a `[""]` table. The following
+-- parameters are specified:
+-- * `stopProcessingOnPositionalArgument` [boolean]: Whether to stop processing
+--   arguments when a positional argument is passed, e.g. `myprog -s arg -i` will
+--   return `args.s = true`, but `args.i = nil`.
 -- @tparam string ... The arguments as passed to the program.
 -- @treturn[1] {[string]=string|number|boolean|nil,string...} The arguments
 -- as parsed from the arguments table as key-value entries, plus positional
@@ -46,8 +51,10 @@ end, __newindex = function() end})
 -- printed for the user.
 function util.argparse(arguments, ...)
     expect(1, arguments, "table")
+    expect.field(arguments, "", "table", "nil")
     local retval = {}
     local nextArg
+    local params = arguments[""] or {}
     for i, arg in ipairs{...} do
         if nextArg then
             if arguments[nextArg] == "number" then
@@ -84,7 +91,12 @@ function util.argparse(arguments, ...)
                 else return nil, "unrecognized argument '-" .. n .. "'" end
             end
         else
-            retval[#retval+1] = arg
+            if params.stopProcessingOnPositionalArgument then
+                local args = table.pack(...)
+                local s = #retval+1
+                for j = 0, args.n-i do retval[s+j] = args[i+j] end
+                break
+            else retval[#retval+1] = arg end
         end
     end
     if nextArg then return nil, "no parameter passed to argument '" .. nextArg .. "'" end
