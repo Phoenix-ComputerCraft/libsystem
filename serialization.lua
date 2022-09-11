@@ -5,7 +5,7 @@
 
 local expect = require "expect"
 
-local serialization = {base64 = {}, json = {}}
+local serialization = {base64 = {}, json = {}, lua = {}}
 
 --- serialization.base64
 -- @section serialization.base64
@@ -454,6 +454,157 @@ function serialization.json.decode(str)
         decode_error(str, idx, "trailing garbage")
     end
     return res
+end
+
+--- Saves a Lua value to a JSON file.
+-- @tparam any val The value to save
+-- @tparam string path The path to the file to save
+function serialization.json.save(val, path)
+    expect(2, path, "string")
+    local file = assert(io.open(path, "w"))
+    file:write(serialization.json.encode(val))
+    file:close()
+end
+
+--- Loads a JSON file into a Lua value.
+-- @tparam string path The path to the file to load
+-- @treturn any The loaded value
+function serialization.json.load(path)
+    expect(1, path, "string")
+    local file = assert(io.open(path, "r"))
+    local data = file:read("*a")
+    file:close()
+    return serialization.json.decode(data)
+end
+
+--- serialization.lua
+-- @section serialization.lua
+
+local keywords = {
+    ["and"] = true,
+    ["break"] = true,
+    ["do"] = true,
+    ["else"] = true,
+    ["elseif"] = true,
+    ["end"] = true,
+    ["false"] = true,
+    ["for"] = true,
+    ["function"] = true,
+    ["goto"] = true,
+    ["if"] = true,
+    ["in"] = true,
+    ["local"] = true,
+    ["nil"] = true,
+    ["not"] = true,
+    ["or"] = true,
+    ["repeat"] = true,
+    ["return"] = true,
+    ["then"] = true,
+    ["true"] = true,
+    ["until"] = true,
+    ["while"] = true,
+}
+
+local function lua_serialize(val, stack, opts, level)
+    if stack[val] then error("Cannot serialize recursive value", 0) end
+    local tt = type(val)
+    if tt == "table" then
+        if not next(val) then return "{}" end
+        stack[val] = true
+        local res = opts.minified and "{" or "{\n"
+        local num = {}
+        for i, v in ipairs(val) do
+            if not opts.minified then res = res .. ("    "):rep(level) end
+            num[i] = true
+            res = res .. lua_serialize(v, stack, opts, level + 1) .. (opts.minified and "," or ",\n")
+        end
+        for k, v in pairs(val) do if not num[k] then
+            if not opts.minified then res = res .. ("    "):rep(level) end
+            if type(k) == "string" and not keywords[k] then res = res .. k
+            else res = res .. "[" .. lua_serialize(k, stack, opts, level + 1) .. "]" end
+            res = res .. (opts.minified and "=" or " = ") .. lua_serialize(v, stack, opts, level + 1) .. (opts.minified and "," or ",\n")
+        end end
+        if opts.minified then res = res:gsub(",$", "")
+        else res = res .. ("    "):rep(level - 1) end
+        stack[val] = nil
+        return res .. "}"
+    elseif tt == "function" and opts.allow_functions then
+        local ok, dump = pcall(string.dump, val)
+        if not ok then error("Cannot serialize C function", 0) end
+        dump = ("%q"):format(dump):gsub("[%z\1-\31\127-\255]", function(c) return '\\' .. ("%03d"):format(string.byte(c)) end)
+        local ups = {n = 0}
+        stack[val] = true
+        for i = 1, math.huge do
+            local ok, name, value = pcall(debug.getupvalue, val, i)
+            if not ok or not name then break end
+            ups[i] = value
+            ups.n = i
+        end
+        local name = "=(serialized function)"
+        local ok, info = pcall(debug.getinfo, val, "S")
+        if ok then name = info.source or name end
+        local v = ("__function(%s,%q,%s)"):format(dump, name, lua_serialize(ups, stack, opts, level + 1))
+        stack[val] = nil
+        return v
+    elseif tt == "nil" or tt == "number" or tt == "boolean" or tt == "string" then
+        return ("%q"):format(val):gsub("[%z\1-\31\127-\255]", function(c) return '\\' .. ("%03d"):format(string.byte(c)) end)
+    else
+        error("Cannot serialize type " .. tt, 0)
+    end
+end
+
+--- Serializes an arbitrary Lua object into a serialized Lua string.
+-- @tparam any val The value to encode
+-- @tparam[opt] {minified=boolean,allow_functions=boolean} opts Any options to specify while encoding
+-- @treturn string The serialized Lua representation of the object
+function serialization.lua.encode(val, opts)
+    expect(2, opts, "table", "nil")
+    return lua_serialize(val, {}, opts or {}, 1)
+end
+
+--- Parses a serialized Lua string and returns a Lua value represented by the string.
+-- @tparam string str The serialized Lua string to decode
+-- @tparam[opt] {allow_functions=boolean} opts Any options to specify while decoding
+-- @treturn any The Lua value from the serialized Lua
+function serialization.lua.decode(str, opts)
+    opts = expect(2, opts, "table", "nil") or {}
+    local env = {}
+    local fns = {}
+    if opts.allow_functions then function env.__function(code, name, ups)
+        expect(1, code, "string")
+        expect(3, ups, "table")
+        expect.field(ups, "n", "number")
+        local fn = assert(load(code, name, "b", {}))
+        for i = 1, ups.n do debug.setupvalue(fn, i, ups[i]) end
+        fns[#fns+1] = fn
+        return fn
+    end end
+    local res = assert(load("return " .. str, "=unserialize", "t", env))()
+    for _, v in ipairs(fns) do setfenv(v, _G) end
+    return res
+end
+
+--- Saves a Lua value to a serialized Lua file.
+-- @tparam any val The value to save
+-- @tparam string path The path to the file to save
+-- @tparam[opt] {minified=boolean,allow_functions=boolean} opts Any options to specify while encoding
+function serialization.lua.save(val, path, opts)
+    expect(2, path, "string")
+    local file = assert(io.open(path, "w"))
+    file:write(serialization.lua.encode(val, opts))
+    file:close()
+end
+
+--- Loads a serialized Lua file into a Lua value.
+-- @tparam string path The path to the file to load
+-- @tparam[opt] {allow_functions=boolean} opts Any options to specify while decoding
+-- @treturn any The loaded value
+function serialization.lua.load(path, opts)
+    expect(1, path, "string")
+    local file = assert(io.open(path, "r"))
+    local data = file:read("*a")
+    file:close()
+    return serialization.lua.decode(data, opts)
 end
 
 return serialization

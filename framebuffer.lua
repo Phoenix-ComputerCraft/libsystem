@@ -83,7 +83,7 @@ function framebuffer.window(parent, x, y, width, height)
 
     if typ == "Terminal" then
         setmetatable(win, {__name = "Terminal"})
-        local cx, cy = 1, 1
+        local cx, cy, cblink = 1, 1, parent.getCursorBlink()
         local fg, bg = parent.getTextColor(), parent.getBackgroundColor()
         function win.write(text)
             expect(1, text, "string")
@@ -148,11 +148,13 @@ function framebuffer.window(parent, x, y, width, height)
         end
 
         function win.getCursorBlink()
-            return parent.getCursorBlink()
+            return cblink
         end
 
         function win.setCursorBlink(blink)
-            return parent.setCursorBlink(blink)
+            expect(1, blink, "boolean")
+            cblink = blink
+            parent.setCursorBlink(blink)
         end
 
         function win.isColor()
@@ -215,6 +217,11 @@ function framebuffer.window(parent, x, y, width, height)
             local l = parent.getLine(y+_y-1)
             if not l then return nil end
             return {l[1]:sub(x, x+width-1), l[2]:sub(x, x+width-1), l[3]:sub(x, x+width-1)}
+        end
+
+        function win.restoreCursor()
+            parent.setCursorPos(x+cx-1, y+cy-1)
+            parent.setCursorBlink(cblink)
         end
         win.isColour = win.isColor
         win.getTextColour = win.getTextColor
@@ -747,6 +754,7 @@ function framebuffer.framebuffer(parent, wx, wy, w, h, visible)
             wx = x or wx
             wy = y or wy
             if p then win.reparent(p) end
+            if x or y then win.redraw(true) end
             if w or h then return win.resize(w, h) end
         end
 
