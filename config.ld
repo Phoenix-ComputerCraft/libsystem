@@ -2,5 +2,5 @@ project = "libsystem"
 package = "system"
 title = "libsystem"
 dir = "docs_md"
-ext = "md"
+ext = ".md"
 template = true

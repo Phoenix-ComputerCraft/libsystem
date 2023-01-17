@@ -87,6 +87,27 @@ function process.exec(path, ...)
     return util.syscall.exec(path, ...)
 end
 
+--- Replaces the current process with the contents of the specified file or
+-- command, searching the PATH environment variable if necessary.
+-- This function does not return - it can only throw an error.
+-- @tparam string command The command or file to execute.
+-- @tparam any ... Any arguments to pass to the file.
+function process.execp(command, ...)
+    expect(1, command, "string")
+    local path = util.syscall.getenv().PATH
+    if command:find "/" or type(path) ~= "string" then return util.syscall.exec(command, ...) end
+    for dir in path:gmatch "[^:]+" do
+        local p = util.syscall.combine(dir, command)
+        local s = util.syscall.stat(p)
+        if not s then
+            p = util.syscall.combine(dir, command .. ".lua")
+            s = util.syscall.stat(p)
+        end
+        if s and s.type ~= "directory" then return util.syscall.exec(p, ...) end
+    end
+    error(command .. ": No such file", 2)
+end
+
 --- Starts a new process from the specified path.
 -- @tparam string path The path to the file to execute.
 -- @tparam any ... Any arguments to pass to the file.
@@ -97,7 +118,7 @@ function process.start(path, ...)
 end
 
 --- Runs a program from the specified path in a new process, waiting until it completes.
--- @tparam string path The path to the file to execute
+-- @tparam string path The command or file to execute
 -- @tparam any ... Any arguments to pass to the file
 -- @treturn[1] true When the process succeeded
 -- @treturn[1] any The return value from the process
@@ -105,7 +126,7 @@ end
 -- @treturn[2] string The error message from the process
 function process.run(path, ...)
     expect(1, path, "string")
-    local pid = util.syscall.fork(function(...) return coroutine.yield("syscall", "exec", ...) end, path, path, ...)
+    local pid = util.syscall.fork(function(...) return coroutine.yield("syscall", "execp", ...) end, path, path, ...)
     local event, param
     repeat event, param = coroutine.yield() until event == "process_complete" and param.id == pid
     return param.error == nil, param.error or param.value

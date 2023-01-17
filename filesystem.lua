@@ -30,10 +30,12 @@ end
 
 --- Returns a table with various information about a file or directory.
 -- @tparam string path The path to query
+-- @tparam[opt=false] boolean nolink Whether to not resolve links to the file
 -- @treturn FileStat A table with information about the path
-function filesystem.stat(path)
+function filesystem.stat(path, nolink)
     expect(1, path, "string")
-    return util.syscall.stat(path)
+    expect(2, nolink, "nil", "boolean")
+    return util.syscall.stat(path, nolink)
 end
 
 --- Deletes a file or directory at a path, removing any subentries if present.
@@ -57,6 +59,22 @@ end
 function filesystem.mkdir(path)
     expect(1, path, "string")
     return util.syscall.mkdir(path)
+end
+
+--- Creates a (symbolic) link to a file.
+-- @tparam string path The path of the new link
+-- @tparam string location The location to point the link to
+function filesystem.link(path, location)
+    expect(1, path, "string")
+    expect(2, location, "string")
+    return util.syscall.link(path, location)
+end
+
+--- Creates a FIFO.
+-- @tparam string path The FIFO to create
+function filesystem.mkfifo(path)
+    expect(1, path, "string")
+    return util.syscall.mkfifo(path)
 end
 
 --- Changes the permissions (mode) of the file at a path.
@@ -86,7 +104,15 @@ function filesystem.chown(path, user)
     return util.syscall.chown(path, user)
 end
 
---- Mounts a filesystem of the specified type to a directory. This can only be run by root.
+--- Changes the root directory of the current and future child processes.
+-- This function requires root.
+-- @tparam string path The new root path to change to
+function filesystem.chroot(path)
+    expect(1, path, "string")
+    return util.syscall.chroot(path)
+end
+
+--- Mounts a filesystem of the specified type to a directory.
 -- @tparam string type The type of filesystem to mount
 -- @tparam string src The source of the mount (depends on the FS type)
 -- @tparam string dest The destination directory to mount to
@@ -99,11 +125,17 @@ function filesystem.mount(type, src, dest, options)
     return util.syscall.mount(type, src, dest, options)
 end
 
---- Unmounts a mounted filesystem. This can only be run by root.
+--- Unmounts a mounted filesystem.
 -- @tparam string path The filesystem to unmount
 function filesystem.unmount(path)
     expect(1, path, "string")
     return util.syscall.unmount(path)
+end
+
+--- Returns a list of mounts currently available.
+-- @treturn [{path:string,type:string,source:string,options:table}] A list of mounts and their properties.
+function filesystem.mountlist()
+    return util.syscall.mountlist()
 end
 
 --- Combines the specified path components into a single path, canonicalizing any links and ./.. paths.
@@ -151,7 +183,7 @@ end
 function filesystem.move(from, to)
     expect(1, from, "string")
     expect(2, to, "string")
-    local fromstat = assert(filesystem.stat(from), "File not found")
+    local fromstat = assert(filesystem.stat(from, true), "File not found")
     local tostat = filesystem.stat(to)
     if tostat then error("File already exists", 2) end
     local path = filesystem.dirname(to)
@@ -160,6 +192,8 @@ function filesystem.move(from, to)
         local list = filesystem.list(from)
         filesystem.mkdir(to)
         for _, v in ipairs(list) do filesystem.move(filesystem.combine(from, v), filesystem.combine(to, v)) end
+    elseif fromstat.mountpoint == tostat.mountpoint then
+        filesystem.rename(from, to)
     else
         -- try to move without using more space: delete the old file before writing the new one
         local fromfile, err = filesystem.open(from, "rb")

@@ -137,6 +137,15 @@ function util.sleep(time)
     until ev == "timer" and param.id == tm
 end
 
+--- Returns the next event from the event queue. This is intended to make it more
+-- clear when events are being pulled, and also has the benefit of supporting
+-- libsystem-craftos better.
+-- @treturn string The event pulled
+-- @treturn table The parameters for the event
+function util.pullEvent()
+    return coroutine.yield()
+end
+
 --- Waits until an event of the specified type(s) occurs.
 -- @tparam string ... The event names to filter for
 -- @treturn string The event type that was matched

@@ -20,7 +20,8 @@ local hardware = {}
 --     computer.label = "My Computer"
 --     computer:reboot()
 function hardware.wrap(device)
-    expect(1, device, "string", "device")
+    expect(1, device, "string", "device", "devicetree")
+    if type(device) ~= "string" then device = getmetatable(device).uuid end
     local info = util.syscall.devinfo(device)
     if not info then return nil end
     local methods, properties = util.syscall.devmethods(device), util.syscall.devproperties(device)
@@ -59,7 +60,7 @@ end
 -- @tparam string|device device The device specifier or object to read
 -- @treturn string... The paths that match the specifier or device object.
 function hardware.path(device)
-    expect(1, device, "string", "device")
+    expect(1, device, "string", "device", "devicetree")
     if type(device) == "string" then return util.syscall.devlookup(device)
     else return util.syscall.devlookup(getmetatable(device).uuid) end
 end
@@ -69,7 +70,7 @@ end
 -- @tparam string type The type to check for
 -- @treturn boolean Whether the device implements the type
 function hardware.hasType(device, type)
-    expect(1, device, "string", "device")
+    expect(1, device, "string", "device", "devicetree")
     local info
     if type(device) == "string" then info = util.syscall.devinfo(device)
     else info = util.syscall.devinfo(getmetatable(device).uuid) end
@@ -81,7 +82,7 @@ end
 -- @tparam string|device device The device specifier or object to query
 -- @treturn HWInfo|nil The hardware info table, or `nil` if no device was found
 function hardware.info(device)
-    expect(1, device, "string", "device")
+    expect(1, device, "string", "device", "devicetree")
     if type(device) == "string" then return util.syscall.devinfo(device)
     else return util.syscall.devinfo(getmetatable(device).uuid) end
 end
@@ -90,7 +91,7 @@ end
 -- @tparam string|device device The device specifier or object to query
 -- @treturn {string...} The methods available to call on this device
 function hardware.methods(device)
-    expect(1, device, "string", "device")
+    expect(1, device, "string", "device", "devicetree")
     if type(device) == "string" then return util.syscall.devmethods(device)
     else return util.syscall.devmethods(getmetatable(device).uuid) end
 end
@@ -99,7 +100,7 @@ end
 -- @tparam string|device device The device specifier or object to query
 -- @treturn {string...} The properties available on this device
 function hardware.properties(device)
-    expect(1, device, "string", "device")
+    expect(1, device, "string", "device", "devicetree")
     if type(device) == "string" then return util.syscall.devproperties(device)
     else return util.syscall.devproperties(getmetatable(device).uuid) end
 end
@@ -108,7 +109,7 @@ end
 -- @tparam string|device device The device specifier or object to query
 -- @treturn {string...} The names of children of the device
 function hardware.children(device)
-    expect(1, device, "string", "device")
+    expect(1, device, "string", "device", "devicetree")
     if type(device) == "string" then return util.syscall.devchildren(device)
     else return util.syscall.devchildren(getmetatable(device).uuid) end
 end
@@ -119,7 +120,7 @@ end
 -- @tparam any ... Any arguments to pass to the method
 -- @treturn any... The return values from the method
 function hardware.call(device, method, ...)
-    expect(1, device, "string", "device")
+    expect(1, device, "string", "device", "devicetree")
     expect(2, method, "string")
     if type(device) == "string" then return util.syscall.devcall(device, method, ...)
     else return util.syscall.devcall(getmetatable(device).uuid, method, ...) end
@@ -129,7 +130,7 @@ end
 -- @tparam string|device device The device specifier or object to modify
 -- @tparam[opt=true] boolean state Whether to allow events
 function hardware.listen(device, state)
-    expect(1, device, "string", "device")
+    expect(1, device, "string", "device", "devicetree")
     expect(2, state, "boolean", "nil")
     if type(device) == "string" then return util.syscall.devlisten(device, state)
     else return util.syscall.devlisten(getmetatable(device).uuid, state) end
@@ -142,7 +143,7 @@ end
 -- @treturn boolean Whether the current process now owns the lock
 -- @see unlock To unlock the device afterward
 function hardware.lock(device, wait)
-    expect(1, device, "string", "device")
+    expect(1, device, "string", "device", "devicetree")
     expect(2, wait, "boolean", "nil")
     if type(device) == "string" then return util.syscall.devlock(device, wait)
     else return util.syscall.devlock(getmetatable(device).uuid, wait) end
@@ -152,7 +153,7 @@ end
 -- @tparam string|device device The device specifier or object to modify
 -- @see lock To lock the device
 function hardware.unlock(device)
-    expect(1, device, "string", "device")
+    expect(1, device, "string", "device", "devicetree")
     if type(device) == "string" then return util.syscall.devunlock(device)
     else return util.syscall.devunlock(getmetatable(device).uuid) end
 end

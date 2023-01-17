@@ -357,7 +357,7 @@ end
 -- @tparam Terminal|GFXTerminal term The terminal to draw on
 -- @tparam number x The X coordinate to draw at
 -- @tparam number y The Y coordinate to draw at
--- @tparam number image The image to draw
+-- @tparam table image The image to draw
 function graphics.drawImage(term, x, y, image)
     expect(1, term, "Terminal", "GFXTerminal")
     expect(2, x, "number")
