@@ -234,7 +234,7 @@ end
 
 local function aux_find(options, pathc, i)
     if i > #pathc then return {} end
-    local pathc_regex = pathc[i]:gsub("[%^%$%(%)%%%.%+%-]", "%%%1"):gsub("%*", ".*"):gsub("%?", "."):gsub("%[!", "[^")
+    local pathc_regex = "^" .. pathc[i]:gsub("[%^%$%(%)%%%.%+%-]", "%%%1"):gsub("%*", ".*"):gsub("%?", "."):gsub("%[!", "[^") .. "$"
     local nextOptions = {}
     for _, opt in ipairs(options) do
         local ok, possible_paths = pcall(filesystem.list, opt)

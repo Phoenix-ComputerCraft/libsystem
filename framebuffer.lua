@@ -51,6 +51,7 @@ function framebuffer.window(parent, x, y, width, height)
     function win.close() end
     function win.getSize() return width, height end
     function win.getPosition() return x, y end
+    function win.getParent() return parent end
     function win.getPaletteColor(color) return parent.getPaletteColor(color) end
     function win.setPaletteColor(color, r, g, b) return parent.setPaletteColor(color, r, g, b) end
     win.getPaletteColour = win.getPaletteColor
@@ -461,6 +462,10 @@ function framebuffer.framebuffer(parent, wx, wy, w, h, visible)
             return wx, wy
         end
 
+        function win.getParent()
+            return parent
+        end
+
         function win.reposition(x, y, w, h, p)
             expect(1, x, "number", "nil")
             expect(2, y, "number", "nil")
@@ -746,6 +751,10 @@ function framebuffer.framebuffer(parent, wx, wy, w, h, visible)
 
         function win.getPosition()
             return wx, wy
+        end
+
+        function win.getParent()
+            return parent
         end
 
         function win.reposition(x, y, w, h, p)

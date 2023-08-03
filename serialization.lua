@@ -29,7 +29,7 @@ function serialization.base64.encode(str)
         retval = retval .. b64str:sub(a+1, a+1) .. b64str:sub(b+1, b+1) .. "=="
     elseif #str % 3 == 2 then
         local n = str:byte(-2) * 256 + str:byte(-1)
-        local a, b, c, d = bit32.extract(n, 10, 6), bit32.extract(n, 4, 6), bit32.lshift(bit32.extract(n, 0, 4), 2)
+        local a, b, c = bit32.extract(n, 10, 6), bit32.extract(n, 4, 6), bit32.lshift(bit32.extract(n, 0, 4), 2)
         retval = retval .. b64str:sub(a+1, a+1) .. b64str:sub(b+1, b+1) .. b64str:sub(c+1, c+1) .. "="
     end
     return retval
@@ -520,7 +520,7 @@ local function lua_serialize(val, stack, opts, level)
         end
         for k, v in pairs(val) do if not num[k] then
             if not opts.minified then res = res .. ("    "):rep(level) end
-            if type(k) == "string" and not keywords[k] then res = res .. k
+            if type(k) == "string" and k:match "^[A-Za-z_][A-Za-z0-9_]*$" and not keywords[k] then res = res .. k
             else res = res .. "[" .. lua_serialize(k, stack, opts, level + 1) .. "]" end
             res = res .. (opts.minified and "=" or " = ") .. lua_serialize(v, stack, opts, level + 1) .. (opts.minified and "," or ",\n")
         end end
@@ -531,7 +531,7 @@ local function lua_serialize(val, stack, opts, level)
     elseif tt == "function" and opts.allow_functions then
         local ok, dump = pcall(string.dump, val)
         if not ok then error("Cannot serialize C function", 0) end
-        dump = ("%q"):format(dump):gsub("[%z\1-\31\127-\255]", function(c) return '\\' .. ("%03d"):format(string.byte(c)) end)
+        dump = ("%q"):format(dump):gsub("\\[%z\1-\31\127-\255]", function(c) return ("\\%03d"):format(string.byte(c)) end)
         local ups = {n = 0}
         stack[val] = true
         for i = 1, math.huge do
@@ -547,7 +547,7 @@ local function lua_serialize(val, stack, opts, level)
         stack[val] = nil
         return v
     elseif tt == "nil" or tt == "number" or tt == "boolean" or tt == "string" then
-        return ("%q"):format(val):gsub("[%z\1-\31\127-\255]", function(c) return '\\' .. ("%03d"):format(string.byte(c)) end)
+        return ("%q"):format(val):gsub("\\\n", "\\n"):gsub("\\?[%z\1-\31\127-\255]", function(c) return ("\\%03d"):format(string.byte(c)) end)
     else
         error("Cannot serialize type " .. tt, 0)
     end

@@ -11,6 +11,15 @@ local util = require "util"
 
 local function selflog(self, ...) return self.log(...) end
 
+local levels = {
+    debug = 0,
+    info = 1,
+    notice = 2,
+    warning = 3,
+    error = 4,
+    critical = 5
+}
+
 local function makeLogs(name)
     local log = {}
     --- Writes a message to the log.
@@ -33,9 +42,9 @@ local function makeLogs(name)
     function log.debug(options, ...)
         if type(options) == "table" then
             options.name = name
-            options.level = log.levels.debug
+            options.level = levels.debug
             return util.syscall.syslog(options, ...)
-        else return util.syscall.syslog({name = name, level = log.levels.debug}, options, ...) end
+        else return util.syscall.syslog({name = name, level = levels.debug}, options, ...) end
     end
 
     --- Writes an info message to the log.
@@ -46,9 +55,9 @@ local function makeLogs(name)
     function log.info(options, ...)
         if type(options) == "table" then
             options.name = name
-            options.level = log.levels.info
+            options.level = levels.info
             return util.syscall.syslog(options, ...)
-        else return util.syscall.syslog({name = name, level = log.levels.info}, options, ...) end
+        else return util.syscall.syslog({name = name, level = levels.info}, options, ...) end
     end
 
     --- Writes a notice message to the log.
@@ -59,9 +68,9 @@ local function makeLogs(name)
     function log.notice(options, ...)
         if type(options) == "table" then
             options.name = name
-            options.level = log.levels.notice
+            options.level = levels.notice
             return util.syscall.syslog(options, ...)
-        else return util.syscall.syslog({name = name, level = log.levels.notice}, options, ...) end
+        else return util.syscall.syslog({name = name, level = levels.notice}, options, ...) end
     end
 
     --- Writes a warning message to the log.
@@ -72,9 +81,9 @@ local function makeLogs(name)
     function log.warning(options, ...)
         if type(options) == "table" then
             options.name = name
-            options.level = log.levels.warning
+            options.level = levels.warning
             return util.syscall.syslog(options, ...)
-        else return util.syscall.syslog({name = name, level = log.levels.warning}, options, ...) end
+        else return util.syscall.syslog({name = name, level = levels.warning}, options, ...) end
     end
     log.warn = log.warning
 
@@ -86,9 +95,9 @@ local function makeLogs(name)
     function log.error(options, ...)
         if type(options) == "table" then
             options.name = name
-            options.level = log.levels.error
+            options.level = levels.error
             return util.syscall.syslog(options, ...)
-        else return util.syscall.syslog({name = name, level = log.levels.error}, options, ...) end
+        else return util.syscall.syslog({name = name, level = levels.error}, options, ...) end
     end
 
     --- Writes a critical error message to the log.
@@ -99,16 +108,16 @@ local function makeLogs(name)
     function log.critical(options, ...)
         if type(options) == "table" then
             options.name = name
-            options.level = log.levels.critical
+            options.level = levels.critical
             return util.syscall.syslog(options, ...)
-        else return util.syscall.syslog({name = name, level = log.levels.critical}, options, ...) end
+        else return util.syscall.syslog({name = name, level = levels.critical}, options, ...) end
     end
 
     --- Writes a traceback error message to the log.
     -- @tparam[opt] string message A message to attach to the traceback
     function log.traceback(message)
         expect(1, message, "string", "nil")
-        return util.syscall.syslog({name = name, level = log.levels.error, traceback = true}, debug.traceback(message, 2))
+        return util.syscall.syslog({name = name, level = levels.error, traceback = true}, debug.traceback(message, 2))
     end
 
     return setmetatable(log, {__call = selflog})

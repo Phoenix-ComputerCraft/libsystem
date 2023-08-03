@@ -124,9 +124,23 @@ end
 -- @treturn[1] any The return value from the process
 -- @treturn[2] false When the process errored
 -- @treturn[2] string The error message from the process
-function process.run(path, ...)
-    expect(1, path, "string")
-    local pid = util.syscall.fork(function(...) return coroutine.yield("syscall", "execp", ...) end, path, path, ...)
+function process.run(command, ...)
+    expect(1, command, "string")
+    local PATH = util.syscall.getenv().PATH
+    local path
+    if command:find "/" or type(PATH) ~= "string" then path = command else
+        for dir in PATH:gmatch "[^:]+" do
+            local p = util.syscall.combine(dir, command)
+            local s = util.syscall.stat(p)
+            if not s then
+                p = util.syscall.combine(dir, command .. ".lua")
+                s = util.syscall.stat(p)
+            end
+            if s and s.type ~= "directory" then path = p break end
+        end
+        error(command .. ": No such file", 2)
+    end
+    local pid = util.syscall.fork(function(...) return coroutine.yield("syscall", "exec", ...) end, path, path, ...)
     local event, param
     repeat event, param = coroutine.yield() until event == "process_complete" and param.id == pid
     return param.error == nil, param.error or param.value
@@ -162,6 +176,13 @@ end
 function process.getpinfo(pid)
     expect(1, pid, "number")
     return util.syscall.getpinfo(pid)
+end
+
+function process.nice(level, pid)
+    expect(1, level, "number")
+    expect.range(level, -20, 20)
+    expect(2, pid, "number", "nil")
+    return util.syscall.nice(level, pid)
 end
 
 return process

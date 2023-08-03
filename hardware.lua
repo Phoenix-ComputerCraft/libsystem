@@ -35,7 +35,7 @@ function hardware.wrap(device)
             if type(idx) == "string" and properties[idx] then return util.syscall.devcall(device, "get" .. idx:gsub("^.", string.upper)) end
         end,
         __newindex = function(self, idx, val)
-            if type(idx) == "string" and properties[idx] and methods["set" .. idx:gsub("^.", string.upper)] then return util.syscall.devcall(device, "set" .. idx:gsub("^.", string.upper), val) end
+            if type(idx) == "string" and properties[idx] and self["set" .. idx:gsub("^.", string.upper)] then return util.syscall.devcall(device, "set" .. idx:gsub("^.", string.upper), val) end
         end,
         __tostring = function(self)
             return "wrapped device: " .. (info.displayName or info.uuid)
@@ -69,13 +69,14 @@ end
 -- @tparam string|device device The device specifier or object to query
 -- @tparam string type The type to check for
 -- @treturn boolean Whether the device implements the type
-function hardware.hasType(device, type)
+function hardware.hasType(device, typ)
     expect(1, device, "string", "device", "devicetree")
+    expect(2, typ, "string")
     local info
     if type(device) == "string" then info = util.syscall.devinfo(device)
     else info = util.syscall.devinfo(getmetatable(device).uuid) end
     if not info then error("No such device", 2) end
-    return info.types[type] ~= nil
+    return info.types[typ] ~= nil
 end
 
 --- Returns a table of information about the specified device.

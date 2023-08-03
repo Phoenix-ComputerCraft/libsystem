@@ -4,6 +4,7 @@
 -- @module system.terminal
 
 local expect = require "expect"
+local keys = require "keys"
 local util = require "util"
 
 local terminal = {}
@@ -69,6 +70,116 @@ end
 -- @treturn string|nil The text read, or nil if EOF was reached.
 function terminal.readline()
     return util.syscall.readline()
+end
+
+--- Reads a line of text from the standard input stream, allowing history and
+-- autocompletion.
+-- @tparam[opt] table history A list of history items to scroll through with the
+-- arrow keys, with the first index being the most recent
+-- @tparam[opt] function(partial:string):string[] completion A function to use
+-- to get completion options
+-- @treturn string|nil The text read, or nil if EOF was reached.
+function terminal.readline2(history, completion)
+    expect(1, history, "table", "nil")
+    expect(2, completion, "function", "nil")
+
+    local line = ""
+    local cursorPos = 1
+    local historyPos = 0
+    local history0
+    local completionTable, completionPos
+
+    terminal.termctl{echo = false}
+    while true do
+        local event, param = coroutine.yield()
+        if event == "char" then
+            if completionTable and param.character == completionTable[completionPos]:sub(-1) then
+                completionTable = nil
+            else
+                completionTable = nil
+                if cursorPos <= #line then
+                    terminal.write("\x1b[@" .. param.character)
+                    line = line:sub(1, cursorPos - 1) .. param.character .. line:sub(cursorPos)
+                else
+                    terminal.write(param.character)
+                    line = line .. param.character
+                end
+                cursorPos = cursorPos + 1
+            end
+        elseif event == "key" then
+            if param.keycode == keys.enter then
+                terminal.termctl{echo = true}
+                if cursorPos <= #line then terminal.write("\x1b[" .. (#line - cursorPos + 1) .. "C") end
+                terminal.write("\n")
+                terminal.readline() -- clear buffer
+                return line
+            elseif param.keycode == keys.d and param.ctrlHeld and not param.altHeld and not param.shiftHeld then
+                terminal.termctl{echo = true}
+                return terminal.readline() -- clear buffer and return EOF
+            elseif param.keycode == keys.backspace and cursorPos > 1 then
+                completionTable = nil
+                terminal.write("\x1b[D\x1b[P")
+                line = line:sub(1, cursorPos - 2) .. line:sub(cursorPos)
+                cursorPos = cursorPos - 1
+            elseif param.keycode == keys.delete and cursorPos <= #line then
+                completionTable = nil
+                terminal.write("\x1b[P")
+                line = line:sub(1, cursorPos - 1) .. line:sub(cursorPos + 1)
+            elseif param.keycode == keys.left and cursorPos > 1 then
+                completionTable = nil
+                terminal.write("\x1b[D")
+                cursorPos = cursorPos - 1
+            elseif param.keycode == keys.right and cursorPos <= #line then
+                completionTable = nil
+                terminal.write("\x1b[C")
+                cursorPos = cursorPos + 1
+            elseif param.keycode == keys.up and history and historyPos < #history then
+                completionTable = nil
+                if cursorPos > 1 then terminal.write("\x1b[" .. (cursorPos - 1) .. "D") end
+                terminal.write("\x1b[" .. #line .. "P")
+                if historyPos == 0 then history0 = line end
+                historyPos = historyPos + 1
+                line = history[historyPos]
+                terminal.write(line)
+                cursorPos = #line + 1
+            elseif param.keycode == keys.down and history and historyPos > 0 then
+                completionTable = nil
+                if cursorPos > 1 then terminal.write("\x1b[" .. (cursorPos - 1) .. "D") end
+                terminal.write("\x1b[" .. #line .. "P")
+                historyPos = historyPos - 1
+                if historyPos == 0 then line = history0
+                else line = history[historyPos] end
+                terminal.write(line)
+                cursorPos = #line + 1
+            elseif param.keycode == keys.tab and completion then
+                if completionTable and #completionTable > 0 then
+                    terminal.write("\x1b[" .. #completionTable[completionPos] .. "D\x1b[" .. #completionTable[completionPos] .. "P")
+                    line = line:sub(1, cursorPos - #completionTable[completionPos] - 1) .. line:sub(cursorPos)
+                    cursorPos = cursorPos - #completionTable[completionPos]
+                    completionPos = completionPos % #completionTable + 1
+                else
+                    completionTable = completion(line:sub(1, cursorPos - 1))
+                    completionPos = 1
+                end
+                if completionTable[completionPos] then
+                    terminal.write("\x1b[" .. #completionTable[completionPos] .. "@" .. completionTable[completionPos])
+                    line = line:sub(1, cursorPos - 1) .. completionTable[completionPos] .. line:sub(cursorPos)
+                    cursorPos = cursorPos + #completionTable[completionPos]
+                end
+            end
+        elseif event == "paste" then
+            completionTable = nil
+            if cursorPos <= #line then
+                terminal.write("\x1b[" .. #param.text .. "@" .. param.text)
+                line = line:sub(1, cursorPos - 1) .. param.text .. line:sub(cursorPos)
+                cursorPos = cursorPos + #param.text
+            else
+                terminal.write(param.text)
+                line = line .. param.text
+            end
+            cursorPos = cursorPos + #param.text
+        end
+    end
 end
 
 --- Sets certain terminal control flags on the current TTY if available.
