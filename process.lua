@@ -78,6 +78,26 @@ function process.fork(func, name, ...)
     return util.syscall.fork(func, name, ...)
 end
 
+--- Creates a new process running the specified function with arguments. This
+-- process will be placed in the background, meaning it has no stdin/out.
+-- @tparam function func The function to run in the new process. This will be the
+-- main function of the first thread, and will have its environment set to the
+-- new process's environment.
+-- @tparam string name? The name of the new process.
+-- @tparam any ... Any arguments to pass to the function.
+-- @treturn number The PID of the new process.
+function process.forkbg(func, name, ...)
+    expect(1, func, "function")
+    expect(2, name, "string", "nil")
+    return util.syscall.fork(function(...)
+        util.syscall.stdin()
+        util.syscall.stdout()
+        util.syscall.stderr()
+        setfenv(func, _ENV)
+        return func(...)
+    end, name, ...)
+end
+
 --- Replaces the current process with the contents of the specified file.
 -- This function does not return - it can only throw an error.
 -- @tparam string path The path to the file to execute.
@@ -115,6 +135,21 @@ end
 function process.start(path, ...)
     expect(1, path, "string")
     return util.syscall.fork(function(...) return coroutine.yield("syscall", "exec", ...) end, path, path, ...)
+end
+
+--- Starts a new process from the specified path. This process will be placed in
+-- the background, meaning it has no stdin/out.
+-- @tparam string path The path to the file to execute.
+-- @tparam any ... Any arguments to pass to the file.
+-- @treturn number The PID of the new process.
+function process.startbg(path, ...)
+    expect(1, path, "string")
+    return util.syscall.fork(function(...)
+        util.syscall.stdin()
+        util.syscall.stdout()
+        util.syscall.stderr()
+        return coroutine.yield("syscall", "exec", ...)
+    end, path, path, ...)
 end
 
 --- Runs a program from the specified path in a new process, waiting until it completes.
@@ -178,6 +213,11 @@ function process.getpinfo(pid)
     return util.syscall.getpinfo(pid)
 end
 
+--- Sets the niceness level of the specified process, or the current one if left
+-- unspecified. Nice values cause the process to run longer with a lower number
+-- (requires root), or shorter with a higher number. Values range from -20 to 20.
+-- @tparam number level The nice level to set to
+-- @tparam[opt] number pid The process ID to modify (must be root or same user)
 function process.nice(level, pid)
     expect(1, level, "number")
     expect.range(level, -20, 20)

@@ -152,7 +152,7 @@ end
 function filesystem.copy(from, to, preserve)
     expect(1, from, "string")
     expect(2, to, "string")
-    local stat = filesystem.stat(from)
+    local stat = assert(filesystem.stat(from), from .. ": No such file or directory")
     if stat.type == "directory" then
         local list = filesystem.list(from)
         filesystem.mkdir(to)

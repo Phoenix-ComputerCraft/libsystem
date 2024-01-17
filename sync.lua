@@ -134,7 +134,7 @@ function sync.conditionVariable:waitFor(timeout)
     self.lock:lock()
     self.waiting = self.waiting + 1
     self.lock:unlock()
-    local retval = self.sem:tryAcquireUntil(timeout)
+    local retval = self.sem:tryAcquireFor(timeout)
     self.lock:lock()
     self.waiting = self.waiting - 1
     self.lock:unlock()

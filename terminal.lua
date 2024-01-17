@@ -93,7 +93,7 @@ function terminal.readline2(history, completion)
     while true do
         local event, param = coroutine.yield()
         if event == "char" then
-            if completionTable and param.character == completionTable[completionPos]:sub(-1) then
+            if completionTable and completionTable[completionPos] and param.character == completionTable[completionPos]:sub(-1) then
                 completionTable = nil
             else
                 completionTable = nil
