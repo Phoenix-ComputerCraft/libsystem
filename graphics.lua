@@ -179,6 +179,7 @@ function graphics.drawFilledBox(term, x, y, width, height, color)
     expect(5, height, "number")
     expect(6, color, "number")
     if util.type(term) == "Terminal" then
+        expect.range(color, 0, 15)
         local b, f = term.getBackgroundColor(), term.getTextColor()
         local ox, oy = term.getCursorPos()
         local text, fg, bg = (" "):rep(width), ("%x"):format(f):rep(width), ("%x"):format(color):rep(width)
@@ -189,6 +190,7 @@ function graphics.drawFilledBox(term, x, y, width, height, color)
         term.setBackgroundColor(b)
         term.setCursorPos(ox, oy)
     else
+        expect.range(color, 0, 255)
         term.drawPixels(x-1, y-1, color, width, height)
     end
 end

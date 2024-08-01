@@ -269,4 +269,17 @@ function sync.lockGuard(mutex, fn, ...)
     return table.unpack(res, 2, res.n)
 end
 
+--- Creates a new synchronized table. A synchronized table is a table that's
+-- protected by a mutex. The table can only be accessed by calling it as a
+-- function, which will lock the mutex and calls the callback with the table.
+-- @treturn function(callback:function(any):any) The accessor for the variable
+function sync.synctab()
+    local tab = {}
+    local lock = sync.mutex.new()
+    return function(fn)
+        expect(1, fn, "function")
+        return sync.lockGuard(lock, fn, tab)
+    end
+end
+
 return sync

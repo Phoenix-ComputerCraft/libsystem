@@ -270,8 +270,9 @@ end
 -- @tparam number w The width of the framebuffer
 -- @tparam number h The height of the framebuffer
 -- @tparam[opt] boolean visible Whether the window should be visible upon creation
+-- @tparam[opt] boolean transparency Whether the window should support transparency (i.e. replaces space colors with the color behind it)
 -- @treturn Terminal|GFXTerminal The new framebuffer object
-function framebuffer.framebuffer(parent, wx, wy, w, h, visible)
+function framebuffer.framebuffer(parent, wx, wy, w, h, visible, transparency)
     local isGFX
     if parent == framebuffer.empty.text or parent == framebuffer.empty.graphics then
         wx = expect(2, wx, "number", "nil") or 1
@@ -287,6 +288,7 @@ function framebuffer.framebuffer(parent, wx, wy, w, h, visible)
     expect(4, w, "number")
     expect(5, h, "number")
     expect(6, visible, "boolean", "nil")
+    expect(6, transparency, "boolean", "nil")
     if visible == nil then visible = true end
     local size = {width = w, height = h}
 
@@ -633,6 +635,26 @@ function framebuffer.framebuffer(parent, wx, wy, w, h, visible)
             end
             local ntext = #text
             if buffer.cursor.x + #text > size.width then text, fg, bg = text:sub(1, size.width - buffer.cursor.x + 1), fg:sub(1, size.width - buffer.cursor.x + 1), bg:sub(1, size.width - buffer.cursor.x + 1) end
+            --[[if transparency and (fg:find("[! ]") or bg:find("[! ]")) then
+                local prevtext, prevfg, prevbg = parent.getLine(wy + buffer.cursor.y - 1)
+                if prevtext then
+                    prevtext, prevfg, prevbg =
+                        prevtext:sub(math.max(wx + buffer.cursor.x - 1, 1), math.max(wx + buffer.cursor.x + size.width - 2, 1)),
+                        prevfg:sub(math.max(wx + buffer.cursor.x - 1, 1), math.max(wx + buffer.cursor.x + size.width - 2, 1)),
+                        prevbg:sub(math.max(wx + buffer.cursor.x - 1, 1), math.max(wx + buffer.cursor.x + size.width - 2, 1))
+                    if wx + buffer.cursor.x - 1 < 1 then
+                        local add = (" "):rep(1 - (wx + buffer.cursor.x - 1))
+                        prevtext, prevfg, prevbg = add .. prevtext, add .. prevfg, add .. prevbg
+                    end
+                    if #prevtext < #text then
+                        local add = (" "):rep(#text - #prevtext)
+                        prevtext, prevfg, prevbg = prevtext .. add, prevfg .. add, prevbg .. add
+                    end
+                    text = text:gsub("()\0", function(n) return prevtext:sub(n, n) end)
+                    fg = fg:gsub("() ", function(n) return prevfg:sub(n, n) end):gsub("()!", function(n) return prevbg:sub(n, n) end)
+                    bg = bg:gsub("() ", function(n) return prevbg:sub(n, n) end):gsub("()!", function(n) return prevfg:sub(n, n) end)
+                end
+            end]]
             buffer[buffer.cursor.y][1] = buffer[buffer.cursor.y][1]:sub(1, buffer.cursor.x - 1) .. text .. buffer[buffer.cursor.y][1]:sub(buffer.cursor.x + #text)
             buffer[buffer.cursor.y][2] = buffer[buffer.cursor.y][2]:sub(1, buffer.cursor.x - 1) .. fg .. buffer[buffer.cursor.y][2]:sub(buffer.cursor.x + #fg)
             buffer[buffer.cursor.y][3] = buffer[buffer.cursor.y][3]:sub(1, buffer.cursor.x - 1) .. bg .. buffer[buffer.cursor.y][3]:sub(buffer.cursor.x + #bg)
@@ -703,7 +725,7 @@ function framebuffer.framebuffer(parent, wx, wy, w, h, visible)
         end
 
         function win.getTextColor()
-            return tonumber(buffer.colors.fg)
+            return tonumber(buffer.colors.fg, 16)
         end
 
         function win.setTextColor(color)
@@ -713,7 +735,7 @@ function framebuffer.framebuffer(parent, wx, wy, w, h, visible)
         end
 
         function win.getBackgroundColor()
-            return tonumber(buffer.colors.bg)
+            return tonumber(buffer.colors.bg, 16)
         end
 
         function win.setBackgroundColor(color)
@@ -746,7 +768,7 @@ function framebuffer.framebuffer(parent, wx, wy, w, h, visible)
         function win.getLine(y)
             expect(1, y, "number")
             local l = buffer[y]
-            return l and table.unpack(l, 1, 3)
+            if l then return table.unpack(l, 1, 3) end
         end
 
         function win.getPosition()
@@ -809,17 +831,60 @@ function framebuffer.framebuffer(parent, wx, wy, w, h, visible)
             if not parent or not visible then return end
             parent.setCursorBlink(false)
             if full then
-                parent.clear()
                 for y = 1, size.height do
                     parent.setCursorPos(wx, wy+y-1)
-                    parent.blit(buffer[y][1], buffer[y][2], buffer[y][3])
+                    if transparency and (buffer[y][2]:find("[! ]") or buffer[y][3]:find("[! ]")) then
+                        local prevtext, prevfg, prevbg = parent.getLine(wy+y-1)
+                        if prevtext then
+                            prevtext, prevfg, prevbg =
+                                prevtext:sub(math.max(wx, 1), math.max(wx + size.width - 1, 1)),
+                                prevfg:sub(math.max(wx, 1), math.max(wx + size.width - 1, 1)),
+                                prevbg:sub(math.max(wx, 1), math.max(wx + size.width - 1, 1))
+                            if wx < 1 then
+                                local add = (" "):rep(1 - wx)
+                                prevtext, prevfg, prevbg = add .. prevtext, add .. prevfg, add .. prevbg
+                            end
+                            if #prevtext < #buffer[y][1] then
+                                local add = (" "):rep(#buffer[y][1] - #prevtext)
+                                prevtext, prevfg, prevbg = prevtext .. add, prevfg .. add, prevbg .. add
+                            end
+                            local text = buffer[y][1]:gsub("()\0", function(n) return prevtext:sub(n, n) end)
+                            local fg = buffer[y][2]:gsub("() ", function(n) return prevfg:sub(n, n) end):gsub("()!", function(n) return prevbg:sub(n, n) end)
+                            local bg = buffer[y][3]:gsub("() ", function(n) return prevbg:sub(n, n) end):gsub("()!", function(n) return prevfg:sub(n, n) end)
+                            parent.blit(text, fg, bg)
+                        end
+                    else
+                        parent.blit(buffer[y][1], buffer[y][2], buffer[y][3])
+                    end
                 end
                 for i = 0, 15 do parent.setPaletteColor(i, buffer.palette[i][1], buffer.palette[i][2], buffer.palette[i][3]) end
             else
                 for y in pairs(buffer.dirtyLines) do
                     parent.setCursorPos(wx, wy+y-1)
                     if #buffer[y][1] ~= #buffer[y][2] or #buffer[y][2] ~= #buffer[y][3] then error("Internal error: Invalid lengths") end
-                    parent.blit(buffer[y][1], buffer[y][2], buffer[y][3])
+                    if transparency and (buffer[y][2]:find("[! ]") or buffer[y][3]:find("[! ]")) then
+                        local prevtext, prevfg, prevbg = parent.getLine(wy+y-1)
+                        if prevtext then
+                            prevtext, prevfg, prevbg =
+                                prevtext:sub(math.max(wx, 1), math.max(wx + size.width - 1, 1)),
+                                prevfg:sub(math.max(wx, 1), math.max(wx + size.width - 1, 1)),
+                                prevbg:sub(math.max(wx, 1), math.max(wx + size.width - 1, 1))
+                            if wx < 1 then
+                                local add = (" "):rep(1 - wx)
+                                prevtext, prevfg, prevbg = add .. prevtext, add .. prevfg, add .. prevbg
+                            end
+                            if #prevtext < #buffer[y][1] then
+                                local add = (" "):rep(#buffer[y][1] - #prevtext)
+                                prevtext, prevfg, prevbg = prevtext .. add, prevfg .. add, prevbg .. add
+                            end
+                            local text = buffer[y][1]:gsub("()\0", function(n) return prevtext:sub(n, n) or "\0" end)
+                            local fg = buffer[y][2]:gsub("() ", function(n) return prevfg:sub(n, n) end):gsub("()!", function(n) return prevbg:sub(n, n) end)
+                            local bg = buffer[y][3]:gsub("() ", function(n) return prevbg:sub(n, n) end):gsub("()!", function(n) return prevfg:sub(n, n) end)
+                            parent.blit(text, fg, bg)
+                        end
+                    else
+                        parent.blit(buffer[y][1], buffer[y][2], buffer[y][3])
+                    end
                 end
                 for i in pairs(buffer.dirtyPalette) do parent.setPaletteColor(i, buffer.palette[i][1], buffer.palette[i][2], buffer.palette[i][3]) end
             end
@@ -838,10 +903,10 @@ function framebuffer.framebuffer(parent, wx, wy, w, h, visible)
             return visible
         end
 
-        function win.setVisible(v)
+        function win.setVisible(v, r)
             expect(1, v, "boolean")
             visible = v
-            win.redraw()
+            if v and r ~= false then win.redraw() end
         end
 
         win.isColour = win.isColor

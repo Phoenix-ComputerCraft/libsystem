@@ -1,3 +1,4 @@
+# if not module then return end
 # local iter = ldoc.modules.iter
 # local function M(txt,item) return ldoc.markup(txt,item,ldoc.plain) end
 # local lev1, lev2, lev3 = "#", "##", "###"

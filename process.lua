@@ -40,10 +40,16 @@ function process.clock()
     return util.syscall.clock()
 end
 
---- Returns the environment table for the current process.
--- @treturn table The environment table for the current process
+--- Returns the environment variable table for the current process.
+-- @treturn table The environment variable table for the current process
 function process.getenv()
     return util.syscall.getenv()
+end
+
+--- Returns the environment table for the current process.
+-- @treturn table The environment table for the current process
+function process.getfenv()
+    return util.syscall.getfenv()
 end
 
 --- Returns the name of the current process.
@@ -197,6 +203,17 @@ end
 -- @tparam number code? The value to return.
 function process.exit(code)
     return util.syscall.exit(code)
+end
+
+--- Runs a function when the program exists. This function will never get any
+-- events, and is time-limited to 100 syscalls due to running in a different
+-- context than normal threads - avoid passing long-running functions.
+-- Functions added here cannot be removed later, so if the function may not be
+-- needed after being added, use a variable check to disable it instead.
+-- @tparam function fn The function to call at exit
+function process.atexit(fn)
+    expect(1, fn, "function")
+    return util.syscall.atexit(fn)
 end
 
 --- Returns a list of all valid PIDs.

@@ -226,7 +226,7 @@ end
 -- a call to stdin/stdout/stderr.
 -- @tparam number width The width of the new TTY.
 -- @tparam number height The height of the new TTY.
--- @treturn TTY A new TTY object which is registered with the kernel.
+-- @treturn TTY A new TTY object which is registered with the kernel. See [the syscall docs](/syscalls/terminal#mkttywidth-number-height-number-tty) for more info.
 function terminal.mktty(width, height)
     expect(1, width, "number")
     expect(2, height, "number")
@@ -316,36 +316,5 @@ function GFXTerminal.getPixels(x, y, width, height, asStr) end
 function GFXTerminal.drawPixels(x, y, data, width, height) end
 function GFXTerminal.getFrozen() end
 function GFXTerminal.setFrozen(frozen) end
-
---- The TTY type stores all of the information necessary to implement a TTY in
--- userspace, including screen contents, input, and flags.
--- @type TTY
-local TTY = {
-    isTTY = true,
-    flags = {
-        cbreak = false,
-        delay = true,
-        echo = true,
-        keypad = false,
-        nlcr = true,
-        raw = false,
-    },
-    cursor = {x = 1, y = 1},
-    cursorBlink = true,
-    colors = {fg = '0', bg = 'f', bold = false},
-    size = {width = 51, height = 19},
-    dirtyLines = {},
-    palette = {},
-    dirtyPalette = {},
-    buffer = "",
-    preBuffer = "",
-    isLocked = false,
-    isGraphics = false,
-    textBuffer = {},
-    graphicsBuffer = {},
-    frontmostProcess = nil,
-    processList = {},
-    eof = false,
-}
 
 return terminal

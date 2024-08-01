@@ -138,11 +138,30 @@ function filesystem.mountlist()
     return util.syscall.mountlist()
 end
 
+--- Registers the process to receive filesystem events for a path. Note that this is not recursive.
+-- @tparam string path The path to register for
+-- @tparam[opt] boolean enabled Whether to enable events (defaults to true)
+function filesystem.fsevent(path, enabled)
+    expect(1, path, "string")
+    expect(2, enabled, "boolean", "nil")
+    return util.syscall.fsevent(path, enabled)
+end
+
 --- Combines the specified path components into a single path, canonicalizing any links and ./.. paths.
 -- @tparam string ... The path components to combine
 -- @treturn string The combined and canonicalized path
 function filesystem.combine(...)
     return util.syscall.combine(...)
+end
+
+--- Gets the absolute path from a path string.
+-- @tparam string path The path to convert
+-- @treturn string An absolute path pointing to the file
+function filesystem.absolute(path)
+    expect(1, path, "string")
+    path = filesystem.combine(path)
+    if path:sub(1, 1) == "/" then return path end
+    return filesystem.combine(util.syscall.getcwd(), path)
 end
 
 --- Copies a file or directory.
