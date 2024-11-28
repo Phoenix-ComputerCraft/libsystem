@@ -242,4 +242,76 @@ function process.nice(level, pid)
     return util.syscall.nice(level, pid)
 end
 
+--- Debugging subsystem
+-- @section system.process.debug
+process.debug = {}
+
+function process.debug.enable(pid, enabled)
+    expect(1, pid, "number", "nil")
+    expect(2, enabled, "boolean")
+    return util.syscall.debug_enable(pid, enabled)
+end
+
+function process.debug.brk(pid, thread)
+    expect(1, pid, "number", "nil")
+    expect(2, thread, "number", "nil")
+    return util.syscall.debug_break(pid, thread)
+end
+
+function process.debug.continue(pid, thread)
+    expect(1, pid, "number")
+    expect(2, thread, "number", "nil")
+    return util.syscall.debug_continue(pid, thread)
+end
+
+function process.debug.setbreakpoint(pid, thread, type, filter)
+    expect(1, pid, "number")
+    expect(2, thread, "number", "nil")
+    expect(3, type, "string", "number")
+    expect(4, filter, "table", "nil")
+    return util.syscall.debug_setbreakpoint(pid, thread, type, filter)
+end
+
+function process.debug.unsetbreakpoint(pid, breakpoint)
+    expect(1, pid, "number")
+    expect(2, breakpoint, "number")
+    return util.syscall.debug_unsetbreakpoint(pid, breakpoint)
+end
+
+function process.debug.listbreakpoints(pid)
+    expect(1, pid, "number")
+    return util.syscall.debug_listbreakpoints(pid)
+end
+
+function process.debug.getinfo(pid, thread, level, what)
+    expect(1, pid, "number")
+    expect(2, thread, "number")
+    expect(3, level, "number")
+    expect(4, what, "string", "nil")
+    return util.syscall.debug_getinfo(pid, thread, level, what)
+end
+
+function process.debug.getlocal(pid, thread, level, n)
+    expect(1, pid, "number")
+    expect(2, thread, "number")
+    expect(3, level, "number")
+    expect(4, n, "number")
+    return util.syscall.debug_getlocal(pid, thread, level, n)
+end
+
+function process.debug.getupvalue(pid, thread, level, n)
+    expect(1, pid, "number")
+    expect(2, thread, "number")
+    expect(3, level, "number")
+    expect(4, n, "number")
+    return util.syscall.debug_getupvalue(pid, thread, level, n)
+end
+
+function process.debug.exec(pid, thread, fn)
+    expect(1, pid, "number")
+    expect(2, thread, "number")
+    expect(3, fn, "function")
+    return util.syscall.debug_exec(pid, thread, fn)
+end
+
 return process

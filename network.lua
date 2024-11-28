@@ -9,6 +9,45 @@ local expect = require "expect"
 
 local network = {route = {}, arp = {}}
 
+--- Parses a URI into its components.
+-- @tparam string uri The URI to parse
+-- @treturn table The components of the URI
+function network.parseURI(uri)
+    local info = {scheme = ""}
+    for c in uri:gmatch "." do
+        if info.fragment then
+            if c:match "[%w%-%._~%%@:/!%$&'%(%)%*%+,;=/?]" then info.fragment = info.fragment .. c
+            else error("Invalid URI", 3) end
+        elseif info.query then
+            if c == "#" then info.fragment = ""
+            elseif c:match "[%w%-%._~%%@:/!%$&'%(%)%*%+,;=/?]" then info.query = info.query .. c
+            else error("Invalid URI", 3) end
+        elseif info.path then
+            if c == "/" and info.path == "/" and not info.host then info.path, info.host = nil, ""
+            elseif c == "?" then info.query = ""
+            elseif c == "#" then info.fragment = ""
+            elseif c:match "[%w%-%._~%%@:/!%$&'%(%)%*%+,;=/]" then info.path = info.path .. c
+            else error("Invalid URI", 3) end
+        elseif info.port then
+            if tonumber(c) then info.port = info.port .. c
+            elseif c == "/" then info.path = "/"
+            else error("Invalid URI", 3) end
+        elseif info.host then
+            if c == "@" and not info.user then info.user, info.host = info.host, ""
+            elseif c == ":" then info.port = ""
+            elseif c == "/" then info.path = "/"
+            elseif c:match "[%w%-%._~%%/!%$&'%(%)%*%+,;=]" then info.host = info.host .. c
+            else error("Invalid URI", 3) end
+        else
+            if c == ":" then info.path = ""
+            elseif c:match(info.scheme == "" and "[%a%+%-%.]" or "[%w%+%-%.]") then info.scheme = info.scheme .. c
+            else error("Invalid URI", 3) end
+        end
+    end
+    if info.port then info.port = tonumber(info.port) end
+    return info
+end
+
 --- Creates a new connection to a remote server.
 -- @tparam string|table options The URI to connect with, or a table of options
 -- (see the connect syscall docs for more information)
@@ -47,6 +86,7 @@ end
 -- @tparam string url The URL to connect to
 -- @tparam[opt] table headers Any headers to send in the request
 -- @treturn[1] string The response data sent from the server
+-- @treturn[1] number The HTTP response code for the response
 -- @treturn[2] nil If the connection failed
 -- @treturn[2] string An error describing why the connection failed
 function network.getData(url, headers)
@@ -60,8 +100,9 @@ function network.getData(url, headers)
         if event == "handle_status_change" and param.id == handle.id then
             if param.status == "open" then
                 local data = handle:read("*a")
+                local code = handle:responseCode()
                 handle:close()
-                return data
+                return data, code
             elseif param.status == "error" then return nil, select(2, handle:status()) end
         end
     end
@@ -279,6 +320,17 @@ end
 function network.checkURI(uri)
     expect(1, uri, "string")
     return util.syscall.checkuri(uri)
+end
+
+function network.urlEncode(str)
+    expect(1, str, "string")
+    return str:gsub("\n", "\r\n")
+        :gsub("([^A-Za-z0-9 %-%_%.])", function(c)
+            local n = c:byte()
+            if n < 128 then return ("%%%02X"):format(n)
+            else return ("%%%02X%%%02X"):format(bit32.rshift(n, 6) + 0xC0, bit32.band(n, 0x3F) + 0x80) end
+        end)
+        :gsub(" ", "+")
 end
 
 return network

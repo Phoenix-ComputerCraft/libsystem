@@ -168,9 +168,8 @@ function framebuffer.window(parent, x, y, width, height)
                 return win.clear()
             elseif lines > 0 then
                 for i = lines + 1, height do
-                    local l = win.getLine(i)
                     parent.setCursorPos(x, y+i-lines-1)
-                    parent.blit(table.unpack(l, 1, 3))
+                    parent.blit(win.getLine(i))
                 end
                 for i = height - lines + 1, height do
                     parent.setCursorPos(x, y+i-1)
@@ -180,9 +179,8 @@ function framebuffer.window(parent, x, y, width, height)
                 end
             elseif lines < 0 then
                 for i = 1, height + lines do
-                    local l = win.getLine(i)
                     parent.setCursorPos(x, y+i-lines-1)
-                    parent.blit(table.unpack(l, 1, 3))
+                    parent.blit(win.getLine(i))
                 end
                 for i = 1, -lines do
                     parent.setCursorPos(x, y+i-1)
@@ -215,9 +213,9 @@ function framebuffer.window(parent, x, y, width, height)
 
         function win.getLine(_y)
             expect(1, _y, "number")
-            local l = parent.getLine(y+_y-1)
-            if not l then return nil end
-            return {l[1]:sub(x, x+width-1), l[2]:sub(x, x+width-1), l[3]:sub(x, x+width-1)}
+            local l1, l2, l3 = parent.getLine(y+_y-1)
+            if not l1 then return nil end
+            return l1:sub(x, x+width-1), l2:sub(x, x+width-1), l3:sub(x, x+width-1)
         end
 
         function win.restoreCursor()

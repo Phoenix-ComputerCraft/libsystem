@@ -195,8 +195,8 @@ end
 -- @treturn any A copy of the value, with all keys, values, and metatables duplicated.
 function util.copy(value)
     if type(value) == "table" then
-        local retval = setmetatable({}, deepcopy(getmetatable(value)))
-        for k,v in pairs(value) do retval[deepcopy(k)] = deepcopy(v) end
+        local retval = setmetatable({}, util.copy(getmetatable(value)))
+        for k,v in pairs(value) do retval[util.copy(k)] = util.copy(v) end
         return retval
     else return value end
 end
