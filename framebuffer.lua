@@ -107,12 +107,13 @@ function framebuffer.window(parent, x, y, width, height)
             expect(1, text, "string")
             expect(2, fgs, "string")
             expect(3, bgs, "string")
+            if #text ~= #fgs or #fgs ~= #bgs then error("Arguments must be the same length", 2) end
             if cy < 1 or cy > height or cx > width or #text == 0 then return end
             if cx < 1 then
                 local d = math.min(1 - cx, #text)
                 cx = cx + d
                 if d == #text then return end
-                text = text:sub(d)
+                text, fgs, bgs = text:sub(d), fgs:sub(d), bgs:sub(d)
             end
             local d = math.min(width - cx + 1, #text)
             parent.setCursorPos(x+cx-1, y+cy-1)
@@ -221,7 +222,9 @@ function framebuffer.window(parent, x, y, width, height)
         function win.restoreCursor()
             parent.setCursorPos(x+cx-1, y+cy-1)
             parent.setCursorBlink(cblink)
+            parent.setTextColor(fg)
         end
+
         win.isColour = win.isColor
         win.getTextColour = win.getTextColor
         win.setTextColour = win.setTextColor
@@ -729,7 +732,7 @@ function framebuffer.framebuffer(parent, wx, wy, w, h, visible, transparency)
         function win.setTextColor(color)
             expect(1, color, "number")
             expect.range(color, 0, 15)
-            buffer.colors.fg = ("%x"):format(color)
+            buffer.colors.fg = ("%x"):format(math.floor(color))
         end
 
         function win.getBackgroundColor()
@@ -739,7 +742,7 @@ function framebuffer.framebuffer(parent, wx, wy, w, h, visible, transparency)
         function win.setBackgroundColor(color)
             expect(1, color, "number")
             expect.range(color, 0, 15)
-            buffer.colors.bg = ("%x"):format(color)
+            buffer.colors.bg = ("%x"):format(math.floor(color))
         end
 
         function win.getPaletteColor(color)
@@ -859,7 +862,7 @@ function framebuffer.framebuffer(parent, wx, wy, w, h, visible, transparency)
             else
                 for y in pairs(buffer.dirtyLines) do
                     parent.setCursorPos(wx, wy+y-1)
-                    if #buffer[y][1] ~= #buffer[y][2] or #buffer[y][2] ~= #buffer[y][3] then error("Internal error: Invalid lengths") end
+                    if #buffer[y][1] ~= #buffer[y][2] or #buffer[y][2] ~= #buffer[y][3] then error(debug.traceback("Internal error: Invalid lengths"), 2) end
                     if transparency and (buffer[y][2]:find("[! ]") or buffer[y][3]:find("[! ]")) then
                         local prevtext, prevfg, prevbg = parent.getLine(wy+y-1)
                         if prevtext then
@@ -888,6 +891,7 @@ function framebuffer.framebuffer(parent, wx, wy, w, h, visible, transparency)
             end
             parent.setCursorPos(wx+buffer.cursor.x-1, wy+buffer.cursor.y-1)
             parent.setCursorBlink(buffer.cursorBlink)
+            parent.setTextColor(win.getTextColor())
             buffer.dirtyLines, buffer.dirtyPalette = {}, {}
         end
 
@@ -895,6 +899,7 @@ function framebuffer.framebuffer(parent, wx, wy, w, h, visible, transparency)
             if not parent or not visible then return end
             parent.setCursorPos(wx+buffer.cursor.x-1, wy+buffer.cursor.y-1)
             parent.setCursorBlink(buffer.cursorBlink)
+            parent.setTextColor(win.getTextColor())
         end
 
         function win.isVisible()

@@ -168,6 +168,13 @@ function util.queueEvent(event, param)
     return util.syscall.queueEvent(event, param)
 end
 
+--- Peeks at the next event in the queue.
+-- @treturn string|nil The name of the next event, or `nil` if there is none
+-- @treturn table|nil The parameters of the next event.
+function util.peekEvent()
+    return util.syscall.peekEvent()
+end
+
 --- Splits a string into components.
 -- @tparam string str The string to split
 -- @tparam[opt="%s"] string sep The delimiter match class to split by

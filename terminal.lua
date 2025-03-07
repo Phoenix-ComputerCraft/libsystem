@@ -89,6 +89,7 @@ function terminal.readline2(history, completion)
     local history0
     local completionTable, completionPos
 
+    terminal.capture()
     terminal.termctl{echo = false}
     while true do
         local event, param = coroutine.yield()
@@ -112,9 +113,11 @@ function terminal.readline2(history, completion)
                 if cursorPos <= #line then terminal.write("\x1b[" .. (#line - cursorPos + 1) .. "C") end
                 terminal.write("\n")
                 terminal.readline() -- clear buffer
+                terminal.release()
                 return line
             elseif param.keycode == keys.d and param.ctrlHeld and not param.altHeld and not param.shiftHeld then
                 terminal.termctl{echo = true}
+                terminal.release()
                 return terminal.readline() -- clear buffer and return EOF
             elseif param.keycode == keys.backspace and cursorPos > 1 then
                 completionTable = nil
@@ -231,6 +234,16 @@ function terminal.mktty(width, height)
     expect(1, width, "number")
     expect(2, height, "number")
     return util.syscall.mktty(width, height)
+end
+
+--- Captures input on the current stdin TTY, bringing the process to the front.
+function terminal.capture()
+    return util.syscall.capture()
+end
+
+--- Releases a previously captured input on the current stdin TTY.
+function terminal.release()
+    return util.syscall.release()
 end
 
 --- Sets the standard input of the current process.

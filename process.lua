@@ -246,24 +246,78 @@ end
 -- @section system.process.debug
 process.debug = {}
 
+--- Enables or disables debugging for the specified process. If `pid` is `nil`,
+-- it will set whether other processes can debug this one. In other words,
+-- calling `debug_enable(nil, false)` will disable any form of debugging on the
+-- current program, even by root.
+-- @tparam number pid The process ID to operate on (`nil` for this process)
+-- @tparam boolean enabled Whether to enable debugging
 function process.debug.enable(pid, enabled)
     expect(1, pid, "number", "nil")
     expect(2, enabled, "boolean")
     return util.syscall.debug_enable(pid, enabled)
 end
 
+--- Pauses the specified thread, or all threads if none is specified, in the
+-- target process. This will trigger a `debug_break` event in the calling
+-- process for each thread that was paused as a result of this syscall.
+--
+-- If `pid` is `nil`, then this syscall operates differently: it will pause the
+-- current thread (regardless of the `thread` parameter), and sends a
+-- `debug_break` event to the last process that called `debug_enable` on this
+-- process. If debugging is not enabled, then this syscall is a no-op, allowing
+-- for programs to break to a debugger only if one is enabled.
+-- @tparam number pid The process ID to pause, or `nil` to pause the current process
+-- @tparam number thread The thread to pause, or `nil` to pause all threads
 function process.debug.brk(pid, thread)
     expect(1, pid, "number", "nil")
     expect(2, thread, "number", "nil")
     return util.syscall.debug_break(pid, thread)
 end
 
+--- Continues a paused thread, or all threads if none is specified.
+-- @tparam number pid The process ID to unpause
+-- @tparam number thread The thread to unpause, or `nil` to unpause all threads
 function process.debug.continue(pid, thread)
     expect(1, pid, "number")
     expect(2, thread, "number", "nil")
     return util.syscall.debug_continue(pid, thread)
 end
 
+--- Sets a breakpoint for the specified process, optionally filtering by thread.
+-- When a breakpoint is hit in the target process, the thread (or all threads if
+-- none is specified) is paused, and a `debug_break` event is queued in the
+-- process that set the breakpoint.
+--
+-- The type can be one of these values:
+-- - `call`: Break on a function call
+-- - `return`: Break on a function return
+-- - `line`: Break when execution changes lines
+-- - `error`: Break when an error is thrown
+-- - `resume`: Break when a coroutine is resumed
+-- - `yield`: Break when a coroutine yields (not including preemption)
+-- - `syscall`: Break when the process executes a system call
+--   - For this case, the filter argument will only respect the `name` field
+--     (for syscall name)
+-- - Any number: Break after this number of VM instructions
+--
+-- The filter contains entries from a `debug.getinfo` table to match before
+-- breaking. The breakpoint will only be triggered if all provided filters match.
+-- @usage This example shows how to set a breakpoint on a specific line of a file, and then wait for the breakpoint to be hit:
+--     
+--     local bp = syscall.debug_setbreakpoint(processID, nil, "line", {
+--         source = "@/home/user/program.lua",
+--         currentline = 11
+--     })
+--     repeat
+--         local event, param = coroutine.yield()
+--     until event == "debug_break" and param.breakpoint == bp
+--
+-- @tparam number pid The process ID to set the breakpoint on
+-- @tparam number thread The thread to set the breakpoint on (or `nil` for any thread)
+-- @tparam string|number type The type of breakpoint to set
+-- @tparam[opt] table filter A filter to set on the breakpoint (see above)
+-- @treturn number The ID of the new breakpoint
 function process.debug.setbreakpoint(pid, thread, type, filter)
     expect(1, pid, "number")
     expect(2, thread, "number", "nil")
@@ -272,17 +326,32 @@ function process.debug.setbreakpoint(pid, thread, type, filter)
     return util.syscall.debug_setbreakpoint(pid, thread, type, filter)
 end
 
+--- Unsets a previously set breakpoint.
+-- @tparam number pid The process ID to operate on
+-- @tparam number breakpoint The ID of the breakpoint to remove
 function process.debug.unsetbreakpoint(pid, breakpoint)
     expect(1, pid, "number")
     expect(2, breakpoint, "number")
     return util.syscall.debug_unsetbreakpoint(pid, breakpoint)
 end
 
+--- Returns a list of currently set breakpoints. Each entry has a `type` field,
+-- as well as an optional `thread` field, and any filter items passed to
+-- `debug_setbreakpoint`.
+-- @tparam number pid The process ID to check
+-- @treturn table[] A list of currently set breakpoints. This table may have holes in it if some breakpoints were unset!
 function process.debug.listbreakpoints(pid)
     expect(1, pid, "number")
     return util.syscall.debug_listbreakpoints(pid)
 end
 
+--- Calls `debug.getinfo` on the specified thread in another process. Debugging
+-- must be enabled for the target process, and the target thread must be paused.
+-- @tparam number pid The process ID to operate on
+-- @tparam number thread The thread ID to operate on
+-- @tparam number level The level in the call stack to get info for
+-- @tparam[opt] string what A string with the info to extract, or `nil` for all
+-- @treturn table A table from `debug.getinfo`
 function process.debug.getinfo(pid, thread, level, what)
     expect(1, pid, "number")
     expect(2, thread, "number")
@@ -291,6 +360,14 @@ function process.debug.getinfo(pid, thread, level, what)
     return util.syscall.debug_getinfo(pid, thread, level, what)
 end
 
+--- Calls `debug.getlocal` on the specified thread in another process. Debugging
+-- must be enabled for the target process, and the target thread must be paused.
+-- @tparam number pid The process ID to operate on
+-- @tparam number thread The thread ID to operate on
+-- @tparam number level The level in the call stack to get info for
+-- @tparam number n The index of the local to check
+-- @treturn string|nil The local name
+-- @treturn any The local value
 function process.debug.getlocal(pid, thread, level, n)
     expect(1, pid, "number")
     expect(2, thread, "number")
@@ -299,6 +376,14 @@ function process.debug.getlocal(pid, thread, level, n)
     return util.syscall.debug_getlocal(pid, thread, level, n)
 end
 
+--- Calls `debug.getupvalue` on the specified thread in another process. Debugging
+-- must be enabled for the target process, and the target thread must be paused.
+-- @tparam number pid The process ID to operate on
+-- @tparam number thread The thread ID to operate on
+-- @tparam number level The level in the call stack to get info for
+-- @tparam number n The index of the upvalue to check
+-- @treturn string|nil The upvalue name
+-- @treturn any The upvalue value
 function process.debug.getupvalue(pid, thread, level, n)
     expect(1, pid, "number")
     expect(2, thread, "number")
@@ -307,7 +392,41 @@ function process.debug.getupvalue(pid, thread, level, n)
     return util.syscall.debug_getupvalue(pid, thread, level, n)
 end
 
+--- Executes a function in the context of another process/thread. Debugging must
+-- be enabled for the target process, and the target thread must be paused. The
+-- environment for the function will be set to the environment of the process.
+-- Note that the function runs under the hook environment, and thus will not be
+-- preempted - avoid long-running tasks in this environment. (This may be fixed
+-- in the future!)
+-- @tparam number pid The process ID to operate on
+-- @tparam number thread The thread ID to operate on
+-- @tparam function fn The function to call
+-- @return The values returned from the function
 function process.debug.exec(pid, thread, fn)
+    expect(1, pid, "number")
+    expect(2, thread, "number")
+    expect(3, fn, "function")
+    util.syscall.debug_exec(pid, thread, fn)
+    while true do
+        local event, param = coroutine.yield()
+        if event == "debug_exec_result" and param.process == pid and param.thread == thread then
+            if param.ok then return table.unpack(param, 1, param.n)
+            else error(param.error, 0) end
+        end
+    end
+end
+
+--- Executes a function in the context of another process/thread asynchronously.
+-- Debugging must be enabled for the target process, and the target thread must
+-- be paused. The environment for the function will be set to the environment of
+-- the process. The result of the function call will be passed in a
+-- `debug_exec_result` event. Note that the function runs under the hook
+-- environment, and thus will not be preempted - avoid long-running tasks in
+-- this environment. (This may be fixed in the future!)
+-- @tparam number pid The process ID to operate on
+-- @tparam number thread The thread ID to operate on
+-- @tparam function fn The function to call
+function process.debug.execAsync(pid, thread, fn)
     expect(1, pid, "number")
     expect(2, thread, "number")
     expect(3, fn, "function")
