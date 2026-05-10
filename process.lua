@@ -242,6 +242,33 @@ function process.nice(level, pid)
     return util.syscall.nice(level, pid)
 end
 
+--- Releases a process to be accepted by another process. This sets up a change
+-- in process parent - the designated new parent will be able to accept the
+-- process after releasing, which will cause all child-related events (such as
+-- `process_complete`) to be sent to the new parent.
+-- This function does not change the parent immediately - the new parent has to
+-- accept the transfer after releasing.
+-- @tparam number pid The ID of the process to release, which must be a child of this process
+-- @tparam number newparent The process ID which may accept this process as a child
+function process.releasechild(pid, newparent)
+    expect(1, pid, "number")
+    expect(2, newparent, "number")
+    return util.syscall.releasechild(pid, newparent)
+end
+
+--- Accepts a new child process which was previously released to this one.
+-- This changes the process's parent after calling.
+-- Process events such as `process_complete` will now be sent to the current
+-- process instead of the former parent.
+-- @tparam number pid The ID of the process to accept, which must have previously
+--  been released to this process by its old parent
+-- @tparam[opt] boolean takestdio If set, the child process will take the stdio handles of the current process
+function process.acceptchild(pid, takestdio)
+    expect(1, pid, "number")
+    expect(2, takestdio, "boolean", "nil")
+    return util.syscall.acceptchild(pid, takestdio)
+end
+
 --- Debugging subsystem
 -- @section system.process.debug
 process.debug = {}

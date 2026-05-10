@@ -236,7 +236,7 @@ end
 -- @treturn string The file name of the path
 function filesystem.basename(path)
     expect(1, path, "string")
-    return filesystem.combine(path):match "[^/]+$"
+    return filesystem.combine(path):match "[^/]*$"
 end
 
 --- Returns the parent directory for a path.

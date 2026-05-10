@@ -108,4 +108,68 @@ function ipc.receiveEvent(pid, event, timeout)
     end
 end
 
+---@class ipc.socket
+local socket = {}
+local socket_mt = {__index = socket, __name = "socket"}
+
+function socket:status()
+    if self.closed then return "closed"
+    else return "open" end
+end
+
+function socket:close()
+    self.closed = true
+end
+
+function socket:read(fmt, ...)
+    expect(1, fmt, "string", "number", "nil")
+    local _, param = ipc.receiveEvent(self.pid, "libsystem.socket_message." .. self.name)
+    local retval
+    if fmt == nil or fmt == "a" or fmt == "*a" then retval = param.data
+    elseif type(fmt) == "number" then retval = tostring(param.data):sub(1, fmt)
+    else
+        fmt = fmt:gsub("^%*", "")
+        if fmt == "n" then retval = tonumber(param.data)
+        else
+            local s = tostring(param.data)
+            if fmt == "l" then retval = s:match("^[^\n]*")
+            elseif fmt == "L" then retval = s:match("^[^\n]*\n?")
+            else error("invalid format " .. fmt, 2) end
+        end
+    end
+    if select("#", ...) > 0 then return retval, self:read(...)
+    else return retval end
+end
+
+function socket:write(obj, ...)
+    ipc.sendEvent(self.pid, "libsystem.socket_message." .. self.name, {data = obj})
+    if select("#", ...) > 0 then return self:write(...) end
+end
+
+--- Creates a named socket to another process.
+--- 
+--- Sockets are based on top of the remote event subsystem, sending messages
+--- through specially named events. They implement the network handle interface
+--- and as such can be used instead of a network handle (though note that these
+--- sockets have no buffer and as such should not be used for continuous streams
+--- of data, as a network handle often is used for). Sockets will only receive
+--- messages from the same sender PID and socket name, so they can be isolated
+--- from other sockets.
+--- 
+---@param name string The name of the socket. This must be the same on both ends.
+---@param pid number|nil The PID to connect to, or `nil` to wait for a connection
+---@return ipc.socket socket The new socket handle
+function ipc.socket(name, pid)
+    expect(1, name, "string")
+    if expect(2, pid, "number", "nil") then
+        ipc.sendEvent(pid, "libsystem.socket_connect." .. name, {pid = util.syscall.getpid()})
+        return setmetatable({pid = pid, name = name}, socket_mt)
+    else
+        while true do
+            local _, param = ipc.receiveEvent(nil, "libsystem.socket_connect." .. name)
+            if type(param.pid) == "number" then return setmetatable({pid = param.pid, name = name}, socket_mt) end
+        end
+    end
+end
+
 return ipc

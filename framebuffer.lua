@@ -636,26 +636,26 @@ function framebuffer.framebuffer(parent, wx, wy, w, h, visible, transparency)
             end
             local ntext = #text
             if buffer.cursor.x + #text > size.width then text, fg, bg = text:sub(1, size.width - buffer.cursor.x + 1), fg:sub(1, size.width - buffer.cursor.x + 1), bg:sub(1, size.width - buffer.cursor.x + 1) end
-            --[[if transparency and (fg:find("[! ]") or bg:find("[! ]")) then
-                local prevtext, prevfg, prevbg = parent.getLine(wy + buffer.cursor.y - 1)
+            if transparency and (fg:find("[~\0]") or bg:find("[~\0]")) then
+                local prevtext, prevfg, prevbg = table.unpack(buffer[buffer.cursor.y], 1, 3)
                 if prevtext then
                     prevtext, prevfg, prevbg =
-                        prevtext:sub(math.max(wx + buffer.cursor.x - 1, 1), math.max(wx + buffer.cursor.x + size.width - 2, 1)),
-                        prevfg:sub(math.max(wx + buffer.cursor.x - 1, 1), math.max(wx + buffer.cursor.x + size.width - 2, 1)),
-                        prevbg:sub(math.max(wx + buffer.cursor.x - 1, 1), math.max(wx + buffer.cursor.x + size.width - 2, 1))
-                    if wx + buffer.cursor.x - 1 < 1 then
-                        local add = (" "):rep(1 - (wx + buffer.cursor.x - 1))
+                        prevtext:sub(math.max(buffer.cursor.x, 1), math.max(buffer.cursor.x + size.width - 1, 1)),
+                        prevfg:sub(math.max(buffer.cursor.x, 1), math.max(buffer.cursor.x + size.width - 1, 1)),
+                        prevbg:sub(math.max(buffer.cursor.x, 1), math.max(buffer.cursor.x + size.width - 1, 1))
+                    if buffer.cursor.x < 1 then
+                        local add = (" "):rep(1 - (buffer.cursor.x))
                         prevtext, prevfg, prevbg = add .. prevtext, add .. prevfg, add .. prevbg
                     end
                     if #prevtext < #text then
                         local add = (" "):rep(#text - #prevtext)
                         prevtext, prevfg, prevbg = prevtext .. add, prevfg .. add, prevbg .. add
                     end
-                    text = text:gsub("()\0", function(n) return prevtext:sub(n, n) end)
-                    fg = fg:gsub("() ", function(n) return prevfg:sub(n, n) end):gsub("()!", function(n) return prevbg:sub(n, n) end)
-                    bg = bg:gsub("() ", function(n) return prevbg:sub(n, n) end):gsub("()!", function(n) return prevfg:sub(n, n) end)
+                    text = text:gsub("()\160+()", function(n, e) return prevtext:sub(n, e-1) end)
+                    fg = fg:gsub("()\0+()", function(n, e) return prevfg:sub(n, e-1) end):gsub("()~+()", function(n, e) return prevbg:sub(n, e-1) end)
+                    bg = bg:gsub("()\0+()", function(n, e) return prevbg:sub(n, e-1) end):gsub("()~+()", function(n, e) return prevfg:sub(n, e-1) end)
                 end
-            end]]
+            end
             buffer[buffer.cursor.y][1] = buffer[buffer.cursor.y][1]:sub(1, buffer.cursor.x - 1) .. text .. buffer[buffer.cursor.y][1]:sub(buffer.cursor.x + #text)
             buffer[buffer.cursor.y][2] = buffer[buffer.cursor.y][2]:sub(1, buffer.cursor.x - 1) .. fg .. buffer[buffer.cursor.y][2]:sub(buffer.cursor.x + #fg)
             buffer[buffer.cursor.y][3] = buffer[buffer.cursor.y][3]:sub(1, buffer.cursor.x - 1) .. bg .. buffer[buffer.cursor.y][3]:sub(buffer.cursor.x + #bg)
@@ -878,9 +878,9 @@ function framebuffer.framebuffer(parent, wx, wy, w, h, visible, transparency)
                                 local add = (" "):rep(#buffer[y][1] - #prevtext)
                                 prevtext, prevfg, prevbg = prevtext .. add, prevfg .. add, prevbg .. add
                             end
-                            local text = buffer[y][1]:gsub("()\0", function(n) return prevtext:sub(n, n) or "\0" end)
-                            local fg = buffer[y][2]:gsub("() ", function(n) return prevfg:sub(n, n) end):gsub("()!", function(n) return prevbg:sub(n, n) end)
-                            local bg = buffer[y][3]:gsub("() ", function(n) return prevbg:sub(n, n) end):gsub("()!", function(n) return prevfg:sub(n, n) end)
+                            local text = buffer[y][1]:gsub("()\0+()", function(n, e) return prevtext:sub(n, e-1) or "\0" end)
+                            local fg = buffer[y][2]:gsub("() +()", function(n, e) return prevfg:sub(n, e-1) end):gsub("()!+()", function(n, e) return prevbg:sub(n, e-1) end)
+                            local bg = buffer[y][3]:gsub("() +()", function(n, e) return prevbg:sub(n, e-1) end):gsub("()!+()", function(n, e) return prevfg:sub(n, e-1) end)
                             parent.blit(text, fg, bg)
                         end
                     else

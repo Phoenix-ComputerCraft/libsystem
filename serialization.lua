@@ -274,19 +274,21 @@ local function codepoint_to_utf8(n)
 end
 
 
-local function parse_unicode_escape(s)
+local function parse_unicode_escape(s, opts)
     local n1 = tonumber( s:sub(1, 4),  16 )
     local n2 = tonumber( s:sub(7, 10), 16 )
      -- Surrogate pair?
     if n2 then
         return codepoint_to_utf8((n1 - 0xd800) * 0x400 + (n2 - 0xdc00) + 0x10000)
+    elseif n1 < 256 and opts and opts.binary_escapes then
+        return string.char(n1)
     else
         return codepoint_to_utf8(n1)
     end
 end
 
 
-local function parse_string(str, i)
+local function parse_string(str, i, opts)
     local res = ""
     local j = i + 1
     local k = j
@@ -305,7 +307,7 @@ local function parse_string(str, i)
                 local hex = str:match("^[dD][89aAbB]%x%x\\u%x%x%x%x", j + 1)
                                  or str:match("^%x%x%x%x", j + 1)
                                  or decode_error(str, j - 1, "invalid unicode escape in string")
-                res = res .. parse_unicode_escape(hex)
+                res = res .. parse_unicode_escape(hex, opts)
                 j = j + #hex
             else
                 if not escape_chars[c] then
@@ -433,11 +435,11 @@ local char_func_map = {
 }
 
 
-parse = function(str, idx)
+parse = function(str, idx, opts)
     local chr = str:sub(idx, idx)
     local f = char_func_map[chr]
     if f then
-        return f(str, idx)
+        return f(str, idx, opts)
     end
     decode_error(str, idx, "unexpected character '" .. chr .. "'")
 end
@@ -445,10 +447,11 @@ end
 
 --- Parses a JSON string and returns a Lua value represented by the string.
 -- @tparam string str The JSON string to decode
+-- @tparam[opt] {binary_escapes:boolean|nil} opts Any options to pass
 -- @treturn any The Lua value from the JSON
-function serialization.json.decode(str)
+function serialization.json.decode(str, opts)
     expect(1, str, "string")
-    local res, idx = parse(str, next_char(str, 1, space_chars, true))
+    local res, idx = parse(str, next_char(str, 1, space_chars, true), opts)
     idx = next_char(str, idx, space_chars, true)
     if idx <= #str then
         decode_error(str, idx, "trailing garbage")
@@ -703,7 +706,7 @@ function serialization.toml.encode(tbl, opts)
     return encodeTOML(tbl, opts or {}, {})
 end
 
-local function traverse(tab, name, pos, ln, wantlast)
+local function traverse(tab, name, pos, ln, wantlast, opts)
     local last, nm
     while pos < #name do
         if pos > 1 then
@@ -713,7 +716,7 @@ local function traverse(tab, name, pos, ln, wantlast)
             pos = name:match("^%s*()", pos + 1)
         end
         local key
-        if name:match('^"', pos) then key, pos = parse_string(name, pos + 1)
+        if name:match('^"', pos) then key, pos = parse_string(name, pos + 1, opts)
         elseif name:match("^'", pos) then key, pos = name:match("'([^']*)'()", pos)
         else key, pos = name:match("^([A-Za-z0-9_%-]+)()", pos) end
         if not key then error("Invalid key name on line " .. ln, 3) end
@@ -735,7 +738,7 @@ local function next_token(line, pos, ln)
     return line, pos, ln
 end
 
-local function toml_assign(tab, key, line, pos, ln)
+local function toml_assign(tab, key, line, pos, ln, opts)
     local op = line:sub(pos, pos)
     while op == "#" do
         line = coroutine.yield()
@@ -750,7 +753,7 @@ local function toml_assign(tab, key, line, pos, ln)
         while true do
             op = line:sub(pos, pos)
             if op == "]" then break end
-            line, pos, ln = toml_assign(retval, i, line, pos, ln)
+            line, pos, ln = toml_assign(retval, i, line, pos, ln, opts)
             line, pos, ln = next_token(line, pos, ln)
             op = line:sub(pos, pos)
             if op == "]" then break end
@@ -767,9 +770,9 @@ local function toml_assign(tab, key, line, pos, ln)
             op = line:sub(pos, pos)
             if op == "}" then break end
             local t, k
-            t, k, pos = traverse(retval, line, pos, ln, true)
+            t, k, pos = traverse(retval, line, pos, ln, true, opts)
             line, pos, ln = next_token(line, pos, ln)
-            line, pos, ln = toml_assign(t, k, line, pos, ln)
+            line, pos, ln = toml_assign(t, k, line, pos, ln, opts)
             line, pos, ln = next_token(line, pos, ln)
             op = line:sub(pos, pos)
             if op == "}" then break end
@@ -811,11 +814,11 @@ local function toml_assign(tab, key, line, pos, ln)
             end
             s = s .. line:sub(pos, line:find('"""', pos) - 1)
             s = s:gsub("\\\r?\n", ""):gsub('"', '\\"') .. '"'
-            tab[key] = parse_string(s, 1)
+            tab[key] = parse_string(s, 1, opts)
             pos = line:match('"""()', pos)
             return line, pos, ln
         else
-            local str, pos = parse_string(line, pos)
+            local str, pos = parse_string(line, pos, opts)
             if not str then error("Invalid string on line " .. ln, 0) end
             tab[key] = str
             return line, pos, ln
@@ -909,7 +912,7 @@ end
 
 --- Parses TOML data into a table.
 -- @tparam string str The TOML data to decode
--- @tparam[opt] table opts Options (none available in this version)
+-- @tparam[opt] {binary_escapes:boolean|nil} opts Options (none available in this version)
 -- @treturn table A table representing the TOML data
 function serialization.toml.decode(str, opts)
     expect(1, str, "string")
@@ -918,7 +921,7 @@ function serialization.toml.decode(str, opts)
     local current = retval
     local ln = 1
     local coro
-    for line in str:gmatch "([^\r\n]*)\r?\n" do
+    for line in str:gmatch "([^\r\n]*)\r?\n?" do
         if coro then
             -- continuation of multi-line value
             local ok, err = coro:resume(line)
@@ -930,19 +933,19 @@ function serialization.toml.decode(str, opts)
             elseif line:match "^%[%[" then
                 local tag = line:match "^%[(%b[])%]"
                 if not tag then error("Expected ]] on line " .. ln, 2) end
-                current = traverse(retval, tag:sub(2, -2), 1, ln)
+                current = traverse(retval, tag:sub(2, -2), 1, ln, nil, opts)
                 current[#current+1] = {}
                 current = current[#current]
             elseif line:match "^%[" then
                 local tag = line:match "^%b[]"
                 if not tag then error("Expected ] on line " .. ln, 2) end
-                current = traverse(retval, tag:sub(2, -2), 1, ln)
+                current = traverse(retval, tag:sub(2, -2), 1, ln, nil, opts)
             else
-                local last, key, pos = traverse(current, line, 1, ln, true)
+                local last, key, pos = traverse(current, line, 1, ln, true, opts)
                 pos = line:match("^%s*()", pos)
                 if not pos then error("Expected value on line " .. ln, 2) end
                 coro = coroutine.create(toml_assign)
-                local ok, err = coro:resume(last, key, line, pos, ln)
+                local ok, err = coro:resume(last, key, line, pos, ln, opts)
                 if not ok then error(err, 3) end
                 if coro:status() == "dead" then coro = nil end
             end
@@ -977,6 +980,906 @@ function serialization.toml.load(path, opts)
     local data = file:read("*a")
     file:close()
     return serialization.toml.decode(data, opts)
+end
+
+--- serialization.struct
+-- @section serialization.struct
+
+-- MIT License
+-- 
+-- Copyright (c) 2023-2025 JackMacWindows
+-- 
+-- Permission is hereby granted, free of charge, to any person obtaining a copy
+-- of this software and associated documentation files (the "Software"), to deal
+-- in the Software without restriction, including without limitation the rights
+-- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+-- copies of the Software, and to permit persons to whom the Software is
+-- furnished to do so, subject to the following conditions:
+-- 
+-- The above copyright notice and this permission notice shall be included in all
+-- copies or substantial portions of the Software.
+-- 
+-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+-- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+-- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+-- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+-- SOFTWARE.
+
+-- ===== Notes =====
+-- * Includes the following types:
+--   - All standard C89 integral & float types
+--   - C++ bool
+--   - C stdint.h fixed-width integer types
+--   - size_t
+--   - Lua number types (lua_Integer, lua_Unsigned, lua_Number)
+--   - Special string types: string_t = variable width string preceeded by size_t for length,
+--     string[8|16|32|64]_t = string with fixed-width integer size
+--   - [const] char * = NUL-terminated C string
+--   - [const] char[] = fixed width string
+-- * Pointers are not supported outside C strings
+-- * Variable-length arrays and strings are supported, with either an explicit
+--   size field named in the brackets, or an automatic size_t prefix if empty
+-- * Fields used as sizes for variable-length arrays/strings can be implicitly
+--   calculated when encoding if not present in the source table
+-- * The decoder accepts an index to start decoding at as the second argument
+-- * The decoder only parses the fields for the struct, and returns the index of
+--   the next data (like string.unpack)
+-- * To encode a union, pass a table with *exactly one* member
+-- * All fields encoded must have a value, including filling all array entries
+-- * Do not include default values in structure definitions
+-- * The length operator on a type returns the size of the type (provided it
+--   doesn't have char* or string_t strings, or VLAs)
+-- * Enumerations can be used to shorten strings to numbers in the data - simply
+--   define an enum with the strings expected, and they'll be turned into ints
+--   in the stored data
+
+--[=[ Usage:
+    local struct = require "struct"
+
+    -- define struct type
+    local myStruct = struct [[
+        typedef uint32_t array8_t[8];
+        struct {
+            int foo;
+            double bar;
+            array8_t baz;
+            const char * name;
+            union {
+                int i;
+                float f;
+            } data;
+        }
+    ]]
+    -- encode table to binary
+    local binary = myStruct {
+        foo = 10,
+        bar = 3.14,
+        baz = {1, 2, 3, 4, 5, 6, 7, 8},
+        name = "Hello World!",
+        data = {f = 0.5}
+    }
+    -- decode to table
+    local tab = myStruct(binary)
+    print(tab.name, tab.data.i)
+
+    -- chain type definitions
+    local types = {}
+    struct([[
+        typedef struct {
+            unsigned short	coord, inc;
+        } EnvNode;
+
+        typedef struct {
+            EnvNode			nodes[12];
+            unsigned char	max;
+            unsigned char	sus;
+            unsigned char	loopStart;
+            unsigned char	flags;
+        } Envelope;
+
+        typedef struct {
+            unsigned short	samples[96];
+            Envelope		envVol;
+            Envelope		envPan;
+            unsigned short	volFade;
+            unsigned char	vibType;
+            unsigned char	vibSweep;
+            unsigned char	vibDepth;
+            unsigned char	vibRate;
+        } Instrument;
+    ]], types)
+    -- get the size of a type
+    print(#types.Instrument)
+    -- create empty object
+    local inst = types.Instrument()
+    inst.envVol.nodes[1] = {5, 12}
+    -- write to file
+    local file = io.open("file.bin", "wb")
+    file:write(types.Instrument(inst))
+    file:close()
+
+    -- variable length arrays
+    struct([[
+        typedef struct {
+            uint8_t szNodes;
+            EnvNode nodes[szNodes];
+        } VarEnvelope;
+    ]], types)
+    local st = {szNodes = 6, nodes = {}}
+    for i = 1, 6 do st.nodes[i] = {coord = i*2-1, inc = i*2} end
+    -- encode
+    local data = types.VarEnvelope(st)
+    -- decode
+    local tab = types.VarEnvelope(data)
+    print(tab.nodes[6].coord)
+--]=]
+
+local keywords = {
+    bool = {0},
+    char = {1},
+    short = {2},
+    long = {3},
+    int = {4},
+    float = {5},
+    double = {6},
+    unsigned = {7},
+    signed = {8},
+    const = {9},
+    typedef = {10},
+    struct = {11},
+    union = {12},
+    enum = {13},
+}
+
+local symbols = {
+    ['*'] = {16},
+    ['['] = {17},
+    [']'] = {18},
+    ['{'] = {19},
+    ['}'] = {20},
+    [';'] = {21},
+    [','] = {22},
+    ['='] = {23},
+}
+
+for k, v in pairs(keywords) do setmetatable(v, {__tostring = function() return k end}) end
+for k, v in pairs(symbols) do setmetatable(v, {__tostring = function() return k end}) end
+
+local function mktype(a, ...) return a and 2^a[1] + mktype(...) or 0 end
+
+local base_types = {
+    [mktype(keywords.bool)] = setmetatable({}, {__call = function(_, v, p)
+        if type(v) == "string" then return v:byte(p) ~= 0, (p or 1) + 1
+        elseif type(v) == "boolean" then return v and "\x01" or "\0" end
+    end, __len = function() return 1 end}),
+    [mktype(keywords.char)] = "b",
+    [mktype(keywords.signed, keywords.char)] = "b",
+    [mktype(keywords.unsigned, keywords.char)] = "B",
+    [mktype(keywords.short)] = "h",
+    [mktype(keywords.signed, keywords.short)] = "h",
+    [mktype(keywords.unsigned, keywords.short)] = "H",
+    [mktype(keywords.int)] = "i",
+    [mktype(keywords.signed, keywords.int)] = "i",
+    [mktype(keywords.signed)] = "i",
+    [mktype(keywords.unsigned, keywords.int)] = "I",
+    [mktype(keywords.unsigned)] = "I",
+    [mktype(keywords.long, keywords.int)] = "l",
+    [mktype(keywords.long, keywords.signed, keywords.int)] = "l",
+    [mktype(keywords.long, keywords.signed)] = "l",
+    [mktype(keywords.long, keywords.unsigned, keywords.int)] = "L",
+    [mktype(keywords.long, keywords.unsigned)] = "L",
+    [mktype(keywords.float)] = "f",
+    [mktype(keywords.double)] = "d",
+    int8_t = "i1",
+    uint8_t = "I1",
+    int16_t = "i2",
+    uint16_t = "I2",
+    int32_t = "i4",
+    uint32_t = "I4",
+    int64_t = "i8",
+    uint64_t = "I8",
+    intmax_t = "i8",
+    uintmax_t = "I8",
+    size_t = "T",
+    string_t = "s",
+    string8_t = "s1",
+    string16_t = "s2",
+    string32_t = "s4",
+    string64_t = "s8",
+    lua_Integer = "j",
+    lua_Unsigned = "J",
+    lua_Number = "n",
+}
+
+local struct, union
+
+local array_mt = {
+    __call = function(self, obj, pos, partial_struct)
+        local size = self.size
+        if type(obj) == "table" then
+            local res = ""
+            if size then
+                if type(size) == "string" then
+                    if not partial_struct then error("missing outer structure for size field '" .. size .. "'") end
+                    size = partial_struct[size]
+                    if size == nil then size = #obj end
+                    if type(size) ~= "number" then error("size field '" .. self.size .. "' for array is not a number") end
+                end
+                if type(self.type) == "string" then
+                    res = self.type:rep(size):pack(table.unpack(obj, 1, size))
+                else
+                    for i = 1, size do
+                        res = res .. self.type(obj[i])
+                    end
+                end
+            else
+                res = ("T"):pack(#obj)
+                if type(self.type) == "string" then
+                    res = res .. self.type:rep(#obj):pack(table.unpack(obj, 1, #obj))
+                else
+                    for i = 1, #obj do
+                        res = res .. self.type(obj[i])
+                    end
+                end
+            end
+            return res
+        elseif type(obj) == "string" then
+            local res = {}
+            if size then
+                if type(size) == "string" then
+                    if not partial_struct then error("missing partial structure for size field '" .. size .. "'") end
+                    size = partial_struct[size]
+                    if type(size) ~= "number" then error("size field '" .. self.size .. "' for array is not a number") end
+                end
+                if type(self.type) == "string" then
+                    res = {self.type:rep(size):unpack(obj, pos)}
+                    pos = res[size+1]
+                    res[size+1] = nil
+                else
+                    for i = 1, size do
+                        res[i], pos = self.type(obj, pos, partial_struct)
+                    end
+                end
+            else
+                local sz
+                sz, pos = ("T"):unpack(obj, pos)
+                if type(self.type) == "string" then
+                    res = {self.type:rep(sz):unpack(obj, pos)}
+                    pos = res[sz+1]
+                    res[sz+1] = nil
+                else
+                    for i = 1, sz do
+                        res[i], pos = self.type(obj, pos, partial_struct)
+                    end
+                end
+            end
+            return res, pos
+        elseif obj == nil then
+            local res = {}
+            if type(size) == "number" then
+                for i = 1, size do
+                    if type(self.type) == "string" then res[i] = (self.type == "z" or self.type:sub(1, 1) == "c" or self.type:sub(1, 1) == "s") and "" or 0
+                    else res[i] = self.type() end
+                end
+            end
+            return res
+        else error("bad argument #1 (expected string or table, got " .. type(obj) .. ")", 2) end
+    end,
+    __len = function(self)
+        if type(self.size) ~= "number" then error("bad argument #1 (variable-length format)", 2) end
+        if type(self.type) == "string" then return self.type:packsize() * self.size
+        else return #self.type * self.size end
+    end
+}
+
+local vlstr_mt = {
+    __call = function(self, obj, pos, partial_struct)
+        if not partial_struct then error("missing outer structure for size field '" .. self.size .. "'") end
+        local size = partial_struct[self.size]
+        if size == nil and pos == nil then size = #obj end
+        if type(size) ~= "number" then error("size field '" .. self.size .. "' for array is not a number") end
+        if type(obj) == "string" then
+            return obj:sub(pos or 1, pos and pos + size - 1 or size) .. (#obj < size and ("\0"):rep(size - #obj) or ""), pos and pos + size
+        elseif obj == nil then
+            return ""
+        else error("bad argument #1 (expected string or table, got " .. type(obj) .. ")", 2) end
+    end,
+    __len = function() error("bad argument #1 (variable-length format)", 2) end
+}
+
+local struct_mt = {
+    __call = function(self, obj, pos)
+        if type(obj) == "table" then
+            local res = ""
+            local fmt, par = "", {}
+            for _, v in ipairs(self) do
+                local vv = obj[v.name]
+                if vv == nil then
+                    for _, w in ipairs(self) do
+                        if type(w.type) == "table" and (getmetatable(w.type) == array_mt or getmetatable(w.type) == vlstr_mt) and w.type.size == v.name then
+                            vv = #obj[w.name]
+                            break
+                        end
+                    end
+                end
+                if type(v.type) == "string" then
+                    fmt, par[#par+1] = fmt .. v.type, vv
+                else
+                    if #fmt > 0 then res, fmt, par = res .. fmt:pack(table.unpack(par)), "", {} end
+                    res = res .. v.type(vv, nil, obj)
+                end
+            end
+            if #fmt > 0 then res = res .. fmt:pack(table.unpack(par)) end
+            return res
+        elseif type(obj) == "string" then
+            pos = pos or 1
+            local res, fmt, names = {}, "", {}
+            for _, v in ipairs(self) do
+                if type(v.type) == "string" then
+                    fmt, names[#names+1] = fmt .. v.type, v.name
+                else
+                    if #fmt > 0 then
+                        local r = table.pack(fmt:unpack(obj, pos))
+                        for i = 1, r.n - 1 do res[names[i]] = r[i] end
+                        pos = r[r.n]
+                        fmt, names = "", {}
+                    end
+                    res[v.name], pos = v.type(obj, pos, res)
+                end
+            end
+            if #fmt > 0 then
+                local r = table.pack(fmt:unpack(obj, pos))
+                for i = 1, r.n - 1 do res[names[i]] = r[i] end
+                pos = r[r.n]
+            end
+            return res, pos
+        elseif obj == nil then
+            local res = {}
+            for _, v in ipairs(self) do
+                if type(v.type) == "string" then res[v.name] = (v.type == "z" or v.type:sub(1, 1) == "c" or v.type:sub(1, 1) == "s") and "" or 0
+                else res[v.name] = v.type() end
+            end
+            return res
+        else error("bad argument #1 (expected string or table, got " .. type(obj) .. ")", 2) end
+    end,
+    __len = function(self)
+        local sum = 0
+        local fmt = ""
+        for _, v in ipairs(self) do
+            if type(v.type) == "string" then fmt = fmt .. v.type
+            else
+                if #fmt > 0 then sum, fmt = sum + fmt:packsize(), "" end
+                sum = sum + #v.type
+            end
+        end
+        if #fmt > 0 then sum, fmt = sum + fmt:packsize(), "" end
+        return sum
+    end
+}
+
+local union_mt = {
+    __call = function(self, obj, pos)
+        if type(obj) == "table" then
+            local res = ""
+            local name = next(obj)
+            local max = 0
+            if not name or next(obj, name) then error("bad argument #1 (union table must contain exactly one entry)", 2) end
+            for _, v in ipairs(self) do
+                if type(v.type) == "string" then
+                    if v.name == name then res = v.type:pack(obj[v.name]) end
+                    max = math.max(max, v.type:packsize())
+                else
+                    if v.name == name then res = v.type(obj[v.name]) end
+                    max = math.max(max, #v.type)
+                end
+            end
+            return res .. ("\0"):rep(max - #res)
+        elseif type(obj) == "string" then
+            pos = pos or 1
+            local res = {}
+            local max = pos
+            for _, v in ipairs(self) do
+                local np
+                if type(v.type) == "string" then res[v.name], np = v.type:unpack(obj, pos)
+                else res[v.name], np = v.type(obj, pos) end
+                max = math.max(max, np)
+            end
+            return res, max
+        elseif obj == nil then
+            return {}
+        else error("bad argument #1 (expected string or table, got " .. type(obj) .. ")", 2) end
+    end,
+    __len = function(self)
+        local max = 0
+        for _, v in ipairs(self) do
+            if type(v.type) == "string" then max = math.max(max, v.type:packsize())
+            else max = math.max(max, #v.type) end
+        end
+        return max
+    end
+}
+
+local enum_mt = {
+    __call = function(self, obj, pos)
+        if type(obj) == "string" then
+            if self.encode[obj] then return ("I"):pack(self.encode[obj])
+            else
+                local res
+                res, pos = ("I"):unpack(obj, pos)
+                return self.decode[res], pos
+            end
+        elseif type(obj) == "number" then
+            if self.decode[obj] then return ("I"):pack(obj)
+            else error("Unknown enum value " .. tostring(obj), 2) end
+        elseif obj == nil then
+            return self.decode[0]
+        else error("bad argument #1 (expected string or number, got " .. type(obj) .. ")", 2) end
+    end,
+    __len = function() return ("I"):packsize() end
+}
+
+function struct(tokens, pos, types)
+    local s = {}
+    while tokens[pos] ~= symbols['}'] do
+        if not tokens[pos] then error("syntax error: expected '}' near <eof>", 2) end
+        local ent = {}
+        s[#s+1] = ent
+        local tl = {}
+        while type(tokens[pos]) == "table" and tokens[pos][1] < 10 do
+            if tokens[pos] ~= keywords.const then tl[#tl+1] = tokens[pos] end
+            pos = pos + 1
+        end
+        if #tl == 0 then
+            if type(tokens[pos]) == "string" then
+                ent.type = types[tokens[pos]]
+                if not ent.type then error("compile error: undefined type " .. tostring(tokens[pos]), 3) end
+                pos = pos + 1
+            elseif tokens[pos] == keywords.struct then
+                pos = pos + 1
+                if type(tokens[pos]) == "string" then
+                    ent.type = types.struct[tokens[pos]]
+                    if not ent.type then error("compile error: undefined struct type " .. tostring(tokens[pos]), 3) end
+                    pos = pos + 1
+                elseif tokens[pos] == symbols['{'] then
+                    ent.type, pos = struct(tokens, pos + 1, types)
+                else error("syntax error near 'struct " .. tostring(tokens[pos]) .. "'", 3) end
+            elseif tokens[pos] == keywords.union then
+                pos = pos + 1
+                if type(tokens[pos]) == "string" then
+                    ent.type = types.union[tokens[pos]]
+                    if not ent.type then error("compile error: undefined union type " .. tostring(tokens[pos]), 3) end
+                    pos = pos + 1
+                elseif tokens[pos] == symbols['{'] then
+                    ent.type, pos = union(tokens, pos + 1, types)
+                else error("syntax error near 'union " .. tostring(tokens[pos]) .. "'", 3) end
+            elseif tokens[pos] == keywords.enum then
+                pos = pos + 1
+                assert(type(tokens[pos]) == "string", "syntax error near 'enum " .. tostring(tokens[pos+1]) .. "'")
+                ent.type = types.enum[tokens[pos]] or types.int
+                pos = pos + 1
+            else error("syntax error near '" .. tostring(tokens[pos]) .. "'" .. pos .. #s, 3) end
+        else
+            ent.type = types[mktype(table.unpack(tl))]
+            if not ent.type then error("syntax error: invalid type combination '" .. table.concat(tl, " ") .. "'", 3) end
+        end
+        local basetype = ent.type
+        if basetype == "b" and tokens[pos] == symbols['*'] then ent.type, pos = "z", pos + 1 end
+        if type(tokens[pos]) ~= "string" then error("syntax error near " .. tostring(tokens[pos]), 3) end
+        ent.name = tokens[pos]
+        pos = pos + 1
+        if tokens[pos] == symbols['['] then
+            local array = {}
+            while tokens[pos] == symbols['['] do
+                pos = pos + 1
+                if tokens[pos] == symbols[']'] then
+                    array[#array+1] = false
+                else
+                    if type(tokens[pos]) == "string" then
+                        local found = false
+                        for i = 1, #s - 1 do
+                            if s[i].name == tokens[pos] then
+                                if not ((type(s[i].type) == "string" and s[i].type:match "^[bBhHiIlLjJT]") or (type(s[i].type) == "table" and getmetatable(s[i].type) == enum_mt)) then
+                                    error("syntax error: array length field '" .. tokens[pos] .. "' is not an integer", 3)
+                                end
+                                found = true
+                                break
+                            end
+                        end
+                        if not found then error("syntax error: array length field '" .. tokens[pos] .. "' is not defined", 3) end
+                    elseif type(tokens[pos]) ~= "number" then error("syntax error near '[" .. tostring(tokens[pos]) .. "]'", 3) end
+                    array[#array+1] = tokens[pos]
+                    pos = pos + 1
+                    if tokens[pos] ~= symbols[']'] then error("syntax error near '[" .. array[#array] .. tostring(tokens[pos]) .. "'", 3) end
+                end
+                pos = pos + 1
+            end
+            if ent.type == "b" and #array == 1 then
+                if type(array[1]) == "string" then ent.type = setmetatable({size = array[1]}, vlstr_mt)
+                else ent.type = "c" .. array[1] end
+            else for i = #array, 1, -1 do ent.type = setmetatable({type = ent.type, size = array[i]}, array_mt) end end
+        end
+        while tokens[pos] == symbols[','] do
+            local e = {type = basetype}
+            s[#s+1] = e
+            pos = pos + 1
+            if basetype == "b" and tokens[pos] == symbols['*'] then e.type, pos = "z", pos + 1 end
+            if type(tokens[pos]) ~= "string" then error("syntax error near " .. tostring(tokens[pos]), 3) end
+            e.name = tokens[pos]
+            pos = pos + 1
+            if tokens[pos] == symbols['['] then
+                local array = {}
+                while tokens[pos] == symbols['['] do
+                    pos = pos + 1
+                    if tokens[pos] == symbols[']'] then
+                        array[#array+1] = false
+                    else
+                        if type(tokens[pos]) == "string" then
+                            local found = false
+                            for i = 1, #s - 1 do
+                                if s[i].name == tokens[pos] then
+                                    if not ((type(s[i].type) == "string" and s[i].type:match "^[bBhHiIlLjJT]") or (type(s[i].type) == "table" and getmetatable(s[i].type) == enum_mt)) then
+                                        error("syntax error: array length field '" .. tokens[pos] .. "' is not an integer", 3)
+                                    end
+                                    found = true
+                                    break
+                                end
+                            end
+                            if not found then error("syntax error: array length field '" .. tokens[pos] .. "' is not defined", 3) end
+                        elseif type(tokens[pos]) ~= "number" then error("syntax error near '[" .. tostring(tokens[pos]) .. "]'", 3) end
+                        array[#array+1] = tokens[pos]
+                        pos = pos + 1
+                        if tokens[pos] ~= symbols[']'] then error("syntax error near '[" .. array[#array] .. tostring(tokens[pos]) .. "'", 3) end
+                    end
+                    pos = pos + 1
+                end
+                if e.type == "b" and #array == 1 then
+                    if type(array[1]) == "string" then e.type = setmetatable({size = array[1]}, vlstr_mt)
+                    else e.type = "c" .. array[1] end
+                else for i = #array, 1, -1 do e.type = setmetatable({type = e.type, size = array[i]}, array_mt) end end
+            end
+        end
+        if tokens[pos] ~= symbols[';'] then error("syntax error: expected ';' near '" .. tostring(tokens[pos]) .. "'", 3) end
+        pos = pos + 1
+    end
+    return setmetatable(s, struct_mt), pos + 1
+end
+
+function union(tokens, pos, types)
+    local s = {}
+    while tokens[pos] ~= symbols['}'] do
+        if not tokens[pos] then error("syntax error: expected '}' near <eof>", 2) end
+        local ent = {}
+        s[#s+1] = ent
+        local tl = {}
+        while type(tokens[pos]) == "table" and tokens[pos][1] < 10 do
+            if tokens[pos] ~= keywords.const then tl[#tl+1] = tokens[pos] end
+            pos = pos + 1
+        end
+        if #tl == 0 then
+            if type(tokens[pos]) == "string" then
+                ent.type = types[tokens[pos]]
+                if not ent.type then error("compile error: undefined type " .. tostring(tokens[pos]), 3) end
+                pos = pos + 1
+            elseif tokens[pos] == keywords.struct then
+                pos = pos + 1
+                if type(tokens[pos]) == "string" then
+                    ent.type = types.struct[tokens[pos]]
+                    if not ent.type then error("compile error: undefined struct type " .. tostring(tokens[pos]), 3) end
+                    pos = pos + 1
+                elseif tokens[pos] == symbols['{'] then
+                    ent.type, pos = struct(tokens, pos + 1, types)
+                else error("syntax error near 'struct " .. tostring(tokens[pos]) .. "'", 3) end
+            elseif tokens[pos] == keywords.union then
+                pos = pos + 1
+                if type(tokens[pos]) == "string" then
+                    ent.type = types.union[tokens[pos]]
+                    if not ent.type then error("compile error: undefined union type " .. tostring(tokens[pos]), 3) end
+                    pos = pos + 1
+                elseif tokens[pos] == symbols['{'] then
+                    ent.type, pos = union(tokens, pos + 1, types)
+                else error("syntax error near 'union " .. tostring(tokens[pos]) .. "'", 3) end
+            elseif tokens[pos] == keywords.enum then
+                pos = pos + 1
+                assert(type(tokens[pos]) == "string", "syntax error near 'enum " .. tostring(tokens[pos+1]) .. "'")
+                ent.type = types.enum[tokens[pos]] or types.int
+                pos = pos + 1
+            else error("syntax error near '" .. tostring(tokens[pos]) .. "'", 3) end
+        else
+            ent.type = types[mktype(table.unpack(tl))]
+            if not ent.type then error("syntax error: invalid type combination '" .. table.concat(tl, " ") .. "'", 3) end
+        end
+        local basetype = ent.type
+        if basetype == "b" and tokens[pos] == symbols['*'] then error("compiler error: C strings are not allowed in unions") end
+        if type(tokens[pos]) ~= "string" then error("syntax error near " .. tostring(tokens[pos]), 3) end
+        ent.name = tokens[pos]
+        pos = pos + 1
+        if tokens[pos] == symbols['['] then
+            local array = {}
+            while tokens[pos] == symbols['['] do
+                pos = pos + 1
+                if tokens[pos] == symbols[']'] then
+                    array[#array+1] = false
+                else
+                    if type(tokens[pos]) ~= "number" then error("syntax error near '[" .. tostring(tokens[pos]) .. "]'", 3) end
+                    array[#array+1] = tokens[pos]
+                    pos = pos + 1
+                    if tokens[pos] ~= symbols[']'] then error("syntax error near '[" .. array[#array] .. tostring(tokens[pos]) .. "'", 3) end
+                end
+                pos = pos + 1
+            end
+            if ent.type == "b" and #array == 1 then ent.type = "c" .. array[1]
+            else for i = #array, 1, -1 do ent.type = setmetatable({type = ent.type, size = array[i]}, array_mt) end end
+        end
+        while tokens[pos] == symbols[','] do
+            local e = {type = basetype}
+            s[#s+1] = e
+            pos = pos + 1
+            if basetype == "b" and tokens[pos] == symbols['*'] then error("compiler error: C strings are not allowed in unions") end
+            if type(tokens[pos]) ~= "string" then error("syntax error near " .. tostring(tokens[pos]), 3) end
+            e.name = tokens[pos]
+            pos = pos + 1
+            if tokens[pos] == symbols['['] then
+                local array = {}
+                while tokens[pos] == symbols['['] do
+                    pos = pos + 1
+                    if tokens[pos] == symbols[']'] then
+                        array[#array+1] = false
+                    else
+                        if type(tokens[pos]) ~= "number" then error("syntax error near '[" .. tostring(tokens[pos]) .. "]'", 3) end
+                        array[#array+1] = tokens[pos]
+                        pos = pos + 1
+                        if tokens[pos] ~= symbols[']'] then error("syntax error near '[" .. array[#array] .. tostring(tokens[pos]) .. "'", 3) end
+                    end
+                    pos = pos + 1
+                end
+                if e.type == "b" and #array == 1 then e.type = "c" .. array[1]
+                else for i = #array, 1, -1 do e.type = setmetatable({type = e.type, size = array[i]}, array_mt) end end
+            end
+        end
+        if tokens[pos] ~= symbols[';'] then error("syntax error: expected ';' near '" .. tostring(tokens[pos]) .. "'", 3) end
+        pos = pos + 1
+    end
+    return setmetatable(s, union_mt), pos + 1
+end
+
+local function tokenize(str)
+    local pos = str:find "%S"
+    local tokens = {}
+    while pos <= #str do
+        local m, p = str:match("^([A-Za-z_][A-Za-z0-9_]*)()", pos)
+        if m then
+            tokens[#tokens+1], pos = keywords[m] or m, p
+        else
+            m, p = str:match("^([%*%[%]{};,=])()", pos)
+            if m then
+                tokens[#tokens+1], pos = symbols[m], p
+            else
+                m, p = str:match("^0([0-7]+)[Uu]?[Ll]?()", pos)
+                if m then
+                    tokens[#tokens+1], pos = tonumber(m, 8), p
+                else
+                    m, p = str:match("^0x(%x+)[Uu]?[Ll]?()", pos)
+                    if m then
+                        tokens[#tokens+1], pos = tonumber(m, 16), p
+                    else
+                        m, p = str:match("^0b([01]+)[Uu]?[Ll]?()", pos)
+                        if m then
+                            tokens[#tokens+1], pos = tonumber(m, 1), p
+                        else
+                            m, p = str:match("^(%d+)[Uu]?[Ll]?()", pos)
+                            if m then
+                                tokens[#tokens+1], pos = tonumber(m, 10), p
+                            else
+                                error("syntax error near '" .. str:sub(pos, pos + 5) .. "'", 3)
+                            end
+                        end
+                    end
+                end
+            end
+        end
+        pos = str:find("%S", pos)
+        if not pos then break end
+    end
+    return tokens
+end
+
+--- Defines a structure coder from C structure code.
+-- See https://gist.github.com/MCJack123/2e60f0b1c01411f4fe91d902212e33c9 for
+-- more information about how this works.
+-- @tparam string def The C code to compile into types
+-- @tparam[opt] table types A table containing previously defined types; types will also be stored back into this table
+-- @treturn function(obj:string|any,pos:number|nil):any|string,number|nil The coder for the last defined type, which can either take an object to encode (usually a table for a struct) and returns a string, or a string to decode and optionally a position to decode from and returns the decoded object + the next position to decode from
+function serialization.struct(def, types)
+    if type(def) ~= "string" then error("bad argument #1 (expected string, got " .. type(def) .. ")", 2) end
+    if types ~= nil and type(types) ~= "table" then error("bad argument #2 (expected table, got " .. type(types) .. ")", 2) end
+    types = types or {struct = {}, union = {}}
+    if not types.struct then types.struct = {} end
+    if not types.union then types.union = {} end
+    if not types.enum then types.enum = {} end
+    setmetatable(types, {__index = base_types})
+    local tokens = tokenize(def)
+    local pos = 1
+    local last
+    while pos < #tokens do
+        if tokens[pos] == keywords.typedef then
+            pos = pos + 1
+            local tl = {}
+            local tt
+            while type(tokens[pos]) == "table" and tokens[pos][1] < 10 do
+                if tokens[pos] ~= keywords.const then tl[#tl+1] = tokens[pos] end
+                pos = pos + 1
+            end
+            if #tl == 0 then
+                if type(tokens[pos]) == "string" then
+                    tt = types[tokens[pos]]
+                    if not tt then error("compile error: undefined type " .. tostring(tokens[pos]), 2) end
+                    pos = pos + 1
+                elseif tokens[pos] == keywords.struct then
+                    pos = pos + 1
+                    if type(tokens[pos]) == "string" then
+                        tt = types.struct[tokens[pos]]
+                        if not tt then
+                            local name = tokens[pos]
+                            pos = pos + 1
+                            if tokens[pos] == symbols['{'] then tt, pos = struct(tokens, pos + 1, types)
+                            else error("compile error: undefined struct type " .. name, 2) end
+                            types.struct[name] = tt
+                        else pos = pos + 1 end
+                    elseif tokens[pos] == symbols['{'] then
+                        tt, pos = struct(tokens, pos + 1, types)
+                    else error("syntax error near 'struct " .. tostring(tokens[pos]) .. "'", 2) end
+                elseif tokens[pos] == keywords.union then
+                    pos = pos + 1
+                    if type(tokens[pos]) == "string" then
+                        tt = types.union[tokens[pos]]
+                        if not tt then
+                            local name = tokens[pos]
+                            pos = pos + 1
+                            if tokens[pos] == symbols['{'] then tt, pos = union(tokens, pos + 1, types)
+                            else error("compile error: undefined union type " .. name, 2) end
+                            types.union[name] = tt
+                        else pos = pos + 1 end
+                        pos = pos + 1
+                    elseif tokens[pos] == symbols['{'] then
+                        tt, pos = union(tokens, pos + 1, types)
+                    else error("syntax error near 'union " .. tostring(tokens[pos]) .. "'", 2) end
+                elseif tokens[pos] == keywords.enum then
+                    pos = pos + 1
+                    if tokens[pos] == symbols['{'] then
+                        local enum = setmetatable({encode = {}, decode = {}}, enum_mt)
+                        local n = 0
+                        pos = pos + 1
+                        while tokens[pos] ~= symbols['}'] do
+                            if type(tokens[pos]) ~= "string" then error("syntax error: expected name near " .. tostring(tokens[pos]), 2) end
+                            enum.encode[tokens[pos]] = n
+                            enum.decode[n] = tokens[pos]
+                            n = n + 1
+                            pos = pos + 1
+                            if tokens[pos] == symbols[','] then pos = pos + 1 end
+                            if not tokens[pos] then error("syntax error: expected '}' near <eof>", 2) end
+                        end
+                        tt = enum
+                    else
+                        assert(type(tokens[pos]) == "string", "syntax error near 'enum " .. tostring(tokens[pos+1]) .. "'")
+                        tt = types.enum[tokens[pos]] or types.int
+                    end
+                    pos = pos + 1
+                else error("syntax error near '" .. tostring(tokens[pos]) .. "'", 2) end
+            else
+                tt = types[mktype(table.unpack(tl))]
+                if not tt then error("syntax error: invalid type combination '" .. table.concat(tl, " ") .. "'", 2) end
+            end
+            local basett = tt
+            if tt == "b" and tokens[pos] == symbols['*'] then tt, pos = "z", pos + 1 end
+            if type(tokens[pos]) ~= "string" then error("syntax error near " .. tostring(tokens[pos]), 2) end
+            local name = tokens[pos]
+            pos = pos + 1
+            if tokens[pos] == symbols['['] then
+                local array = {}
+                while tokens[pos] == symbols['['] do
+                    pos = pos + 1
+                    if tokens[pos] == symbols[']'] then
+                        array[#array+1] = false
+                    else
+                        if type(tokens[pos]) ~= "number" then error("syntax error near '[" .. tostring(tokens[pos]) .. "]'", 3) end
+                        array[#array+1] = tokens[pos]
+                        pos = pos + 1
+                        if tokens[pos] ~= symbols[']'] then error("syntax error near '[" .. array[#array] .. tostring(tokens[pos]) .. "'", 3) end
+                    end
+                    pos = pos + 1
+                end
+                if tt == "b" and #array == 1 then tt = "c" .. array[1]
+                else for i = #array, 1, -1 do tt = setmetatable({type = tt, size = array[i]}, array_mt) end end
+            end
+            types[name] = tt
+            while tokens[pos] == symbols[','] do
+                local tt2 = basett
+                pos = pos + 1
+                if tt2 == "b" and tokens[pos] == symbols['*'] then tt2, pos = "z", pos + 1 end
+                if type(tokens[pos]) ~= "string" then error("syntax error near " .. tostring(tokens[pos]), 2) end
+                local name2 = tokens[pos]
+                pos = pos + 1
+                if tokens[pos] == symbols['['] then
+                    local array = {}
+                    while tokens[pos] == symbols['['] do
+                        pos = pos + 1
+                        if tokens[pos] == symbols[']'] then
+                            array[#array+1] = false
+                        else
+                            if type(tokens[pos]) ~= "number" then error("syntax error near '[" .. tostring(tokens[pos]) .. "]'", 3) end
+                            array[#array+1] = tokens[pos]
+                            pos = pos + 1
+                            if tokens[pos] ~= symbols[']'] then error("syntax error near '[" .. array[#array] .. tostring(tokens[pos]) .. "'", 3) end
+                        end
+                        pos = pos + 1
+                    end
+                    if tt2 == "b" and #array == 1 then tt2 = "c" .. array[1]
+                    else for i = #array, 1, -1 do tt2 = setmetatable({type = tt2, size = array[i]}, array_mt) end end
+                end
+                types[name2] = tt2
+            end
+            if tokens[pos] ~= symbols[';'] then error("syntax error: expected ';' near '" .. tostring(tokens[pos]) .. "'", 2) end
+            last = tt
+            pos = pos + 1
+        elseif tokens[pos] == keywords.struct then
+            pos = pos + 1
+            if type(tokens[pos]) == "string" then
+                local name = tokens[pos]
+                pos = pos + 1
+                if tokens[pos] == symbols['{'] then last, pos = struct(tokens, pos + 1, types)
+                else error("syntax error: expected '{' near '" .. tostring(tokens[pos]) .. '}', 2) end
+                types.struct[name] = last
+            elseif tokens[pos] == symbols['{'] then
+                last, pos = struct(tokens, pos + 1, types)
+            else error("syntax error near 'struct " .. tostring(tokens[pos]) .. "'", 3) end
+        elseif tokens[pos] == keywords.union then
+            pos = pos + 1
+            if type(tokens[pos]) == "string" then
+                local name = tokens[pos]
+                pos = pos + 1
+                if tokens[pos] == symbols['{'] then last, pos = union(tokens, pos + 1, types)
+                else error("syntax error: expected '{' near '" .. tostring(tokens[pos]) .. '}', 2) end
+                types.union[name] = last
+            elseif tokens[pos] == symbols['{'] then
+                last, pos = union(tokens, pos + 1, types)
+            else error("syntax error near 'struct " .. tostring(tokens[pos]) .. "'", 3) end
+        elseif tokens[pos] == keywords.enum then
+            pos = pos + 1
+            if type(tokens[pos]) ~= "string" then error("syntax error: expected name near 'enum'", 2) end
+            local name = tokens[pos]
+            pos = pos + 1
+            local enum = setmetatable({encode = {}, decode = {}}, enum_mt)
+            local n = 0
+            if tokens[pos] ~= symbols['{'] then error("syntax error: expected '{' near 'enum'", 2) end
+            pos = pos + 1
+            while tokens[pos] ~= symbols['}'] do
+                if type(tokens[pos]) ~= "string" then error("syntax error: expected name near " .. tostring(tokens[pos]), 2) end
+                if tokens[pos+1] == symbols['='] and type(tokens[pos+2]) == "number" then
+                    n = tokens[pos+2]
+                    enum.encode[tokens[pos]] = n
+                    enum.decode[n] = tokens[pos]
+                    n = n + 1
+                    pos = pos + 3
+                else
+                    enum.encode[tokens[pos]] = n
+                    enum.decode[n] = tokens[pos]
+                    n = n + 1
+                    pos = pos + 1
+                end
+                if tokens[pos] == symbols[','] then pos = pos + 1 end
+                if not tokens[pos] then error("syntax error: expected '}' near <eof>", 2) end
+            end
+            pos = pos + 1
+            if tokens[pos] ~= symbols[';'] then error("syntax error: expected ';' near '" .. tostring(tokens[pos]) .. "'", 2) end
+            types.enum[name] = enum
+            last = enum
+            pos = pos + 1
+        elseif tokens[pos] == symbols[';'] then pos = pos + 1
+        else error("compiler error: unexpected token " .. tostring(tokens[pos]), 2) end
+    end
+    return last
 end
 
 return serialization
