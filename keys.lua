@@ -1,17 +1,17 @@
 --- The keys module assigns names to the keycode constants that Phoenix sends in
--- key events, and adds a few functions to make using them easier. This module
--- uses the same names as the CraftOS `keys` API, so porting programs should be
--- trivial.
---
--- @module system.keys
-
+--- key events, and adds a few functions to make using them easier. This module
+--- uses the same names as the CraftOS `keys` API, so porting programs should be
+--- trivial.
+---
+--- !doctype module
+--- @class system.keys
 local keys = {}
 
--- Letters, numpad numbers and function keys are easy
+--- Letters, numpad numbers and function keys are easy
 for i = 0x61, 0x7A do keys[string.char(i)] = i end
 for i = 0x81, 0x99 do keys["f" .. bit32.band(i, 31)] = i end
 for i = 0xA0, 0xA9 do keys["numPad" .. bit32.band(i, 15)] = i end
--- The rest have to be added manually
+--- The rest have to be added manually
 keys.backspace = 0x08
 keys.tab = 0x09
 keys.enter = 0x0A
@@ -84,16 +84,16 @@ local keys_reverse = {}
 for k, v in pairs(keys) do keys_reverse[v] = k end
 
 --- Returns the name for the specified keycode.
--- @tparam number id The keycode to check
--- @treturn string|nil The name (which is a key in `keys`), or `nil` if the code is invalid
+--- @param id number The keycode to check
+--- @return string|nil result The name (which is a key in `keys`), or `nil` if the code is invalid
 function keys.getName(id)
     if type(id) ~= "number" then error("bad argument #1 (expected number, got " .. type(id) .. ")", 2) end
     return keys_reverse[id]
 end
 
 --- Returns a printable representation of the keycode if available.
--- @tparam number id The keycode to check
--- @treturn string|nil The keycode's character (in lowercase), or `nil` if the code doesn't have a printable representation
+--- @param id number The keycode to check
+--- @return string|nil result The keycode's character (in lowercase), or `nil` if the code doesn't have a printable representation
 function keys.getCharacter(id)
     if type(id) ~= "number" then error("bad argument #1 (expected number, got " .. type(id) .. ")", 2) end
     if (id >= 0x20 and id < 0x7F) or id == 0x0A or id == 0x09 then return string.char(id)

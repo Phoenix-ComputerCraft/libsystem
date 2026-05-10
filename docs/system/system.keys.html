@@ -1,0 +1,1006 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Module system.log" href="system.log.html"><link rel="prev" title="Module system.ipc" href="system.ipc.html">
+        <link rel="prefetch" href="../_static/logo.png" as="image">
+
+    <link rel="shortcut icon" href="../_static/favicon.ico"><!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>Module system.keys - libsystem</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/lua.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  --color-brand-primary: #944f00;
+  --color-brand-content: #944f00;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #ff8800;
+  --color-brand-content: #ff8800;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #ff8800;
+  --color-brand-content: #ff8800;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">libsystem</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../_static/logo.png" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">libsystem</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <a class="reference internal" href="/">⤾ Main docs</a>
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="system.expect.html">Module <code class="docutils literal notranslate"><span class="pre">system.expect</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="system.filesystem.html">Module <code class="docutils literal notranslate"><span class="pre">system.filesystem</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="system.framebuffer.html">Module <code class="docutils literal notranslate"><span class="pre">system.framebuffer</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="system.graphics.html">Module <code class="docutils literal notranslate"><span class="pre">system.graphics</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="system.hardware.html">Module <code class="docutils literal notranslate"><span class="pre">system.hardware</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="system.ipc.html">Module <code class="docutils literal notranslate"><span class="pre">system.ipc</span></code></a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Module <code class="docutils literal notranslate"><span class="pre">system.keys</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="system.log.html">Module <code class="docutils literal notranslate"><span class="pre">system.log</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="system.network.html">Module <code class="docutils literal notranslate"><span class="pre">system.network</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="system.pretty.html">Module <code class="docutils literal notranslate"><span class="pre">system.pretty</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="system.process.html">Module <code class="docutils literal notranslate"><span class="pre">system.process</span></code></a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="system.serialization.html">Module <code class="docutils literal notranslate"><span class="pre">system.serialization</span></code></a><input aria-label="Toggle navigation of Module system.serialization" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="system.serialization.base64.html">Module <code class="docutils literal notranslate"><span class="pre">system.serialization.base64</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="system.serialization.json.html">Module <code class="docutils literal notranslate"><span class="pre">system.serialization.json</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="system.serialization.lua.html">Module <code class="docutils literal notranslate"><span class="pre">system.serialization.lua</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="system.serialization.toml.html">Module <code class="docutils literal notranslate"><span class="pre">system.serialization.toml</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="system.sync.html">Module <code class="docutils literal notranslate"><span class="pre">system.sync</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="system.terminal.html">Module <code class="docutils literal notranslate"><span class="pre">system.terminal</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="system.util.html">Module <code class="docutils literal notranslate"><span class="pre">system.util</span></code></a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../_sources/system/system.keys.md.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="module-system-keys">
+<h1>Module <code class="docutils literal notranslate"><span class="pre">system.keys</span></code><a class="headerlink" href="#module-system-keys" title="Link to this heading">¶</a></h1>
+<p id="lua-system.keys">The keys module assigns names to the keycode constants that Phoenix sends in
+key events, and adds a few functions to make using them easier. This module
+uses the same names as the CraftOS <code class="docutils literal notranslate"><span class="pre">keys</span></code> API, so porting programs should be
+trivial.</p>
+<section id="index">
+<h2>Index<a class="headerlink" href="#index" title="Link to this heading">¶</a></h2>
+<div class="lua-index docutils container">
+<p><strong>Data</strong></p>
+<table class="table lua-index-table docutils align-default">
+<colgroup>
+<col style="width: 33.3%" />
+<col style="width: 66.7%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lua-system.keys.apostrophe" title="system.keys.apostrophe"><code class="docutils literal notranslate"><span class="pre">apostrophe</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lua-system.keys.at" title="system.keys.at"><code class="docutils literal notranslate"><span class="pre">at</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lua-system.keys.ax" title="system.keys.ax"><code class="docutils literal notranslate"><span class="pre">ax</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lua-system.keys.backslash" title="system.keys.backslash"><code class="docutils literal notranslate"><span class="pre">backslash</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lua-system.keys.backspace" title="system.keys.backspace"><code class="docutils literal notranslate"><span class="pre">backspace</span></code></a></p></td>
+<td><p>The rest have to be added manually</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lua-system.keys.capsLock" title="system.keys.capsLock"><code class="docutils literal notranslate"><span class="pre">capsLock</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lua-system.keys.circumflex" title="system.keys.circumflex"><code class="docutils literal notranslate"><span class="pre">circumflex</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lua-system.keys.colon" title="system.keys.colon"><code class="docutils literal notranslate"><span class="pre">colon</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lua-system.keys.comma" title="system.keys.comma"><code class="docutils literal notranslate"><span class="pre">comma</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lua-system.keys.convert" title="system.keys.convert"><code class="docutils literal notranslate"><span class="pre">convert</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lua-system.keys.delete" title="system.keys.delete"><code class="docutils literal notranslate"><span class="pre">delete</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lua-system.keys.down" title="system.keys.down"><code class="docutils literal notranslate"><span class="pre">down</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lua-system.keys.eight" title="system.keys.eight"><code class="docutils literal notranslate"><span class="pre">eight</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lua-system.keys.enter" title="system.keys.enter"><code class="docutils literal notranslate"><span class="pre">enter</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lua-system.keys.equals" title="system.keys.equals"><code class="docutils literal notranslate"><span class="pre">equals</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lua-system.keys.five" title="system.keys.five"><code class="docutils literal notranslate"><span class="pre">five</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lua-system.keys.four" title="system.keys.four"><code class="docutils literal notranslate"><span class="pre">four</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lua-system.keys.grave" title="system.keys.grave"><code class="docutils literal notranslate"><span class="pre">grave</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lua-system.keys.home" title="system.keys.home"><code class="docutils literal notranslate"><span class="pre">home</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lua-system.keys.insert" title="system.keys.insert"><code class="docutils literal notranslate"><span class="pre">insert</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lua-system.keys.kana" title="system.keys.kana"><code class="docutils literal notranslate"><span class="pre">kana</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lua-system.keys.kanji" title="system.keys.kanji"><code class="docutils literal notranslate"><span class="pre">kanji</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lua-system.keys.left" title="system.keys.left"><code class="docutils literal notranslate"><span class="pre">left</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lua-system.keys.leftAlt" title="system.keys.leftAlt"><code class="docutils literal notranslate"><span class="pre">leftAlt</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lua-system.keys.leftBracket" title="system.keys.leftBracket"><code class="docutils literal notranslate"><span class="pre">leftBracket</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lua-system.keys.leftCtrl" title="system.keys.leftCtrl"><code class="docutils literal notranslate"><span class="pre">leftCtrl</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lua-system.keys.leftShift" title="system.keys.leftShift"><code class="docutils literal notranslate"><span class="pre">leftShift</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lua-system.keys.leftSuper" title="system.keys.leftSuper"><code class="docutils literal notranslate"><span class="pre">leftSuper</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lua-system.keys.menu" title="system.keys.menu"><code class="docutils literal notranslate"><span class="pre">menu</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lua-system.keys.minus" title="system.keys.minus"><code class="docutils literal notranslate"><span class="pre">minus</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lua-system.keys.nine" title="system.keys.nine"><code class="docutils literal notranslate"><span class="pre">nine</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lua-system.keys.noconvert" title="system.keys.noconvert"><code class="docutils literal notranslate"><span class="pre">noconvert</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lua-system.keys.numLock" title="system.keys.numLock"><code class="docutils literal notranslate"><span class="pre">numLock</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lua-system.keys.numPadAdd" title="system.keys.numPadAdd"><code class="docutils literal notranslate"><span class="pre">numPadAdd</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lua-system.keys.numPadDecimal" title="system.keys.numPadDecimal"><code class="docutils literal notranslate"><span class="pre">numPadDecimal</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lua-system.keys.numPadDivide" title="system.keys.numPadDivide"><code class="docutils literal notranslate"><span class="pre">numPadDivide</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lua-system.keys.numPadEnter" title="system.keys.numPadEnter"><code class="docutils literal notranslate"><span class="pre">numPadEnter</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lua-system.keys.numPadEqual" title="system.keys.numPadEqual"><code class="docutils literal notranslate"><span class="pre">numPadEqual</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lua-system.keys.numPadMultiply" title="system.keys.numPadMultiply"><code class="docutils literal notranslate"><span class="pre">numPadMultiply</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lua-system.keys.numPadSubtract" title="system.keys.numPadSubtract"><code class="docutils literal notranslate"><span class="pre">numPadSubtract</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lua-system.keys.one" title="system.keys.one"><code class="docutils literal notranslate"><span class="pre">one</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lua-system.keys.pageDown" title="system.keys.pageDown"><code class="docutils literal notranslate"><span class="pre">pageDown</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lua-system.keys.pageUp" title="system.keys.pageUp"><code class="docutils literal notranslate"><span class="pre">pageUp</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lua-system.keys.pause" title="system.keys.pause"><code class="docutils literal notranslate"><span class="pre">pause</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lua-system.keys.period" title="system.keys.period"><code class="docutils literal notranslate"><span class="pre">period</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lua-system.keys.printScreen" title="system.keys.printScreen"><code class="docutils literal notranslate"><span class="pre">printScreen</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lua-system.keys.right" title="system.keys.right"><code class="docutils literal notranslate"><span class="pre">right</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lua-system.keys.rightAlt" title="system.keys.rightAlt"><code class="docutils literal notranslate"><span class="pre">rightAlt</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lua-system.keys.rightBracket" title="system.keys.rightBracket"><code class="docutils literal notranslate"><span class="pre">rightBracket</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lua-system.keys.rightCtrl" title="system.keys.rightCtrl"><code class="docutils literal notranslate"><span class="pre">rightCtrl</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lua-system.keys.rightShift" title="system.keys.rightShift"><code class="docutils literal notranslate"><span class="pre">rightShift</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lua-system.keys.rightSuper" title="system.keys.rightSuper"><code class="docutils literal notranslate"><span class="pre">rightSuper</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lua-system.keys.scrollLock" title="system.keys.scrollLock"><code class="docutils literal notranslate"><span class="pre">scrollLock</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lua-system.keys.semicolon" title="system.keys.semicolon"><code class="docutils literal notranslate"><span class="pre">semicolon</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lua-system.keys.seven" title="system.keys.seven"><code class="docutils literal notranslate"><span class="pre">seven</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lua-system.keys.six" title="system.keys.six"><code class="docutils literal notranslate"><span class="pre">six</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lua-system.keys.slash" title="system.keys.slash"><code class="docutils literal notranslate"><span class="pre">slash</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lua-system.keys.space" title="system.keys.space"><code class="docutils literal notranslate"><span class="pre">space</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lua-system.keys.stop" title="system.keys.stop"><code class="docutils literal notranslate"><span class="pre">stop</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lua-system.keys.tab" title="system.keys.tab"><code class="docutils literal notranslate"><span class="pre">tab</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lua-system.keys.three" title="system.keys.three"><code class="docutils literal notranslate"><span class="pre">three</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lua-system.keys.two" title="system.keys.two"><code class="docutils literal notranslate"><span class="pre">two</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lua-system.keys.underscore" title="system.keys.underscore"><code class="docutils literal notranslate"><span class="pre">underscore</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lua-system.keys.up" title="system.keys.up"><code class="docutils literal notranslate"><span class="pre">up</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lua-system.keys.yen" title="system.keys.yen"><code class="docutils literal notranslate"><span class="pre">yen</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lua-system.keys.zero" title="system.keys.zero"><code class="docutils literal notranslate"><span class="pre">zero</span></code></a></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Function</strong></p>
+<table class="table lua-index-table docutils align-default">
+<colgroup>
+<col style="width: 33.3%" />
+<col style="width: 66.7%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lua-system.keys.getCharacter" title="system.keys.getCharacter"><code class="docutils literal notranslate"><span class="pre">getCharacter()</span></code></a></p></td>
+<td><p>Returns a printable representation of the keycode if available.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lua-system.keys.getName" title="system.keys.getName"><code class="docutils literal notranslate"><span class="pre">getName()</span></code></a></p></td>
+<td><p>Returns the name for the specified keycode.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading">¶</a></h2>
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.backspace">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">backspace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.backspace" title="Link to this definition">¶</a></dt>
+<dd><p>The rest have to be added manually</p>
+</dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.tab">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">tab</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.tab" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.enter">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">enter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.enter" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.space">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">space</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.space" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.apostrophe">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">apostrophe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.apostrophe" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.comma">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">comma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.comma" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.minus">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">minus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.minus" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.period">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">period</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.period" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.slash">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">slash</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.slash" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.zero">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">zero</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.zero" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.one">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">one</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.one" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.two">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">two</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.two" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.three">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">three</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.three" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.four">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">four</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.four" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.five">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">five</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.five" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.six">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">six</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.six" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.seven">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">seven</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.seven" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.eight">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">eight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.eight" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.nine">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">nine</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.nine" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.semicolon">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">semicolon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.semicolon" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.equals">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">equals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.equals" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.leftBracket">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">leftBracket</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.leftBracket" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.backslash">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">backslash</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.backslash" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.rightBracket">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">rightBracket</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.rightBracket" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.grave">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">grave</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.grave" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.delete">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">delete</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.delete" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.insert">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">insert</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.insert" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.convert">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">convert</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.convert" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.noconvert">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">noconvert</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.noconvert" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.kana">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">kana</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.kana" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.kanji">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">kanji</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.kanji" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.yen">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">yen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.yen" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.numPadDecimal">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">numPadDecimal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.numPadDecimal" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.numPadAdd">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">numPadAdd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.numPadAdd" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.numPadSubtract">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">numPadSubtract</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.numPadSubtract" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.numPadMultiply">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">numPadMultiply</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.numPadMultiply" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.numPadDivide">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">numPadDivide</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.numPadDivide" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.numPadEqual">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">numPadEqual</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.numPadEqual" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.numPadEnter">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">numPadEnter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.numPadEnter" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.leftCtrl">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">leftCtrl</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.leftCtrl" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.rightCtrl">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">rightCtrl</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.rightCtrl" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.leftAlt">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">leftAlt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.leftAlt" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.rightAlt">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">rightAlt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.rightAlt" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.leftShift">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">leftShift</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.leftShift" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.rightShift">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">rightShift</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.rightShift" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.leftSuper">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">leftSuper</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.leftSuper" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.rightSuper">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">rightSuper</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.rightSuper" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.capsLock">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">capsLock</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.capsLock" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.numLock">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">numLock</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.numLock" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.scrollLock">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">scrollLock</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.scrollLock" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.printScreen">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">printScreen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.printScreen" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.pause">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">pause</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.pause" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.menu">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">menu</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.menu" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.stop">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">stop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.stop" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.ax">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">ax</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.ax" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.up">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">up</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.up" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.down">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">down</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.down" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.left">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">left</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.left" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.right">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">right</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.right" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.pageUp">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">pageUp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.pageUp" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.pageDown">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">pageDown</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.pageDown" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.home">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">home</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.home" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.circumflex">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">circumflex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.circumflex" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.at">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">at</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.at" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.colon">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">colon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.colon" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-system.keys.underscore">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">underscore</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-system.keys.underscore" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua function">
+<dt class="sig sig-object lua" id="lua-system.keys.getName">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">getName</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">number</span></code><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">nil</span></code><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#lua-system.keys.getName" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the name for the specified keycode.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>id</strong> (<code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">number</span></code>) – The keycode to check</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>result</strong> (<code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code><span class="w"> </span><span class="p">|</span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">nil</span></code>) – The name (which is a key in <code class="docutils literal notranslate"><span class="pre">keys</span></code>), or <code class="docutils literal notranslate"><span class="pre">nil</span></code> if the code is invalid</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="lua function">
+<dt class="sig sig-object lua" id="lua-system.keys.getCharacter">
+<span class="sig-prename descclassname"><span class="pre">system.keys.</span></span><span class="sig-name descname"><span class="pre">getCharacter</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">number</span></code><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">nil</span></code><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#lua-system.keys.getCharacter" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a printable representation of the keycode if available.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>id</strong> (<code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">number</span></code>) – The keycode to check</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>result</strong> (<code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code><span class="w"> </span><span class="p">|</span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">nil</span></code>) – The keycode’s character (in lowercase), or <code class="docutils literal notranslate"><span class="pre">nil</span></code> if the code doesn’t have a printable representation</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="system.log.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Module <code class="docutils literal notranslate"><span class="pre">system.log</span></code></div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="system.ipc.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Module <code class="docutils literal notranslate"><span class="pre">system.ipc</span></code></div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2021-2026 JackMacWindows
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Module <code class="docutils literal notranslate"><span class="pre">system.keys</span></code></a><ul>
+<li><a class="reference internal" href="#index">Index</a></li>
+<li><a class="reference internal" href="#api-reference">API Reference</a><ul>
+<li><a class="reference internal" href="#lua-system.keys.backspace"><code class="docutils literal notranslate"><span class="pre">system.keys.backspace</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.tab"><code class="docutils literal notranslate"><span class="pre">system.keys.tab</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.enter"><code class="docutils literal notranslate"><span class="pre">system.keys.enter</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.space"><code class="docutils literal notranslate"><span class="pre">system.keys.space</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.apostrophe"><code class="docutils literal notranslate"><span class="pre">system.keys.apostrophe</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.comma"><code class="docutils literal notranslate"><span class="pre">system.keys.comma</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.minus"><code class="docutils literal notranslate"><span class="pre">system.keys.minus</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.period"><code class="docutils literal notranslate"><span class="pre">system.keys.period</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.slash"><code class="docutils literal notranslate"><span class="pre">system.keys.slash</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.zero"><code class="docutils literal notranslate"><span class="pre">system.keys.zero</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.one"><code class="docutils literal notranslate"><span class="pre">system.keys.one</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.two"><code class="docutils literal notranslate"><span class="pre">system.keys.two</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.three"><code class="docutils literal notranslate"><span class="pre">system.keys.three</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.four"><code class="docutils literal notranslate"><span class="pre">system.keys.four</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.five"><code class="docutils literal notranslate"><span class="pre">system.keys.five</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.six"><code class="docutils literal notranslate"><span class="pre">system.keys.six</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.seven"><code class="docutils literal notranslate"><span class="pre">system.keys.seven</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.eight"><code class="docutils literal notranslate"><span class="pre">system.keys.eight</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.nine"><code class="docutils literal notranslate"><span class="pre">system.keys.nine</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.semicolon"><code class="docutils literal notranslate"><span class="pre">system.keys.semicolon</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.equals"><code class="docutils literal notranslate"><span class="pre">system.keys.equals</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.leftBracket"><code class="docutils literal notranslate"><span class="pre">system.keys.leftBracket</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.backslash"><code class="docutils literal notranslate"><span class="pre">system.keys.backslash</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.rightBracket"><code class="docutils literal notranslate"><span class="pre">system.keys.rightBracket</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.grave"><code class="docutils literal notranslate"><span class="pre">system.keys.grave</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.delete"><code class="docutils literal notranslate"><span class="pre">system.keys.delete</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.insert"><code class="docutils literal notranslate"><span class="pre">system.keys.insert</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.convert"><code class="docutils literal notranslate"><span class="pre">system.keys.convert</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.noconvert"><code class="docutils literal notranslate"><span class="pre">system.keys.noconvert</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.kana"><code class="docutils literal notranslate"><span class="pre">system.keys.kana</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.kanji"><code class="docutils literal notranslate"><span class="pre">system.keys.kanji</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.yen"><code class="docutils literal notranslate"><span class="pre">system.keys.yen</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.numPadDecimal"><code class="docutils literal notranslate"><span class="pre">system.keys.numPadDecimal</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.numPadAdd"><code class="docutils literal notranslate"><span class="pre">system.keys.numPadAdd</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.numPadSubtract"><code class="docutils literal notranslate"><span class="pre">system.keys.numPadSubtract</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.numPadMultiply"><code class="docutils literal notranslate"><span class="pre">system.keys.numPadMultiply</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.numPadDivide"><code class="docutils literal notranslate"><span class="pre">system.keys.numPadDivide</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.numPadEqual"><code class="docutils literal notranslate"><span class="pre">system.keys.numPadEqual</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.numPadEnter"><code class="docutils literal notranslate"><span class="pre">system.keys.numPadEnter</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.leftCtrl"><code class="docutils literal notranslate"><span class="pre">system.keys.leftCtrl</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.rightCtrl"><code class="docutils literal notranslate"><span class="pre">system.keys.rightCtrl</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.leftAlt"><code class="docutils literal notranslate"><span class="pre">system.keys.leftAlt</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.rightAlt"><code class="docutils literal notranslate"><span class="pre">system.keys.rightAlt</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.leftShift"><code class="docutils literal notranslate"><span class="pre">system.keys.leftShift</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.rightShift"><code class="docutils literal notranslate"><span class="pre">system.keys.rightShift</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.leftSuper"><code class="docutils literal notranslate"><span class="pre">system.keys.leftSuper</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.rightSuper"><code class="docutils literal notranslate"><span class="pre">system.keys.rightSuper</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.capsLock"><code class="docutils literal notranslate"><span class="pre">system.keys.capsLock</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.numLock"><code class="docutils literal notranslate"><span class="pre">system.keys.numLock</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.scrollLock"><code class="docutils literal notranslate"><span class="pre">system.keys.scrollLock</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.printScreen"><code class="docutils literal notranslate"><span class="pre">system.keys.printScreen</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.pause"><code class="docutils literal notranslate"><span class="pre">system.keys.pause</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.menu"><code class="docutils literal notranslate"><span class="pre">system.keys.menu</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.stop"><code class="docutils literal notranslate"><span class="pre">system.keys.stop</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.ax"><code class="docutils literal notranslate"><span class="pre">system.keys.ax</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.up"><code class="docutils literal notranslate"><span class="pre">system.keys.up</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.down"><code class="docutils literal notranslate"><span class="pre">system.keys.down</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.left"><code class="docutils literal notranslate"><span class="pre">system.keys.left</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.right"><code class="docutils literal notranslate"><span class="pre">system.keys.right</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.pageUp"><code class="docutils literal notranslate"><span class="pre">system.keys.pageUp</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.pageDown"><code class="docutils literal notranslate"><span class="pre">system.keys.pageDown</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.home"><code class="docutils literal notranslate"><span class="pre">system.keys.home</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.circumflex"><code class="docutils literal notranslate"><span class="pre">system.keys.circumflex</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.at"><code class="docutils literal notranslate"><span class="pre">system.keys.at</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.colon"><code class="docutils literal notranslate"><span class="pre">system.keys.colon</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.underscore"><code class="docutils literal notranslate"><span class="pre">system.keys.underscore</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.getName"><code class="docutils literal notranslate"><span class="pre">system.keys.getName()</span></code></a></li>
+<li><a class="reference internal" href="#lua-system.keys.getCharacter"><code class="docutils literal notranslate"><span class="pre">system.keys.getCharacter()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=58050c01"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>

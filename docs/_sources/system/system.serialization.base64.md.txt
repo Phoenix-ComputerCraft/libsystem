@@ -1,0 +1,18 @@
+# Module `system.serialization.base64`
+
+```{lua:currentmodule} None
+```
+
+```{lua:autoobject} system.serialization.base64
+:undoc-members: 
+:protected-members: 
+:globals: 
+:inherited-members-table: 
+:title: API Reference
+:members: 
+:recursive: 
+:index-table: 
+:exclude-members: 
+
+```
+

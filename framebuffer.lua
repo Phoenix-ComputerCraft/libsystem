@@ -1,43 +1,46 @@
---- The framebuffer library provides functions to make "window" and "framebuffer"
--- objects. These objects imitate a Terminal object (as returned by
--- @{system.terminal.openterm}) or GFXTerminal object (as returned by
--- @{system.terminal.opengfx}) that may or may not draw to a parent object.
--- Windows and framebuffers may be used as parents to other windows and
--- framebuffers, in addition to the root terminal object.
---
--- A framebuffer object holds its own state, can be redrawn onto the parent
--- terminal even if the parent is changed, can be removed from the parent and
--- used independently, and its contents can be accessed from code. A window
--- object simply changes the coordinates of writing methods, and is entirely
--- dependent on the parent.
---
--- The type of object returned by each function is dependent on the parent
--- passed in. If a Terminal object is passed, a Terminal object is created; if a
--- GFXTerminal object is passed, a GFXTerminal object is created. When creating
--- a framebuffer with no parent, the @{empty} fields are used to specify the type.
---
--- @module system.framebuffer
 
 local expect = require "expect"
 local util = require "util"
 
+--- The framebuffer library provides functions to make "window" and "framebuffer"
+--- objects. These objects imitate a Terminal object (as returned by
+--- `system.terminal.openterm`) or GFXTerminal object (as returned by
+--- `system.terminal.opengfx`) that may or may not draw to a parent object.
+--- Windows and framebuffers may be used as parents to other windows and
+--- framebuffers, in addition to the root terminal object.
+---
+--- A framebuffer object holds its own state, can be redrawn onto the parent
+--- terminal even if the parent is changed, can be removed from the parent and
+--- used independently, and its contents can be accessed from code. A window
+--- object simply changes the coordinates of writing methods, and is entirely
+--- dependent on the parent.
+---
+--- The type of object returned by each function is dependent on the parent
+--- passed in. If a Terminal object is passed, a Terminal object is created; if a
+--- GFXTerminal object is passed, a GFXTerminal object is created. When creating
+--- a framebuffer with no parent, the `empty` fields are used to specify the type.
+---
+--- !doctype module
+--- @class system.framebuffer
 local framebuffer = {}
 
 --- Empty objects for use when creating framebuffers with no parents.
--- @field text Used to create a text mode Terminal framebuffer
--- @field graphics Used to create a graphics mode GFXTerminal framebuffer
 framebuffer.empty = {
-    text = {}, -- Used to create a text mode Terminal framebuffer
-    graphics = {}, -- Used to create a graphics mode GFXTerminal framebuffer
+    --- Used to create a text mode Terminal framebuffer
+    ---@type Terminal
+    text = {},
+    --- Used to create a graphics mode GFXTerminal framebuffer
+    ---@type GFXTerminal
+    graphics = {},
 }
 
 --- Creates a new window object.
--- @tparam Terminal|GFXTerminal parent The parent object to render to
--- @tparam number x The X coordinate in the parent to start at
--- @tparam number y The Y coordinate in the parent to start at
--- @tparam number width The width of the window
--- @tparam number height The height of the window
--- @treturn Terminal|GFXTerminal The new window object
+--- @param parent Terminal|GFXTerminal The parent object to render to
+--- @param x number The X coordinate in the parent to start at
+--- @param y number The Y coordinate in the parent to start at
+--- @param width number The width of the window
+--- @param height number The height of the window
+--- @return Terminal|GFXTerminal result The new window object
 function framebuffer.window(parent, x, y, width, height)
     expect(1, parent, "Terminal", "GFXTerminal")
     expect(2, x, "number")
@@ -265,14 +268,14 @@ function framebuffer.window(parent, x, y, width, height)
 end
 
 --- Creates a new framebuffer object.
--- @tparam Terminal|GFXTerminal parent The parent object to render to, or a member of @{empty} to not use a parent
--- @tparam number|nil wx The X coordinate in the parent to start at (`nil` if there's no parent)
--- @tparam number|nil wy The Y coordinate in the parent to start at (`nil` if there's no parent)
--- @tparam number w The width of the framebuffer
--- @tparam number h The height of the framebuffer
--- @tparam[opt] boolean visible Whether the window should be visible upon creation
--- @tparam[opt] boolean transparency Whether the window should support transparency (i.e. replaces space colors with the color behind it)
--- @treturn Terminal|GFXTerminal The new framebuffer object
+--- @param parent Terminal|GFXTerminal The parent object to render to, or a member of `empty` to not use a parent
+--- @param wx number|nil The X coordinate in the parent to start at (`nil` if there's no parent)
+--- @param wy number|nil The Y coordinate in the parent to start at (`nil` if there's no parent)
+--- @param w number The width of the framebuffer
+--- @param h number The height of the framebuffer
+--- @param visible? boolean Whether the window should be visible upon creation
+--- @param transparency? boolean Whether the window should support transparency (i.e. replaces space colors with the color behind it)
+--- @return Terminal|GFXTerminal result The new framebuffer object
 function framebuffer.framebuffer(parent, wx, wy, w, h, visible, transparency)
     local isGFX
     if parent == framebuffer.empty.text or parent == framebuffer.empty.graphics then

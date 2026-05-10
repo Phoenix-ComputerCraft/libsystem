@@ -1,0 +1,54 @@
+# Module `system`
+
+```{lua:currentmodule} None
+```
+
+```{lua:autoobject} system
+:undoc-members: 
+:protected-members: 
+:globals: 
+:inherited-members-table: 
+:title: API Reference
+:members: 
+:recursive: 
+:index-table: 
+:exclude-members: expect, filesystem, framebuffer, graphics, hardware, ipc, keys, log, network, pretty, process, serialization, sync, terminal, util
+
+```
+
+
+```{toctree}
+:hidden:
+
+
+system.expect.md
+
+system.filesystem.md
+
+system.framebuffer.md
+
+system.graphics.md
+
+system.hardware.md
+
+system.ipc.md
+
+system.keys.md
+
+system.log.md
+
+system.network.md
+
+system.pretty.md
+
+system.process.md
+
+system.serialization.md
+
+system.sync.md
+
+system.terminal.md
+
+system.util.md
+
+```

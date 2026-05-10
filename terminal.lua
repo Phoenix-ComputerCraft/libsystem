@@ -1,12 +1,12 @@
---- The terminal module defines functions to allow interacting with the terminal
--- and screen, as well as handling user input.
---
--- @module system.terminal
-
 local expect = require "expect"
 local keys = require "keys"
 local util = require "util"
 
+--- The terminal module defines functions to allow interacting with the terminal
+--- and screen, as well as handling user input.
+---
+--- !doctype module
+--- @class system.terminal
 local terminal = {}
 
 --- Constants for colors. This includes both normal and British spelling.
@@ -32,10 +32,10 @@ terminal.colors = {
 }
 terminal.colours = terminal.colors
 
---- Converts a @{terminal.colors} constant to an ANSI escape code.
--- @tparam number color The color to convert
--- @tparam[opt=false] boolean background Whether the escape should set the background
--- @treturn string The escape code generated for the color
+--- Converts a `terminal.colors` constant to an ANSI escape code.
+--- @param color number The color to convert
+--- @param background? boolean Whether the escape should set the background (defaults to false)
+--- @return string result The escape code generated for the color
 function terminal.toEscape(color, background)
     expect(1, color, "number")
     expect(2, background, "boolean", "nil")
@@ -47,38 +47,38 @@ function terminal.toEscape(color, background)
 end
 
 --- Writes text to the standard output stream.
--- @param ... The entries to write. Each one will be separated by tabs (`\t`).
+--- @param ... any The entries to write. Each one will be separated by tabs (`\t`).
 function terminal.write(...)
     return util.syscall.write(...)
 end
 
 --- Writes text to the standard error stream.
--- @param ... The entries to write. Each one will be separated by tabs (`\t`).
+--- @param ... any The entries to write. Each one will be separated by tabs (`\t`).
 function terminal.writeerr(...)
     return util.syscall.writeerr(...)
 end
 
 --- Reads a number of characters from the standard input stream.
--- @tparam number n The number of characters to read
--- @treturn string|nil The text read, or nil if EOF was reached.
+--- @param n number The number of characters to read
+--- @return string|nil result The text read, or nil if EOF was reached.
 function terminal.read(n)
     expect(1, n, "number")
     return util.syscall.read(n)
 end
 
 --- Reads a single line of text from the standard input stream.
--- @treturn string|nil The text read, or nil if EOF was reached.
+--- @return string|nil result The text read, or nil if EOF was reached.
 function terminal.readline()
     return util.syscall.readline()
 end
 
 --- Reads a line of text from the standard input stream, allowing history and
--- autocompletion.
--- @tparam[opt] table history A list of history items to scroll through with the
--- arrow keys, with the first index being the most recent
--- @tparam[opt] function(partial:string):string[] completion A function to use
--- to get completion options
--- @treturn string|nil The text read, or nil if EOF was reached.
+--- autocompletion.
+--- @param history? table A list of history items to scroll through with the
+--- arrow keys, with the first index being the most recent
+--- @param completion? fun(partial:string):string[] A function to use
+--- to get completion options
+--- @return string|nil result The text read, or nil if EOF was reached.
 function terminal.readline2(history, completion)
     expect(1, history, "table", "nil")
     expect(2, completion, "function", "nil")
@@ -186,8 +186,8 @@ function terminal.readline2(history, completion)
 end
 
 --- Sets certain terminal control flags on the current TTY if available.
--- @tparam {cbreak?=boolean,delay?=boolean,echo?=boolean,keypad?=boolean,nlcr?=boolean,raw?=boolean} flags? The flags to set, or nil to just query.
--- @treturn {cbreak=boolean,delay=boolean,echo=boolean,keypad=boolean,nlcr=boolean,raw=boolean}|nil The flags that are currently set on the TTY, or nil if no TTY is available.
+--- @param flags? {cbreak?:boolean,delay?:boolean,echo?:boolean,keypad?:boolean,nlcr?:boolean,raw?:boolean} The flags to set, or nil to just query.
+--- @return {cbreak:boolean,delay:boolean,echo:boolean,keypad:boolean,nlcr:boolean,raw:boolean}|nil result The flags that are currently set on the TTY, or nil if no TTY is available.
 function terminal.termctl(flags)
     expect(1, flags, "table", "nil")
     if flags then
@@ -202,34 +202,32 @@ function terminal.termctl(flags)
 end
 
 --- Opens the current output TTY in exclusive text mode, allowing direct
--- manipulation of the screen buffer. Only one process may open the terminal at
--- a time. Once opened, the screen will be cleared, and stdout will be sent to
--- an off-screen buffer to be shown once the terminal is closed. The terminal
--- will automatically be closed on process exit.
--- @treturn[1] Terminal A terminal object for the current TTY.
--- @treturn[2] nil If the terminal could not be opened.
--- @treturn[2] string An error message describing why the terminal couldn't be opened.
+--- manipulation of the screen buffer. Only one process may open the terminal at
+--- a time. Once opened, the screen will be cleared, and stdout will be sent to
+--- an off-screen buffer to be shown once the terminal is closed. The terminal
+--- will automatically be closed on process exit.
+--- @return system.terminal.Terminal|nil term A terminal object for the current TTY, or `nil` if the terminal could not be opened.
+--- @return nil|string err An error message describing why the terminal couldn't be opened.
 function terminal.openterm()
     return util.syscall.openterm()
 end
 
 --- Opens the current output TTY in exclusive graphics mode, allowing direct
--- manipulation of the pixels if available. Only one process may open the terminal
--- at a time. Once opened, the screen will be cleared, and stdout will be sent to
--- an off-screen buffer to be shown once the terminal is closed. The terminal
--- will automatically be closed on process exit. This only works on CraftOS-PC.
--- @treturn[1] GFXTerminal A graphical terminal object for the current TTY.
--- @treturn[2] nil If the terminal could not be opened.
--- @treturn[2] string An error message describing why the terminal couldn't be opened.
+--- manipulation of the pixels if available. Only one process may open the terminal
+--- at a time. Once opened, the screen will be cleared, and stdout will be sent to
+--- an off-screen buffer to be shown once the terminal is closed. The terminal
+--- will automatically be closed on process exit. This only works on CraftOS-PC.
+--- @return system.terminal.GFXTerminal|nil term A grahics terminal object for the current TTY, or `nil` if the terminal could not be opened.
+--- @return nil|string err An error message describing why the terminal couldn't be opened.
 function terminal.opengfx()
     return util.syscall.opengfx()
 end
 
 --- Creates a new virtual TTY with the specified size. This can later be used in
--- a call to stdin/stdout/stderr.
--- @tparam number width The width of the new TTY.
--- @tparam number height The height of the new TTY.
--- @treturn TTY A new TTY object which is registered with the kernel. See [the syscall docs](/syscalls/terminal#mkttywidth-number-height-number-tty) for more info.
+--- a call to stdin/stdout/stderr.
+--- @param width number The width of the new TTY.
+--- @param height number The height of the new TTY.
+--- @return system.terminal.TTY result A new TTY object which is registered with the kernel. See [the syscall docs](/syscalls/terminal#mkttywidth-number-height-number-tty) for more info.
 function terminal.mktty(width, height)
     expect(1, width, "number")
     expect(2, height, "number")
@@ -247,40 +245,39 @@ function terminal.release()
 end
 
 --- Sets the standard input of the current process.
--- @tparam number|TTY|FileHandle|nil handle The input handle to switch to, as
--- either a physical TTY, a virtual TTY, a file, or nil.
+--- @param handle number|system.terminal.TTY|file*|nil The input handle to switch to, as
+--- either a physical TTY, a virtual TTY, a file, or nil.
 function terminal.stdin(handle)
     expect(1, handle, "number", "table", "nil")
     return util.syscall.stdin(handle)
 end
 
 --- Sets the standard output of the current process.
--- @tparam number|TTY|FileHandle|nil handle The output handle to switch to, as
--- either a physical TTY, a virtual TTY, a file, or nil.
+--- @param handle number|system.terminal.TTY|file*|nil The output handle to switch to, as
+--- either a physical TTY, a virtual TTY, a file, or nil.
 function terminal.stdout(handle)
     expect(1, handle, "number", "table", "nil")
     return util.syscall.stdout(handle)
 end
 
 --- Sets the standard error of the current process.
--- @tparam number|TTY|FileHandle|nil handle The output handle to switch to, as
--- either a physical TTY, a virtual TTY, a file, or nil.
+--- @param handle number|system.terminal.TTY|file*|nil The output handle to switch to, as
+--- either a physical TTY, a virtual TTY, a file, or nil.
 function terminal.stderr(handle)
     expect(1, handle, "number", "table", "nil")
     return util.syscall.stderr(handle)
 end
 
 --- Returns whether the current stdio are linked to a TTY.
--- @treturn boolean Whether the current stdin is linked to a TTY.
--- @treturn boolean Whether the current stdout is linked to a TTY.
+--- @return boolean result Whether the current stdin is linked to a TTY.
+--- @return boolean result Whether the current stdout is linked to a TTY.
 function terminal.istty()
     return util.syscall.istty()
 end
 
 --- Returns the current size of the TTY if available.
--- @treturn[1] number The width of the screen.
--- @treturn[1] number The height of the screen.
--- @treturn[2] nil If the current stdout is not a screen.
+--- @return number|nil width The width of the screen, or `nil` if the current stdout is not a screen.
+--- @return number|nil height The height of the screen, or `nil` if the current stdout is not a screen.
 function terminal.termsize()
     return util.syscall.termsize()
 end
@@ -289,9 +286,10 @@ terminal.getSize = terminal.termsize
 
 
 --- The Terminal type allows interfacing with the screen in exclusive text mode.
--- It provides the same functions as CraftOS does (with some minor differences),
--- and can be used with minimal conversion.
--- @type Terminal
+--- It provides the same functions as CraftOS does (with some minor differences),
+--- and can be used with minimal conversion.
+--- !doctype class
+--- @class system.terminal.Terminal
 local Terminal = {}
 function Terminal.close() end
 function Terminal.write(text) end
@@ -314,9 +312,10 @@ function Terminal.setPaletteColor(color, r, g, b) end
 function Terminal.getLine(y) end
 
 --- The GFXTerminal type allows interfacing with the screen in exclusive graphics
--- mode. It provides the same functions as CraftOS-PC does in mode 2, and can be
--- used with minimal conversion.
--- @type GFXTerminal
+--- mode. It provides the same functions as CraftOS-PC does in mode 2, and can be
+--- used with minimal conversion.
+--- !doctype class
+--- @class system.terminal.GFXTerminal
 local GFXTerminal = {}
 function GFXTerminal.close() end
 function GFXTerminal.getSize() end
@@ -329,5 +328,39 @@ function GFXTerminal.getPixels(x, y, width, height, asStr) end
 function GFXTerminal.drawPixels(x, y, data, width, height) end
 function GFXTerminal.getFrozen() end
 function GFXTerminal.setFrozen(frozen) end
+
+--- !doctype class
+--- @class system.terminal.TTY
+local retval = {
+    isTTY = true,
+    flags = {
+        cbreak = false,
+        delay = true,
+        echo = true,
+        keypad = false,
+        nlcr = true,
+        raw = false,
+    },
+    cursor = {x = 1, y = 1},
+    cursorBlink = true,
+    colors = {fg = '0', bg = 'f', bold = false},
+    size = {width = 51, height = 19},
+    dirtyLines = {},
+    palette = {},
+    dirtyPalette = {},
+    buffer = "",
+    preBuffer = "",
+    isLocked = false,
+    isGraphics = false,
+    textBuffer = {},
+    graphicsBuffer = {},
+    frontmostProcess = nil,
+    processList = {},
+    eof = false,
+    term = term,
+    id = nil,
+    process = nil,
+    scrollBuffer = nil,
+}
 
 return terminal

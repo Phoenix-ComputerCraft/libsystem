@@ -1,0 +1,18 @@
+# Module `system.sync`
+
+```{lua:currentmodule} None
+```
+
+```{lua:autoobject} system.sync
+:undoc-members: 
+:protected-members: 
+:globals: 
+:inherited-members-table: 
+:title: API Reference
+:members: 
+:recursive: 
+:index-table: 
+:exclude-members: 
+
+```
+

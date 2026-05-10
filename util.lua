@@ -1,15 +1,16 @@
---- The util module contains various functions that don't have any specific
--- system function, or help improve the usability of the general system.
---
--- @module system.util
-
 local expect = require "expect"
 
+--- The util module contains various functions that don't have any specific
+--- system function, or help improve the usability of the general system.
+---
+--- !doctype module
+--- @class system.util
 local util = {}
 
 --- util.syscall wraps all available syscalls into a table of functions, making
--- it possible to call syscalls using direct function calls instead of manually
--- yielding and managing the return values.
+--- it possible to call syscalls using direct function calls instead of manually
+--- yielding and managing the return values.
+--- @type {[string]: fun(...: any): ...}
 util.syscall = setmetatable({}, {__index = function(self, idx)
     return function(...)
         local retval = table.pack(coroutine.yield("syscall", idx, ...))
@@ -19,36 +20,32 @@ util.syscall = setmetatable({}, {__index = function(self, idx)
 end, __newindex = function() end})
 
 --- Takes a list of valid arguments + the arguments to a program, and returns a
--- table with the extracted arguments (and values if requested).
--- If an argument with all `-`s is passed, processing of arguments stops, and
--- all subsequent arguments are added to the list.
--- @tparam {[string]=string|boolean|nil} arguments A list of arguments that
--- the program accepts. Single-character arguments are handled through `-a`, and
--- longer arguments are handled through `--argument`. The value of the entry
--- specifies how the argument is handled:
--- * If the value is a truthy value, this argument requires a parameter.
--- * If the value is `"number"`, the argument requires a number parameter.
--- * If the value is `"multiple"`, the argument can be specified multiple times,
---   and will require a parameter. The values returned will be in a table.
--- * If the value is `"multiple number"`, the argument can be specified multiple
---   times, and will require a number parameter. These are also in a table.
--- * If the value is `false`, the argument does not take a parameter.
--- * If the value is `nil`, the argument does not exist and will throw an error
---   if passed.
--- * If the value starts with `@`, the parameter is an alias and will be stored
---   in that argument instead, following the same rules as that argument as well.
--- Special parameters to the parser can be added in a `[""]` table. The following
--- parameters are specified:
--- * `stopProcessingOnPositionalArgument` [boolean]: Whether to stop processing
---   arguments when a positional argument is passed, e.g. `myprog -s arg -i` will
---   return `args.s = true`, but `args.i = nil`.
--- @tparam string ... The arguments as passed to the program.
--- @treturn[1] {[string]=string|number|boolean|nil,string...} The arguments
--- as parsed from the arguments table as key-value entries, plus positional
--- arguments as list entries.
--- @treturn[2] nil If the arguments passed are invalid.
--- @treturn[2] string An error string describing what was invalid, which can be
--- printed for the user.
+--- table with the extracted arguments (and values if requested).
+--- If an argument with all `-`s is passed, processing of arguments stops, and
+--- all subsequent arguments are added to the list.
+--- @param arguments {[string]:string|boolean|nil} A list of arguments that the program accepts.
+--- Single-character arguments are handled through `-a`, and
+--- longer arguments are handled through `--argument`. The value of the entry
+--- specifies how the argument is handled:
+--- * If the value is a truthy value, this argument requires a parameter.
+--- * If the value is `"number"`, the argument requires a number parameter.
+--- * If the value is `"multiple"`, the argument can be specified multiple times,
+---  and will require a parameter. The values returned will be in a table.
+--- * If the value is `"multiple number"`, the argument can be specified multiple
+---  times, and will require a number parameter. These are also in a table.
+--- * If the value is `false`, the argument does not take a parameter.
+--- * If the value is `nil`, the argument does not exist and will throw an error
+---  if passed.
+--- * If the value starts with `@`, the parameter is an alias and will be stored
+---  in that argument instead, following the same rules as that argument as well.
+--- Special parameters to the parser can be added in a `[""]` table. The following
+--- parameters are specified:
+--- * `stopProcessingOnPositionalArgument` [boolean]: Whether to stop processing
+---  arguments when a positional argument is passed, e.g. `myprog -s arg -i` will
+---  return `args.s = true`, but `args.i = nil`.
+--- @param ... string The arguments as passed to the program.
+--- @return {[string]:string|number|boolean|nil,[number]:string}|nil args The arguments as parsed from the arguments table as key-value entries, plus positional arguments as list entries, or `nil` if the arguments passed are invalid.
+--- @return string err An error string describing what was invalid, which can be printed for the user.
 function util.argparse(arguments, ...)
     expect(1, arguments, "table")
     expect.field(arguments, "", "table", "nil")
@@ -104,32 +101,32 @@ function util.argparse(arguments, ...)
 end
 
 --- Starts a timer that will run for the specified number of seconds.
--- A timer event will be queued on completion.
--- @tparam number time The number of seconds to wait until sending the event
--- @treturn number The ID of the newly created timer
+--- A timer event will be queued on completion.
+--- @param time number The number of seconds to wait until sending the event
+--- @return number result The ID of the newly created timer
 function util.timer(time)
     expect(1, time, "number")
     return util.syscall.timer(time)
 end
 
 --- Starts an alarm that will run until the specified time.
--- A timer event will be queued on completion.
--- @tparam number time The time to send the event at
--- @treturn number The ID of the newly created alarm
+--- A timer event will be queued on completion.
+--- @param time number The time to send the event at
+--- @return number result The ID of the newly created alarm
 function util.alarm(time)
     expect(1, time, "number")
     return util.syscall.alarm(time)
 end
 
 --- Cancels a timer or alarm. This prevents the event from triggering.
--- @tparam number id The ID of the timer or alarm to cancel
+--- @param id number The ID of the timer or alarm to cancel
 function util.cancel(id)
     expect(1, id, "number")
     return util.syscall.cancel(id)
 end
 
 --- Pauses the process for a certain amount of time.
--- @tparam number time The amount of time to wait for, in seconds
+--- @param time number The amount of time to wait for, in seconds
 function util.sleep(time)
     expect(1, time, "number")
     local tm = util.syscall.timer(time)
@@ -138,18 +135,18 @@ function util.sleep(time)
 end
 
 --- Returns the next event from the event queue. This is intended to make it more
--- clear when events are being pulled, and also has the benefit of supporting
--- libsystem-craftos better.
--- @treturn string The event pulled
--- @treturn table The parameters for the event
+--- clear when events are being pulled, and also has the benefit of supporting
+--- libsystem-craftos better.
+--- @return string result The event pulled
+--- @return table result The parameters for the event
 function util.pullEvent()
     return coroutine.yield()
 end
 
 --- Waits until an event of the specified type(s) occurs.
--- @tparam string ... The event names to filter for
--- @treturn string The event type that was matched
--- @treturn table The parameters for the event
+--- @param ... string The event names to filter for
+--- @return string result The event type that was matched
+--- @return table result The parameters for the event
 function util.filterEvent(...)
     local types = {...}
     for i, v in ipairs(types) do expect(i, v, "string") end
@@ -160,8 +157,8 @@ function util.filterEvent(...)
 end
 
 --- Queues an event to loop back to the process.
--- @tparam string event The event name to send
--- @tparam table param The parameter table to send with the event
+--- @param event string The event name to send
+--- @param param table The parameter table to send with the event
 function util.queueEvent(event, param)
     expect(1, event, "string")
     expect(2, param, "table")
@@ -169,17 +166,17 @@ function util.queueEvent(event, param)
 end
 
 --- Peeks at the next event in the queue.
--- @treturn string|nil The name of the next event, or `nil` if there is none
--- @treturn table|nil The parameters of the next event.
+--- @return string|nil result The name of the next event, or `nil` if there is none
+--- @return table|nil result The parameters of the next event.
 function util.peekEvent()
     return util.syscall.peekEvent()
 end
 
 --- Splits a string into components.
--- @tparam string str The string to split
--- @tparam[opt="%s"] string sep The delimiter match class to split by
--- @tparam[opt=false] boolean includeEmpty Whether to include empty matches
--- @treturn {string...} The components of the string
+--- @param str string The string to split
+--- @param sep? string The delimiter match class to split by (defaults to "%s")
+--- @param includeEmpty? boolean Whether to include empty matches (defaults to false)
+--- @return {string...} result The components of the string
 function util.split(str, sep, includeEmpty)
     expect(1, str, "string")
     expect(2, sep, "string", "nil")
@@ -198,8 +195,8 @@ function util.split(str, sep, includeEmpty)
 end
 
 --- Copies a value recursively, including all its keys and values.
--- @tparam any value The value to copy
--- @treturn any A copy of the value, with all keys, values, and metatables duplicated.
+--- @param value any The value to copy
+--- @return any result A copy of the value, with all keys, values, and metatables duplicated.
 function util.copy(value)
     if type(value) == "table" then
         local retval = setmetatable({}, util.copy(getmetatable(value)))
@@ -211,11 +208,11 @@ end
 local eventListeners = {}
 
 --- Adds an event listener to the listening module.
--- @tparam string event The event to listen for
--- @tparam function(string,table):boolean callback The function to call when
--- the event is queued. If the function returns a truthy value, processing for
--- the current event will stop. If the function throws an error, the loop will
--- stop.
+--- @param event string The event to listen for
+--- @param callback fun(string,table):boolean The function to call when
+--- the event is queued. If the function returns a truthy value, processing for
+--- the current event will stop. If the function throws an error, the loop will
+--- stop.
 function util.addEventListener(event, callback)
     expect(1, event, "string")
     expect(2, callback, "function")
@@ -224,8 +221,8 @@ function util.addEventListener(event, callback)
 end
 
 --- Removes an event listener from the listening module.
--- @tparam string event The event to listen for
--- @tparam function(string,table) callback The function to remove
+--- @param event string The event to listen for
+--- @param callback fun(string,table) The function to remove
 function util.removeEventListener(event, callback)
     expect(1, event, "string")
     expect(2, callback, "function")
@@ -240,7 +237,7 @@ function util.removeEventListener(event, callback)
 end
 
 --- Runs the event listening loop on the current thread, blocking forever.
--- @treturn string The error that caused the function to stop
+--- @return string result The error that caused the function to stop
 function util.runEvents()
     while true do
         local event, param = coroutine.yield()
@@ -255,15 +252,15 @@ function util.runEvents()
 end
 
 --- Runs the event listening loop on a new thread, allowing code to run after.
--- @treturn number The ID of the new thread
+--- @return number result The ID of the new thread
 function util.startEvents()
     return util.syscall.newthread(util.runEvents)
 end
 
 --- Returns the type of the parameter, with the ability to check the __name
--- metamethod for custom types.
--- @tparam any value The value to check
--- @treturn string The type of the value
+--- metamethod for custom types.
+--- @param value any The value to check
+--- @return string result The type of the value
 function util.type(value)
     local t = type(value)
     if t == "table" then
@@ -341,10 +338,10 @@ local CRC32 = {[0xEDB88320] = {
 }}
 
 --- Calculates the CRC-32 checksum of the specified data.
--- @tparam string str The data to checksum
--- @tparam[opt=0xEDB88320] table|number polynomial The polynomial for the CRC, or the lookup table to use
--- @tparam[opt=0xFFFFFFFF] number crc The initial CRC value
--- @treturn number The calculated CRC checksum
+--- @param str string The data to checksum
+--- @param polynomial? table|number The polynomial for the CRC, or the lookup table to use (defaults to 0xEDB88320)
+--- @param crc? number The initial CRC value (defaults to 0xFFFFFFFF)
+--- @return number result The calculated CRC checksum
 function util.crc32(str, polynomial, crc)
     expect(1, str, "string")
     polynomial = expect(2, polynomial, "table", "number", "nil") or 0xEDB88320

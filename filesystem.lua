@@ -1,19 +1,18 @@
---- The filesystem module implements common operations for working with the
--- filesystem, including wrappers for syscalls.
---
--- @module system.filesystem
-
 local util = require "util"
 local expect = require "expect"
 
+--- The filesystem module implements common operations for working with the
+--- filesystem, including wrappers for syscalls.
+---
+--- !doctype module
+--- @class system.filesystem
 local filesystem = {}
 
 --- Opens a file for reading or writing.
--- @tparam string path The path to the file to open
--- @tparam string mode The mode to open the file in: [rwa]b?
--- @treturn[1] FileHandle The file handle, which has the same functions as CraftOS file handles
--- @treturn[2] nil If the file could not be opened
--- @treturn[2] string An error message describing why the file couldn't be opened
+--- @param path string The path to the file to open
+--- @param mode string The mode to open the file in: [rwa]b?
+--- @return system.filesystem.FileHandle|nil handle The file handle, which has the same functions as CraftOS file handles
+--- @return nil|string err An error message describing why the file couldn't be opened
 function filesystem.open(path, mode)
     expect(1, path, "string")
     expect(2, mode, "string")
@@ -21,17 +20,17 @@ function filesystem.open(path, mode)
 end
 
 --- Returns a list of files in a directory.
--- @tparam string path The path to query
--- @treturn table A list of files and folders in the directory
+--- @param path string The path to query
+--- @return table result A list of files and folders in the directory
 function filesystem.list(path)
     expect(1, path, "string")
     return util.syscall.list(path)
 end
 
 --- Returns a table with various information about a file or directory.
--- @tparam string path The path to query
--- @tparam[opt=false] boolean nolink Whether to not resolve links to the file
--- @treturn FileStat A table with information about the path
+--- @param path string The path to query
+--- @param nolink? boolean Whether to not resolve links to the file (defaults to false)
+--- @return system.filesystem.FileStat result A table with information about the path
 function filesystem.stat(path, nolink)
     expect(1, path, "string")
     expect(2, nolink, "nil", "boolean")
@@ -39,15 +38,15 @@ function filesystem.stat(path, nolink)
 end
 
 --- Deletes a file or directory at a path, removing any subentries if present.
--- @tparam string path The path to remove
+--- @param path string The path to remove
 function filesystem.remove(path)
     expect(1, path, "string")
     return util.syscall.remove(path)
 end
 
 --- Moves a file or directory on the same filesystem.
--- @tparam string from The original file to move
--- @tparam string to The new path for the file
+--- @param from string The original file to move
+--- @param to string The new path for the file
 function filesystem.rename(from, to)
     expect(1, from, "string")
     expect(2, to, "string")
@@ -55,15 +54,15 @@ function filesystem.rename(from, to)
 end
 
 --- Creates a directory, making any parent paths that don't exist.
--- @tparam string path The directory to create
+--- @param path string The directory to create
 function filesystem.mkdir(path)
     expect(1, path, "string")
     return util.syscall.mkdir(path)
 end
 
 --- Creates a (symbolic) link to a file.
--- @tparam string path The path of the new link
--- @tparam string location The location to point the link to
+--- @param path string The path of the new link
+--- @param location string The location to point the link to
 function filesystem.link(path, location)
     expect(1, path, "string")
     expect(2, location, "string")
@@ -71,16 +70,16 @@ function filesystem.link(path, location)
 end
 
 --- Creates a FIFO.
--- @tparam string path The FIFO to create
+--- @param path string The FIFO to create
 function filesystem.mkfifo(path)
     expect(1, path, "string")
     return util.syscall.mkfifo(path)
 end
 
 --- Changes the permissions (mode) of the file at a path.
--- @tparam string path The path to modify
--- @tparam string|nil user The user to modify, or nil to modify world permissions
--- @tparam number|string|{read?=boolean,write?=boolean,execute?=boolean} mode The new permissions, as either an octal bitmask, a string in the format "[+-=][rwx]+" or "[r-][w-][x-]", or a table with the permissions to set (any `nil` arguments are left unset).
+--- @param path string The path to modify
+--- @param user string|nil The user to modify, or nil to modify world permissions
+--- @param mode number|string|{read?:boolean,write?:boolean,execute?:boolean} The new permissions, as either an octal bitmask, a string in the format "[+-=][rwx]+" or "[r-][w-][x-]", or a table with the permissions to set (any `nil` arguments are left unset).
 function filesystem.chmod(path, user, mode)
     expect(1, path, "string")
     expect(2, user, "string", "nil")
@@ -96,8 +95,8 @@ function filesystem.chmod(path, user, mode)
 end
 
 --- Changes the owner of a file or directory.
--- @tparam string path The path to modify
--- @tparam string user The new owner of the file
+--- @param path string The path to modify
+--- @param user string The new owner of the file
 function filesystem.chown(path, user)
     expect(1, path, "string")
     expect(2, user, "string")
@@ -105,18 +104,18 @@ function filesystem.chown(path, user)
 end
 
 --- Changes the root directory of the current and future child processes.
--- This function requires root.
--- @tparam string path The new root path to change to
+--- This function requires root.
+--- @param path string The new root path to change to
 function filesystem.chroot(path)
     expect(1, path, "string")
     return util.syscall.chroot(path)
 end
 
 --- Mounts a filesystem of the specified type to a directory.
--- @tparam string type The type of filesystem to mount
--- @tparam string src The source of the mount (depends on the FS type)
--- @tparam string dest The destination directory to mount to
--- @tparam[opt] table options A table of options to pass to the filesystem
+--- @param type string The type of filesystem to mount
+--- @param src string The source of the mount (depends on the FS type)
+--- @param dest string The destination directory to mount to
+--- @param options? table A table of options to pass to the filesystem
 function filesystem.mount(type, src, dest, options)
     expect(1, type, "string")
     expect(2, src, "string")
@@ -126,21 +125,21 @@ function filesystem.mount(type, src, dest, options)
 end
 
 --- Unmounts a mounted filesystem.
--- @tparam string path The filesystem to unmount
+--- @param path string The filesystem to unmount
 function filesystem.unmount(path)
     expect(1, path, "string")
     return util.syscall.unmount(path)
 end
 
 --- Returns a list of mounts currently available.
--- @treturn [{path:string,type:string,source:string,options:table}] A list of mounts and their properties.
+--- @return {path:string,type:string,source:string,options:table}[] result A list of mounts and their properties.
 function filesystem.mountlist()
     return util.syscall.mountlist()
 end
 
 --- Registers the process to receive filesystem events for a path. Note that this is not recursive.
--- @tparam string path The path to register for
--- @tparam[opt] boolean enabled Whether to enable events (defaults to true)
+--- @param path string The path to register for
+--- @param enabled? boolean Whether to enable events (defaults to true)
 function filesystem.fsevent(path, enabled)
     expect(1, path, "string")
     expect(2, enabled, "boolean", "nil")
@@ -148,15 +147,15 @@ function filesystem.fsevent(path, enabled)
 end
 
 --- Combines the specified path components into a single path, canonicalizing any links and ./.. paths.
--- @tparam string ... The path components to combine
--- @treturn string The combined and canonicalized path
+--- @param ... string The path components to combine
+--- @return string result The combined and canonicalized path
 function filesystem.combine(...)
     return util.syscall.combine(...)
 end
 
 --- Gets the absolute path from a path string.
--- @tparam string path The path to convert
--- @treturn string An absolute path pointing to the file
+--- @param path string The path to convert
+--- @return string result An absolute path pointing to the file
 function filesystem.absolute(path)
     expect(1, path, "string")
     path = filesystem.combine(path)
@@ -165,9 +164,9 @@ function filesystem.absolute(path)
 end
 
 --- Copies a file or directory.
--- @tparam string from The path to copy from
--- @tparam string to The path to copy to
--- @tparam[opt] boolean preserve Whether to preserve permissions when copying
+--- @param from string The path to copy from
+--- @param to string The path to copy to
+--- @param preserve? boolean Whether to preserve permissions when copying
 function filesystem.copy(from, to, preserve)
     expect(1, from, "string")
     expect(2, to, "string")
@@ -197,8 +196,8 @@ function filesystem.copy(from, to, preserve)
 end
 
 --- Moves a file or directory, allowing cross-filesystem operations.
--- @tparam string from The path to move from
--- @tparam string to The path to move to
+--- @param from string The path to move from
+--- @param to string The path to move to
 function filesystem.move(from, to)
     expect(1, from, "string")
     expect(2, to, "string")
@@ -232,16 +231,16 @@ function filesystem.move(from, to)
 end
 
 --- Returns the file name for a path.
--- @tparam string path The path to use
--- @treturn string The file name of the path
+--- @param path string The path to use
+--- @return string result The file name of the path
 function filesystem.basename(path)
     expect(1, path, "string")
     return filesystem.combine(path):match "[^/]*$"
 end
 
 --- Returns the parent directory for a path.
--- @tparam string path The path to use
--- @treturn string The parent directory of the path
+--- @param path string The path to use
+--- @return string result The parent directory of the path
 function filesystem.dirname(path)
     expect(1, path, "string")
     local p = filesystem.combine(path):match "^(.*)/[^/]*$"
@@ -270,8 +269,8 @@ local function aux_find(options, pathc, i)
 end
 
 --- Searches the filesystem for paths matching a glob-style wildcard.
--- @tparam string wildcard The pathspec to match
--- @treturn table A list of matching file paths
+--- @param wildcard string The pathspec to match
+--- @return table result A list of matching file paths
 function filesystem.find(wildcard)
     expect(1, wildcard, "string")
     local parts = {}
@@ -282,17 +281,17 @@ function filesystem.find(wildcard)
 end
 
 --- Convenience function for determining whether a file exists.
--- This simply checks that @{stat} does not return `nil`.
--- @tparam string path The path to check
--- @treturn boolean Whether the path exists
+--- This simply checks that `stat` does not return `nil`.
+--- @param path string The path to check
+--- @return boolean result Whether the path exists
 function filesystem.exists(path)
     expect(1, path, "string")
     return filesystem.stat(path) ~= nil
 end
 
 --- Returns whether the path exists and is a file.
--- @tparam string path The path to check
--- @treturn boolean Whether the path is a file
+--- @param path string The path to check
+--- @return boolean result Whether the path is a file
 function filesystem.isFile(path)
     expect(1, path, "string")
     local s = filesystem.stat(path)
@@ -301,8 +300,8 @@ function filesystem.isFile(path)
 end
 
 --- Returns whether the path exists and is a directory.
--- @tparam string path The path to check
--- @treturn boolean Whether the path is a directory
+--- @param path string The path to check
+--- @return boolean result Whether the path is a directory
 function filesystem.isDir(path)
     expect(1, path, "string")
     local s = filesystem.stat(path)
@@ -311,8 +310,8 @@ function filesystem.isDir(path)
 end
 
 --- Returns whether the path exists and is a link.
--- @tparam string path The path to check
--- @treturn boolean Whether the path is a link
+--- @param path string The path to check
+--- @return boolean result Whether the path is a link
 function filesystem.isLink(path)
     expect(1, path, "string")
     local s = filesystem.stat(path)
@@ -321,12 +320,12 @@ function filesystem.isLink(path)
 end
 
 --- Returns the effective permissions on a file or stat entry for the selected user.
--- @tparam string|FileStat file The file path or stat to check
--- @tparam[opt] string user The user to check for (defaults to the current user)
--- @treturn {read:boolean,write:boolean,execute:boolean}|nil The permissions for the user, or `nil` if the file doesn't exist
+--- @param file string|system.filesystem.FileStat The file path or stat to check
+--- @param user? string The user to check for (defaults to the current user)
+--- @return {read:boolean,write:boolean,execute:boolean}|nil result The permissions for the user, or `nil` if the file doesn't exist
 function filesystem.effectivePermissions(file, user)
     expect(1, file, "string", "table")
-    user = expect(2, user, "number", "nil") or util.syscall.getpid()
+    user = expect(2, user, "number", "nil") or util.syscall.getuser()
     if type(file) == "string" then
         file = util.syscall.stat(file)
         if not file then return nil end
@@ -337,7 +336,8 @@ function filesystem.effectivePermissions(file, user)
 end
 
 --- A table which stores file statistics.
--- @type FileStat
+--- !doctype class
+--- @class system.filesystem.FileStat
 local FileStat = {}
 --- Stores the type of file: one of "file", "directory", "link", "special"
 FileStat.type = ""
@@ -355,7 +355,7 @@ FileStat.permissions = {
     write = false, -- Whether the file can be written to
     execute = false -- Whether the file can be executed
 }
---- The permissions of the file for all users not in @{FileStat.permissions}
+--- The permissions of the file for all users not in `FileStat.permissions`
 FileStat.worldPermissions = {
     read = false, -- Whether the file can be read
     write = false, -- Whether the file can be written to

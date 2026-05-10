@@ -1,0 +1,18 @@
+# Module `system.terminal`
+
+```{lua:currentmodule} None
+```
+
+```{lua:autoobject} system.terminal
+:undoc-members: 
+:protected-members: 
+:globals: 
+:inherited-members-table: 
+:title: API Reference
+:members: 
+:recursive: 
+:index-table: 
+:exclude-members: 
+
+```
+

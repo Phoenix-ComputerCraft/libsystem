@@ -1,17 +1,17 @@
---- The network module implements functions for making and hosting connections
--- with local and Internet-connected computers, as well as managing the network
--- stack configuration.
---
--- @module system.network
-
 local util = require "util"
 local expect = require "expect"
 
+--- The network module implements functions for making and hosting connections
+--- with local and Internet-connected computers, as well as managing the network
+--- stack configuration.
+---
+--- !doctype module
+--- @class system.network
 local network = {route = {}, arp = {}}
 
 --- Parses a URI into its components.
--- @tparam string uri The URI to parse
--- @treturn table The components of the URI
+--- @param uri string The URI to parse
+--- @return table result The components of the URI
 function network.parseURI(uri)
     local info = {scheme = ""}
     for c in uri:gmatch "." do
@@ -49,9 +49,8 @@ function network.parseURI(uri)
 end
 
 --- Creates a new connection to a remote server.
--- @tparam string|table options The URI to connect with, or a table of options
--- (see the connect syscall docs for more information)
--- @treturn Handle A handle to the connection
+--- @param options string|table The URI to connect with, or a table of options (see the connect syscall docs for more information)
+--- @return system.network.Handle result A handle to the connection
 function network.connect(options)
     expect(1, options, "table", "string")
     if type(options) == "table" then expect.field(options, "url", "string") end
@@ -59,11 +58,9 @@ function network.connect(options)
 end
 
 --- Connects to an HTTP(S) server, sends a GET request and waits for a response.
--- @tparam string|table options The URL to connect to, or a table of options
--- (see the connect syscall docs for more information)
--- @treturn[1] Handle The handle to the response data
--- @treturn[2] nil If the connection failed
--- @treturn[2] string An error describing why the connection failed
+--- @param options string|table The URL to connect to, or a table of options (see the connect syscall docs for more information)
+--- @return system.network.Handle|nil The handle to the response data, or `nil` if the connection failed
+--- @return nil|string An error describing why the connection failed
 function network.get(options)
     expect(1, options, "table", "string")
     if type(options) == "table" then
@@ -82,13 +79,11 @@ function network.get(options)
 end
 
 --- Connects to an HTTP(S) server, sends a GET request, waits for a response,
--- and returns the data received after closing the connection.
--- @tparam string url The URL to connect to
--- @tparam[opt] table headers Any headers to send in the request
--- @treturn[1] string The response data sent from the server
--- @treturn[1] number The HTTP response code for the response
--- @treturn[2] nil If the connection failed
--- @treturn[2] string An error describing why the connection failed
+--- and returns the data received after closing the connection.
+--- @param url string The URL to connect to
+--- @param headers? table Any headers to send in the request
+--- @return string|nil data The response data sent from the server, or `nil` if the connection failed
+--- @return number|string code The HTTP response code for the response, or an error describing why the connection failed
 function network.getData(url, headers)
     expect(1, url, "string")
     expect(2, headers, "table", "nil")
@@ -109,11 +104,9 @@ function network.getData(url, headers)
 end
 
 --- Connects to an HTTP(S) server, sends a HEAD request and waits for a response.
--- @tparam string|table options The URL to connect to, or a table of options
--- (see the connect syscall docs for more information)
--- @treturn[1] Handle The handle to the response data
--- @treturn[2] nil If the connection failed
--- @treturn[2] string An error describing why the connection failed
+--- @param options string|table The URL to connect to, or a table of options (see the connect syscall docs for more information)
+--- @return system.network.Handle|nil The handle to the response data, or `nil` if the connection failed
+--- @return nil|string An error describing why the connection failed
 function network.head(options)
     expect(1, options, "table", "string")
     if type(options) == "table" then
@@ -136,11 +129,9 @@ function network.head(options)
 end
 
 --- Connects to an HTTP(S) server, sends an OPTIONS request and waits for a response.
--- @tparam string|table options The URL to connect to, or a table of options
--- (see the connect syscall docs for more information)
--- @treturn[1] Handle The handle to the response data
--- @treturn[2] nil If the connection failed
--- @treturn[2] string An error describing why the connection failed
+--- @param options string|table The URL to connect to, or a table of options (see the connect syscall docs for more information)
+--- @return system.network.Handle|nil The handle to the response data, or `nil` if the connection failed
+--- @return nil|string An error describing why the connection failed
 function network.options(options)
     expect(1, options, "table", "string")
     if type(options) == "table" then
@@ -163,12 +154,10 @@ function network.options(options)
 end
 
 --- Connects to an HTTP(S) server, sends a POST request and waits for a response.
--- @tparam string|table options The URL to connect to, or a table of options
--- (see the connect syscall docs for more information)
--- @tparam string data The data to send to the server
--- @treturn[1] Handle The handle to the response data
--- @treturn[2] nil If the connection failed
--- @treturn[2] string An error describing why the connection failed
+--- @param options string|table The URL to connect to, or a table of options (see the connect syscall docs for more information)
+--- @param data string The data to send to the server
+--- @return system.network.Handle|nil The handle to the response data, or `nil` if the connection failed
+--- @return nil|string An error describing why the connection failed
 function network.post(options, data)
     expect(1, options, "table", "string")
     expect(2, data, "string")
@@ -192,12 +181,10 @@ function network.post(options, data)
 end
 
 --- Connects to an HTTP(S) server, sends a PUT request and waits for a response.
--- @tparam string|table options The URL to connect to, or a table of options
--- (see the connect syscall docs for more information)
--- @tparam string data The data to send to the server
--- @treturn[1] Handle The handle to the response data
--- @treturn[2] nil If the connection failed
--- @treturn[2] string An error describing why the connection failed
+--- @param options string|table The URL to connect to, or a table of options (see the connect syscall docs for more information)
+--- @param data string The data to send to the server
+--- @return system.network.Handle|nil The handle to the response data, or `nil` if the connection failed
+--- @return nil|string An error describing why the connection failed
 function network.put(options, data)
     expect(1, options, "table", "string")
     expect(2, data, "string")
@@ -221,12 +208,10 @@ function network.put(options, data)
 end
 
 --- Connects to an HTTP(S) server, sends a DELETE request and waits for a response.
--- @tparam string|table options The URL to connect to, or a table of options
--- (see the connect syscall docs for more information)
--- @tparam[opt] string data The data to send to the server, if required
--- @treturn[1] Handle The handle to the response data
--- @treturn[2] nil If the connection failed
--- @treturn[2] string An error describing why the connection failed
+--- @param options string|table The URL to connect to, or a table of options (see the connect syscall docs for more information)
+--- @param data string The data to send to the server
+--- @return system.network.Handle|nil The handle to the response data, or `nil` if the connection failed
+--- @return nil|string An error describing why the connection failed
 function network.delete(options, data)
     expect(1, options, "table", "string")
     expect(2, data, "string", "nil")
@@ -332,5 +317,26 @@ function network.urlEncode(str)
         end)
         :gsub(" ", "+")
 end
+
+--- !doctype class
+--- @class system.network.Handle: file*
+local Handle = {}
+
+--- Returns the status of the handle.
+--- @return "ready"|"connecting"|"open"|"closed"|"error" status The status of the handle
+--- @return string|nil error If in error state, an error message associated with the status
+function Handle:status() return "error" end
+
+--- !doctype class
+--- @class system.network.HTTPHandle: system.network.Handle
+local HTTPHandle = {}
+
+--- Returns the response headers for the request.
+--- @return {[string]: string}|nil headers The headers in the response
+function HTTPHandle:responseHeaders() end
+
+--- Returns the response code for the request.
+--- @return number|nil code The code from the response
+function HTTPHandle:responseCode() end
 
 return network

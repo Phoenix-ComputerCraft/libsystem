@@ -1,20 +1,22 @@
---- The serialization module provides functions for serializing and deserializing
--- objects in multiple formats, as well as some miscellaneous encoding types.
---
--- @module system.serialization
-
 local expect = require "expect"
 
-local serialization = {base64 = {}, json = {}, lua = {}, toml = {}}
+--- The serialization module provides functions for serializing and deserializing
+--- objects in multiple formats, as well as some miscellaneous encoding types.
+---
+--- !doctype module
+--- @class system.serialization
+local serialization = {}
 
---- serialization.base64
--- @section serialization.base64
+--- !doctype module
+--- Base64 encoder/decoder
+--- @class system.serialization.base64
+serialization.base64 = {}
 
 local b64str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
 
 --- Encodes a binary string into Base64.
--- @tparam string str The string to encode
--- @treturn string The string's representation in Base64
+--- @param str string The string to encode
+--- @return string result The string's representation in Base64
 function serialization.base64.encode(str)
     expect(1, str, "string")
     local retval = ""
@@ -36,8 +38,8 @@ function serialization.base64.encode(str)
 end
 
 --- Decodes a Base64 string to binary.
--- @tparam string str The Base64 to decode
--- @treturn string The decoded data
+--- @param str string The Base64 to decode
+--- @return string result The decoded data
 function serialization.base64.decode(str)
     expect(1, str, "string")
     local retval = ""
@@ -55,32 +57,34 @@ function serialization.base64.decode(str)
     return retval
 end
 
---- serialization.json
--- @section serialization.json
+--- JSON encoder/decoder
+--- !doctype module
+--- @class system.serialization.json
+serialization.json = {}
 
---
--- json.lua
---
--- Copyright (c) 2020 rxi
---
--- Permission is hereby granted, free of charge, to any person obtaining a copy of
--- this software and associated documentation files (the "Software"), to deal in
--- the Software without restriction, including without limitation the rights to
--- use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
--- of the Software, and to permit persons to whom the Software is furnished to do
--- so, subject to the following conditions:
---
--- The above copyright notice and this permission notice shall be included in all
--- copies or substantial portions of the Software.
---
--- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
--- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
--- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
--- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
--- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
--- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
--- SOFTWARE.
---
+---
+--- json.lua
+---
+--- Copyright (c) 2020 rxi
+---
+--- Permission is hereby granted, free of charge, to any person obtaining a copy of
+--- this software and associated documentation files (the "Software"), to deal in
+--- the Software without restriction, including without limitation the rights to
+--- use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+--- of the Software, and to permit persons to whom the Software is furnished to do
+--- so, subject to the following conditions:
+---
+--- The above copyright notice and this permission notice shall be included in all
+--- copies or substantial portions of the Software.
+---
+--- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+--- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+--- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+--- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+--- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+--- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+--- SOFTWARE.
+---
 
 local function rotable(str)
     return setmetatable({}, {__newindex = function() error("attempt to modify read-only table") end, __tostring = function() return str end})
@@ -89,9 +93,9 @@ end
 serialization.json.null = rotable "null"
 serialization.json.emptyArray = rotable "[]"
 
--------------------------------------------------------------------------------
--- Encode
--------------------------------------------------------------------------------
+--- ----------------------------------------------------------------------------
+--- Encode
+--- ----------------------------------------------------------------------------
 
 local encode
 
@@ -200,16 +204,16 @@ end
 
 
 --- Serializes an arbitrary Lua object into a JSON string.
--- @tparam any val The value to encode
--- @treturn string The JSON representation of the object
+--- @param val any The value to encode
+--- @return string result The JSON representation of the object
 function serialization.json.encode(val)
     return ( encode(val) )
 end
 
 
--------------------------------------------------------------------------------
--- Decode
--------------------------------------------------------------------------------
+--- ----------------------------------------------------------------------------
+--- Decode
+--- ----------------------------------------------------------------------------
 
 local parse
 
@@ -446,9 +450,9 @@ end
 
 
 --- Parses a JSON string and returns a Lua value represented by the string.
--- @tparam string str The JSON string to decode
--- @tparam[opt] {binary_escapes:boolean|nil} opts Any options to pass
--- @treturn any The Lua value from the JSON
+--- @param str string The JSON string to decode
+--- @param opts? {binary_escapes:boolean|nil} Any options to pass
+--- @return any result The Lua value from the JSON
 function serialization.json.decode(str, opts)
     expect(1, str, "string")
     local res, idx = parse(str, next_char(str, 1, space_chars, true), opts)
@@ -460,8 +464,8 @@ function serialization.json.decode(str, opts)
 end
 
 --- Saves a Lua value to a JSON file.
--- @tparam any val The value to save
--- @tparam string path The path to the file to save
+--- @param val any The value to save
+--- @param path string The path to the file to save
 function serialization.json.save(val, path)
     expect(2, path, "string")
     local file = assert(io.open(path, "w"))
@@ -470,8 +474,8 @@ function serialization.json.save(val, path)
 end
 
 --- Loads a JSON file into a Lua value.
--- @tparam string path The path to the file to load
--- @treturn any The loaded value
+--- @param path string The path to the file to load
+--- @return any result The loaded value
 function serialization.json.load(path)
     expect(1, path, "string")
     local file = assert(io.open(path, "r"))
@@ -480,8 +484,10 @@ function serialization.json.load(path)
     return serialization.json.decode(data)
 end
 
---- serialization.lua
--- @section serialization.lua
+--- Lua table encoder/decoder
+--- !doctype module
+--- @class system.serialization.lua
+serialization.lua = {}
 
 local keywords = {
     ["and"] = true,
@@ -557,18 +563,18 @@ local function lua_serialize(val, stack, opts, level)
 end
 
 --- Serializes an arbitrary Lua object into a serialized Lua string.
--- @tparam any val The value to encode
--- @tparam[opt] {minified=boolean,allow_functions=boolean} opts Any options to specify while encoding
--- @treturn string The serialized Lua representation of the object
+--- @param val any The value to encode
+--- @param opts? {minified:boolean,allow_functions:boolean} Any options to specify while encoding
+--- @return string result The serialized Lua representation of the object
 function serialization.lua.encode(val, opts)
     expect(2, opts, "table", "nil")
     return lua_serialize(val, {}, opts or {}, 1)
 end
 
 --- Parses a serialized Lua string and returns a Lua value represented by the string.
--- @tparam string str The serialized Lua string to decode
--- @tparam[opt] {allow_functions=boolean} opts Any options to specify while decoding
--- @treturn any The Lua value from the serialized Lua
+--- @param str string The serialized Lua string to decode
+--- @param opts? {allow_functions:boolean} Any options to specify while decoding
+--- @return any result The Lua value from the serialized Lua
 function serialization.lua.decode(str, opts)
     opts = expect(2, opts, "table", "nil") or {}
     local env = {}
@@ -588,9 +594,9 @@ function serialization.lua.decode(str, opts)
 end
 
 --- Saves a Lua value to a serialized Lua file.
--- @tparam any val The value to save
--- @tparam string path The path to the file to save
--- @tparam[opt] {minified=boolean,allow_functions=boolean} opts Any options to specify while encoding
+--- @param val any The value to save
+--- @param path string The path to the file to save
+--- @param opts? {minified:boolean,allow_functions:boolean} Any options to specify while encoding
 function serialization.lua.save(val, path, opts)
     expect(2, path, "string")
     local file = assert(io.open(path, "w"))
@@ -599,9 +605,9 @@ function serialization.lua.save(val, path, opts)
 end
 
 --- Loads a serialized Lua file into a Lua value.
--- @tparam string path The path to the file to load
--- @tparam[opt] {allow_functions=boolean} opts Any options to specify while decoding
--- @treturn any The loaded value
+--- @param path string The path to the file to load
+--- @param opts? {allow_functions:boolean} Any options to specify while decoding
+--- @return any result The loaded value
 function serialization.lua.load(path, opts)
     expect(1, path, "string")
     local file = assert(io.open(path, "r"))
@@ -610,8 +616,10 @@ function serialization.lua.load(path, opts)
     return serialization.lua.decode(data, opts)
 end
 
---- serialization.toml
--- @section serialization.toml
+--- TOML configuration encoder/decoder
+--- !doctype module
+--- @class system.serialization.toml
+serialization.toml = {}
 
 local function encodeTOMLArray(arr, opts, names)
     local int, str = false, false
@@ -696,10 +704,10 @@ local function encodeTOML(tbl, opts, names)
 end
 
 --- Encodes a table into TOML format. This table must only have integer or
--- string keys in itself and each subtable, and cannot mix strings and ints.
--- @tparam table tbl The table to encode
--- @tparam[opt] {indent=boolean} opts Any options to specify while encoding
--- @treturn string The encoded TOML data
+--- string keys in itself and each subtable, and cannot mix strings and ints.
+--- @param tbl table The table to encode
+--- @param opts? {indent:boolean} Any options to specify while encoding
+--- @return string result The encoded TOML data
 function serialization.toml.encode(tbl, opts)
     expect(1, tbl, "table")
     expect(2, opts, "table", "nil")
@@ -911,9 +919,9 @@ local function toml_assign(tab, key, line, pos, ln, opts)
 end
 
 --- Parses TOML data into a table.
--- @tparam string str The TOML data to decode
--- @tparam[opt] {binary_escapes:boolean|nil} opts Options (none available in this version)
--- @treturn table A table representing the TOML data
+--- @param str string The TOML data to decode
+--- @param opts? {binary_escapes:boolean|nil} Options for decoding
+--- @return table result A table representing the TOML data
 function serialization.toml.decode(str, opts)
     expect(1, str, "string")
     opts = expect(2, opts, "table", "nil") or {}
@@ -957,9 +965,9 @@ function serialization.toml.decode(str, opts)
 end
 
 --- Saves a table to a TOML file.
--- @tparam table val The value to save
--- @tparam string path The path to the file to save
--- @tparam[opt] {indent=boolean} opts Any options to specify while encoding
+--- @param val table The value to save
+--- @param path string The path to the file to save
+--- @param opts? {indent:boolean} Any options to specify while encoding
 function serialization.toml.save(val, path, opts)
     expect(1, val, "table")
     expect(2, path, "string")
@@ -970,9 +978,9 @@ function serialization.toml.save(val, path, opts)
 end
 
 --- Loads a TOML file into a table.
--- @tparam string path The path to the file to load
--- @tparam[opt] table opts Options (none available in this version)
--- @treturn table The loaded value
+--- @param path string The path to the file to load
+--- @param opts? table Options (none available in this version)
+--- @return table result The loaded value
 function serialization.toml.load(path, opts)
     expect(1, path, "string")
     expect(2, opts, "table", "nil")
@@ -982,58 +990,55 @@ function serialization.toml.load(path, opts)
     return serialization.toml.decode(data, opts)
 end
 
---- serialization.struct
--- @section serialization.struct
+--- MIT License
+---
+--- Copyright (c) 2023-2025 JackMacWindows
+---
+--- Permission is hereby granted, free of charge, to any person obtaining a copy
+--- of this software and associated documentation files (the "Software"), to deal
+--- in the Software without restriction, including without limitation the rights
+--- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+--- copies of the Software, and to permit persons to whom the Software is
+--- furnished to do so, subject to the following conditions:
+---
+--- The above copyright notice and this permission notice shall be included in all
+--- copies or substantial portions of the Software.
+---
+--- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+--- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+--- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+--- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+--- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+--- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+--- SOFTWARE.
 
--- MIT License
--- 
--- Copyright (c) 2023-2025 JackMacWindows
--- 
--- Permission is hereby granted, free of charge, to any person obtaining a copy
--- of this software and associated documentation files (the "Software"), to deal
--- in the Software without restriction, including without limitation the rights
--- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
--- copies of the Software, and to permit persons to whom the Software is
--- furnished to do so, subject to the following conditions:
--- 
--- The above copyright notice and this permission notice shall be included in all
--- copies or substantial portions of the Software.
--- 
--- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
--- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
--- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
--- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
--- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
--- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
--- SOFTWARE.
-
--- ===== Notes =====
--- * Includes the following types:
---   - All standard C89 integral & float types
---   - C++ bool
---   - C stdint.h fixed-width integer types
---   - size_t
---   - Lua number types (lua_Integer, lua_Unsigned, lua_Number)
---   - Special string types: string_t = variable width string preceeded by size_t for length,
---     string[8|16|32|64]_t = string with fixed-width integer size
---   - [const] char * = NUL-terminated C string
---   - [const] char[] = fixed width string
--- * Pointers are not supported outside C strings
--- * Variable-length arrays and strings are supported, with either an explicit
---   size field named in the brackets, or an automatic size_t prefix if empty
--- * Fields used as sizes for variable-length arrays/strings can be implicitly
---   calculated when encoding if not present in the source table
--- * The decoder accepts an index to start decoding at as the second argument
--- * The decoder only parses the fields for the struct, and returns the index of
---   the next data (like string.unpack)
--- * To encode a union, pass a table with *exactly one* member
--- * All fields encoded must have a value, including filling all array entries
--- * Do not include default values in structure definitions
--- * The length operator on a type returns the size of the type (provided it
---   doesn't have char* or string_t strings, or VLAs)
--- * Enumerations can be used to shorten strings to numbers in the data - simply
---   define an enum with the strings expected, and they'll be turned into ints
---   in the stored data
+--- ===== Notes =====
+--- * Includes the following types:
+---  - All standard C89 integral & float types
+---  - C++ bool
+---  - C stdint.h fixed-width integer types
+---  - size_t
+---  - Lua number types (lua_Integer, lua_Unsigned, lua_Number)
+---  - Special string types: string_t = variable width string preceeded by size_t for length,
+---    string[8|16|32|64]_t = string with fixed-width integer size
+---  - [const] char * = NUL-terminated C string
+---  - [const] char[] = fixed width string
+--- * Pointers are not supported outside C strings
+--- * Variable-length arrays and strings are supported, with either an explicit
+---  size field named in the brackets, or an automatic size_t prefix if empty
+--- * Fields used as sizes for variable-length arrays/strings can be implicitly
+---  calculated when encoding if not present in the source table
+--- * The decoder accepts an index to start decoding at as the second argument
+--- * The decoder only parses the fields for the struct, and returns the index of
+---  the next data (like string.unpack)
+--- * To encode a union, pass a table with *exactly one* member
+--- * All fields encoded must have a value, including filling all array entries
+--- * Do not include default values in structure definitions
+--- * The length operator on a type returns the size of the type (provided it
+---  doesn't have char* or string_t strings, or VLAs)
+--- * Enumerations can be used to shorten strings to numbers in the data - simply
+---  define an enum with the strings expected, and they'll be turned into ints
+---  in the stored data
 
 --[=[ Usage:
     local struct = require "struct"
@@ -1686,11 +1691,12 @@ local function tokenize(str)
 end
 
 --- Defines a structure coder from C structure code.
--- See https://gist.github.com/MCJack123/2e60f0b1c01411f4fe91d902212e33c9 for
--- more information about how this works.
--- @tparam string def The C code to compile into types
--- @tparam[opt] table types A table containing previously defined types; types will also be stored back into this table
--- @treturn function(obj:string|any,pos:number|nil):any|string,number|nil The coder for the last defined type, which can either take an object to encode (usually a table for a struct) and returns a string, or a string to decode and optionally a position to decode from and returns the decoded object + the next position to decode from
+--- 
+--- See https://gist.github.com/MCJack123/2e60f0b1c01411f4fe91d902212e33c9 for
+--- more information about how this works.
+--- @param def string The C code to compile into types
+--- @param types? table A table containing previously defined types; types will also be stored back into this table
+--- @return fun(obj:string|any,pos:number|nil):any|string,number|nil result The coder for the last defined type, which can either take an object to encode (usually a table for a struct) and returns a string, or a string to decode and optionally a position to decode from and returns the decoded object + the next position to decode from
 function serialization.struct(def, types)
     if type(def) ~= "string" then error("bad argument #1 (expected string, got " .. type(def) .. ")", 2) end
     if types ~= nil and type(types) ~= "table" then error("bad argument #2 (expected table, got " .. type(types) .. ")", 2) end

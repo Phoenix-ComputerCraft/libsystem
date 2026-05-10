@@ -1,0 +1,18 @@
+# Module `system.framebuffer`
+
+```{lua:currentmodule} None
+```
+
+```{lua:autoobject} system.framebuffer
+:undoc-members: 
+:protected-members: 
+:globals: 
+:inherited-members-table: 
+:title: API Reference
+:members: 
+:recursive: 
+:index-table: 
+:exclude-members: 
+
+```
+

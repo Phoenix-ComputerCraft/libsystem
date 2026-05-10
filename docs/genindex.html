@@ -1,0 +1,1329 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="#"><link rel="search" title="Search" href="search.html">
+        <link rel="prefetch" href="_static/logo.png" as="image">
+
+    <link rel="shortcut icon" href="_static/favicon.ico"><!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 --><title>Index - libsystem</title>
+<link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="_static/lua.css?v=492dc087" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  --color-brand-primary: #944f00;
+  --color-brand-content: #944f00;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #ff8800;
+  --color-brand-content: #ff8800;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #ff8800;
+  --color-brand-content: #ff8800;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="system/index.html"><div class="brand">libsystem</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="system/index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="_static/logo.png" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">libsystem</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <a class="reference internal" href="/">⤾ Main docs</a>
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="system/system.expect.html">Module <code class="docutils literal notranslate"><span class="pre">system.expect</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="system/system.filesystem.html">Module <code class="docutils literal notranslate"><span class="pre">system.filesystem</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="system/system.framebuffer.html">Module <code class="docutils literal notranslate"><span class="pre">system.framebuffer</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="system/system.graphics.html">Module <code class="docutils literal notranslate"><span class="pre">system.graphics</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="system/system.hardware.html">Module <code class="docutils literal notranslate"><span class="pre">system.hardware</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="system/system.ipc.html">Module <code class="docutils literal notranslate"><span class="pre">system.ipc</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="system/system.keys.html">Module <code class="docutils literal notranslate"><span class="pre">system.keys</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="system/system.log.html">Module <code class="docutils literal notranslate"><span class="pre">system.log</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="system/system.network.html">Module <code class="docutils literal notranslate"><span class="pre">system.network</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="system/system.pretty.html">Module <code class="docutils literal notranslate"><span class="pre">system.pretty</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="system/system.process.html">Module <code class="docutils literal notranslate"><span class="pre">system.process</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="system/system.serialization.html">Module <code class="docutils literal notranslate"><span class="pre">system.serialization</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="system/system.sync.html">Module <code class="docutils literal notranslate"><span class="pre">system.sync</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="system/system.terminal.html">Module <code class="docutils literal notranslate"><span class="pre">system.terminal</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="system/system.util.html">Module <code class="docutils literal notranslate"><span class="pre">system.util</span></code></a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          
+<section class="genindex-section">
+  <h1 id="index">Index</h1>
+  <div class="genindex-jumpbox"><a href="#A"><strong>A</strong></a> | <a href="#B"><strong>B</strong></a> | <a href="#C"><strong>C</strong></a> | <a href="#D"><strong>D</strong></a> | <a href="#E"><strong>E</strong></a> | <a href="#F"><strong>F</strong></a> | <a href="#G"><strong>G</strong></a> | <a href="#H"><strong>H</strong></a> | <a href="#I"><strong>I</strong></a> | <a href="#J"><strong>J</strong></a> | <a href="#K"><strong>K</strong></a> | <a href="#L"><strong>L</strong></a> | <a href="#M"><strong>M</strong></a> | <a href="#N"><strong>N</strong></a> | <a href="#O"><strong>O</strong></a> | <a href="#P"><strong>P</strong></a> | <a href="#Q"><strong>Q</strong></a> | <a href="#R"><strong>R</strong></a> | <a href="#S"><strong>S</strong></a> | <a href="#T"><strong>T</strong></a> | <a href="#U"><strong>U</strong></a> | <a href="#W"><strong>W</strong></a> | <a href="#Y"><strong>Y</strong></a> | <a href="#Z"><strong>Z</strong></a></div>
+</section>
+<section id="A" class="genindex-section">
+  <h2>A</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.filesystem.html#lua-system.filesystem.absolute">absolute (function in system.filesystem)</a>
+</li>
+        <li><a href="system/system.process.html#lua-system.process.acceptchild">acceptchild (function in system.process)</a>
+</li>
+        <li><a href="system/system.sync.html#lua-system.sync.semaphore.acquire">acquire (method in system.sync.semaphore)</a>
+</li>
+        <li><a href="system/system.util.html#lua-system.util.addEventListener">addEventListener (function in system.util)</a>
+</li>
+        <li><a href="system/system.util.html#lua-system.util.alarm">alarm (function in system.util)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.keys.html#lua-system.keys.apostrophe">apostrophe (data in system.keys)</a>
+</li>
+        <li><a href="system/system.util.html#lua-system.util.argparse">argparse (function in system.util)</a>
+</li>
+        <li><a href="system/system.expect.html#lua-system.expect.array">array (function in system.expect)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.at">at (data in system.keys)</a>
+</li>
+        <li><a href="system/system.process.html#lua-system.process.atexit">atexit (function in system.process)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.ax">ax (data in system.keys)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="B" class="genindex-section">
+  <h2>B</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.keys.html#lua-system.keys.backslash">backslash (data in system.keys)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.backspace">backspace (data in system.keys)</a>
+</li>
+        <li><a href="system/system.sync.html#lua-system.sync.barrier">barrier (class in system.sync)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.serialization.html#lua-system.serialization.base64">base64 (module in system.serialization)</a>
+</li>
+        <li><a href="system/system.filesystem.html#lua-system.filesystem.basename">basename (function in system.filesystem)</a>
+</li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.Terminal.blit">blit (staticmethod in system.terminal.Terminal)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="C" class="genindex-section">
+  <h2>C</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.hardware.html#lua-system.hardware.call">call (function in system.hardware)</a>
+</li>
+        <li><a href="system/system.util.html#lua-system.util.cancel">cancel (function in system.util)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.capsLock">capsLock (data in system.keys)</a>
+</li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.capture">capture (function in system.terminal)</a>
+</li>
+        <li><a href="system/system.process.html#lua-system.process.chdir">chdir (function in system.process)</a>
+</li>
+        <li><a href="system/system.network.html#lua-system.network.checkURI">checkURI (function in system.network)</a>
+</li>
+        <li><a href="system/system.hardware.html#lua-system.hardware.children">children (function in system.hardware)</a>
+</li>
+        <li><a href="system/system.filesystem.html#lua-system.filesystem.chmod">chmod (function in system.filesystem)</a>
+</li>
+        <li><a href="system/system.filesystem.html#lua-system.filesystem.chown">chown (function in system.filesystem)</a>
+</li>
+        <li><a href="system/system.filesystem.html#lua-system.filesystem.chroot">chroot (function in system.filesystem)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.circumflex">circumflex (data in system.keys)</a>
+</li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.GFXTerminal.clear">clear (staticmethod in system.terminal.GFXTerminal)</a>
+
+        <ul>
+          <li><a href="system/system.terminal.html#lua-system.terminal.Terminal.clear">(staticmethod in system.terminal.Terminal)</a>
+</li>
+        </ul></li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.Terminal.clearLine">clearLine (staticmethod in system.terminal.Terminal)</a>
+</li>
+        <li><a href="system/system.process.html#lua-system.process.clock">clock (function in system.process)</a>
+</li>
+        <li><a href="system/system.log.html#lua-system.log.close">close (function in system.log)</a>
+
+        <ul>
+          <li><a href="system/system.ipc.html#lua-system.ipc.socket.close">(method in system.ipc.socket)</a>
+</li>
+          <li><a href="system/system.network.html#lua-system.network.Handle.close">(method in system.network.Handle)</a>
+</li>
+          <li><a href="system/system.terminal.html#lua-system.terminal.GFXTerminal.close">(staticmethod in system.terminal.GFXTerminal)</a>
+</li>
+          <li><a href="system/system.terminal.html#lua-system.terminal.Terminal.close">(staticmethod in system.terminal.Terminal)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.ipc.html#lua-system.ipc.socket.closed">closed (data in system.ipc.socket)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.colon">colon (data in system.keys)</a>
+</li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.colors">colors (data in system.terminal)</a>
+</li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.colours">colours (data in system.terminal)</a>
+</li>
+        <li><a href="system/system.filesystem.html#lua-system.filesystem.combine">combine (function in system.filesystem)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.comma">comma (data in system.keys)</a>
+</li>
+        <li><a href="system/system.sync.html#lua-system.sync.conditionVariable">conditionVariable (class in system.sync)</a>
+</li>
+        <li><a href="system/system.network.html#lua-system.network.connect">connect (function in system.network)</a>
+</li>
+        <li><a href="system/system.network.html#lua-system.network.control">control (function in system.network)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.convert">convert (data in system.keys)</a>
+</li>
+        <li><a href="system/system.filesystem.html#lua-system.filesystem.copy">copy (function in system.filesystem)</a>
+
+        <ul>
+          <li><a href="system/system.util.html#lua-system.util.copy">(function in system.util)</a>
+</li>
+        </ul></li>
+        <li><a href="system/system.sync.html#lua-system.sync.rwLock.count">count (data in system.sync.rwLock)</a>
+</li>
+        <li><a href="system/system.util.html#lua-system.util.crc32">crc32 (function in system.util)</a>
+</li>
+        <li><a href="system/system.log.html#lua-system.log.create">create (function in system.log)</a>
+</li>
+        <li><a href="system/system.filesystem.html#lua-system.filesystem.FileStat.created">created (data in system.filesystem.FileStat)</a>
+</li>
+        <li><a href="system/system.log.html#lua-system.log.critical">critical (function in system.log)</a>
+
+        <ul>
+          <li><a href="system/system.log.html#lua-system.log.log.critical">(staticmethod in system.log.log)</a>
+</li>
+        </ul></li>
+        <li><a href="system/system.sync.html#lua-system.sync.barrier.cycles">cycles (data in system.sync.barrier)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="D" class="genindex-section">
+  <h2>D</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.process.html#lua-system.process.debug">debug (data in system.process)</a>
+
+        <ul>
+          <li><a href="system/system.log.html#lua-system.log.debug">(function in system.log)</a>
+</li>
+          <li><a href="system/system.log.html#lua-system.log.log.debug">(staticmethod in system.log.log)</a>
+</li>
+        </ul></li>
+        <li><a href="system/system.serialization.html#lua-system.serialization.base64.decode">decode (function in system.serialization.base64)</a>
+
+        <ul>
+          <li><a href="system/system.serialization.html#lua-system.serialization.json.decode">(function in system.serialization.json)</a>
+</li>
+          <li><a href="system/system.serialization.html#lua-system.serialization.lua.decode">(function in system.serialization.lua)</a>
+</li>
+          <li><a href="system/system.serialization.html#lua-system.serialization.toml.decode">(function in system.serialization.toml)</a>
+</li>
+        </ul></li>
+        <li><a href="system/system.keys.html#lua-system.keys.delete">delete (data in system.keys)</a>
+
+        <ul>
+          <li><a href="system/system.network.html#lua-system.network.delete">(function in system.network)</a>
+</li>
+        </ul></li>
+        <li><a href="system/system.filesystem.html#lua-system.filesystem.dirname">dirname (function in system.filesystem)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.pretty.html#lua-system.pretty.Doc">Doc (class in system.pretty)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.down">down (data in system.keys)</a>
+</li>
+        <li><a href="system/system.graphics.html#lua-system.graphics.drawBox">drawBox (function in system.graphics)</a>
+</li>
+        <li><a href="system/system.graphics.html#lua-system.graphics.drawCircle">drawCircle (function in system.graphics)</a>
+</li>
+        <li><a href="system/system.graphics.html#lua-system.graphics.drawFilledBox">drawFilledBox (function in system.graphics)</a>
+</li>
+        <li><a href="system/system.graphics.html#lua-system.graphics.drawFilledTriangle">drawFilledTriangle (function in system.graphics)</a>
+</li>
+        <li><a href="system/system.graphics.html#lua-system.graphics.drawImage">drawImage (function in system.graphics)</a>
+</li>
+        <li><a href="system/system.graphics.html#lua-system.graphics.drawLine">drawLine (function in system.graphics)</a>
+</li>
+        <li><a href="system/system.graphics.html#lua-system.graphics.drawPixel">drawPixel (function in system.graphics)</a>
+</li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.GFXTerminal.drawPixels">drawPixels (staticmethod in system.terminal.GFXTerminal)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="E" class="genindex-section">
+  <h2>E</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.filesystem.html#lua-system.filesystem.effectivePermissions">effectivePermissions (function in system.filesystem)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.eight">eight (data in system.keys)</a>
+</li>
+        <li><a href="system/system.framebuffer.html#lua-system.framebuffer.empty">empty (data in system.framebuffer)</a>
+</li>
+        <li><a href="system/system.serialization.html#lua-system.serialization.json.emptyArray">emptyArray (data in system.serialization.json)</a>
+</li>
+        <li><a href="system/system.serialization.html#lua-system.serialization.base64.encode">encode (function in system.serialization.base64)</a>
+
+        <ul>
+          <li><a href="system/system.serialization.html#lua-system.serialization.json.encode">(function in system.serialization.json)</a>
+</li>
+          <li><a href="system/system.serialization.html#lua-system.serialization.lua.encode">(function in system.serialization.lua)</a>
+</li>
+          <li><a href="system/system.serialization.html#lua-system.serialization.toml.encode">(function in system.serialization.toml)</a>
+</li>
+        </ul></li>
+        <li><a href="system/system.keys.html#lua-system.keys.enter">enter (data in system.keys)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.keys.html#lua-system.keys.equals">equals (data in system.keys)</a>
+</li>
+        <li><a href="system/system.log.html#lua-system.log.error">error (function in system.log)</a>
+
+        <ul>
+          <li><a href="system/system.log.html#lua-system.log.log.error">(staticmethod in system.log.log)</a>
+</li>
+        </ul></li>
+        <li><a href="system/system.network.html#lua-system.network.events">events (function in system.network)</a>
+</li>
+        <li><a href="system/system.process.html#lua-system.process.exec">exec (function in system.process)</a>
+</li>
+        <li><a href="system/system.process.html#lua-system.process.execp">execp (function in system.process)</a>
+</li>
+        <li><a href="system/system.filesystem.html#lua-system.filesystem.exists">exists (function in system.filesystem)</a>
+</li>
+        <li><a href="system/system.process.html#lua-system.process.exit">exit (function in system.process)</a>
+</li>
+        <li><a href="system/system.expect.html#lua-system.expect.expect">expect (function in system.expect)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="F" class="genindex-section">
+  <h2>F</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.expect.html#lua-system.expect.field">field (function in system.expect)</a>
+</li>
+        <li><a href="system/system.filesystem.html#lua-system.filesystem.FileStat">FileStat (class in system.filesystem)</a>
+</li>
+        <li><a href="system/system.util.html#lua-system.util.filterEvent">filterEvent (function in system.util)</a>
+</li>
+        <li><a href="system/system.filesystem.html#lua-system.filesystem.find">find (function in system.filesystem)</a>
+
+        <ul>
+          <li><a href="system/system.hardware.html#lua-system.hardware.find">(function in system.hardware)</a>
+</li>
+        </ul></li>
+        <li><a href="system/system.keys.html#lua-system.keys.five">five (data in system.keys)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.network.html#lua-system.network.Handle.flush">flush (method in system.network.Handle)</a>
+</li>
+        <li><a href="system/system.process.html#lua-system.process.fork">fork (function in system.process)</a>
+</li>
+        <li><a href="system/system.process.html#lua-system.process.forkbg">forkbg (function in system.process)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.four">four (data in system.keys)</a>
+</li>
+        <li><a href="system/system.framebuffer.html#lua-system.framebuffer.framebuffer">framebuffer (function in system.framebuffer)</a>
+</li>
+        <li><a href="system/system.filesystem.html#lua-system.filesystem.fsevent">fsevent (function in system.filesystem)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="G" class="genindex-section">
+  <h2>G</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.network.html#lua-system.network.get">get (function in system.network)</a>
+</li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.Terminal.getBackgroundColor">getBackgroundColor (staticmethod in system.terminal.Terminal)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.getCharacter">getCharacter (function in system.keys)</a>
+</li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.Terminal.getCursorBlink">getCursorBlink (staticmethod in system.terminal.Terminal)</a>
+</li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.Terminal.getCursorPos">getCursorPos (staticmethod in system.terminal.Terminal)</a>
+</li>
+        <li><a href="system/system.process.html#lua-system.process.getcwd">getcwd (function in system.process)</a>
+</li>
+        <li><a href="system/system.network.html#lua-system.network.getData">getData (function in system.network)</a>
+</li>
+        <li><a href="system/system.process.html#lua-system.process.getenv">getenv (function in system.process)</a>
+</li>
+        <li><a href="system/system.process.html#lua-system.process.getfenv">getfenv (function in system.process)</a>
+</li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.GFXTerminal.getFrozen">getFrozen (staticmethod in system.terminal.GFXTerminal)</a>
+</li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.Terminal.getLine">getLine (staticmethod in system.terminal.Terminal)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.getName">getName (function in system.keys)</a>
+</li>
+        <li><a href="system/system.process.html#lua-system.process.getname">getname (function in system.process)</a>
+</li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.GFXTerminal.getPaletteColor">getPaletteColor (staticmethod in system.terminal.GFXTerminal)</a>
+
+        <ul>
+          <li><a href="system/system.terminal.html#lua-system.terminal.Terminal.getPaletteColor">(staticmethod in system.terminal.Terminal)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.process.html#lua-system.process.getpid">getpid (function in system.process)</a>
+</li>
+        <li><a href="system/system.process.html#lua-system.process.getpinfo">getpinfo (function in system.process)</a>
+</li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.GFXTerminal.getPixel">getPixel (staticmethod in system.terminal.GFXTerminal)</a>
+</li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.GFXTerminal.getPixels">getPixels (staticmethod in system.terminal.GFXTerminal)</a>
+</li>
+        <li><a href="system/system.process.html#lua-system.process.getplist">getplist (function in system.process)</a>
+</li>
+        <li><a href="system/system.process.html#lua-system.process.getppid">getppid (function in system.process)</a>
+</li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.getSize">getSize (data in system.terminal)</a>
+
+        <ul>
+          <li><a href="system/system.terminal.html#lua-system.terminal.GFXTerminal.getSize">(staticmethod in system.terminal.GFXTerminal)</a>
+</li>
+          <li><a href="system/system.terminal.html#lua-system.terminal.Terminal.getSize">(staticmethod in system.terminal.Terminal)</a>
+</li>
+        </ul></li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.Terminal.getTextColor">getTextColor (staticmethod in system.terminal.Terminal)</a>
+</li>
+        <li><a href="system/system.process.html#lua-system.process.getuser">getuser (function in system.process)</a>
+</li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.GFXTerminal">GFXTerminal (class in system.terminal)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.grave">grave (data in system.keys)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="H" class="genindex-section">
+  <h2>H</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.network.html#lua-system.network.Handle">Handle (class in system.network)</a>
+</li>
+        <li><a href="system/system.hardware.html#lua-system.hardware.hasType">hasType (function in system.hardware)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.network.html#lua-system.network.head">head (function in system.network)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.home">home (data in system.keys)</a>
+</li>
+        <li><a href="system/system.network.html#lua-system.network.HTTPHandle">HTTPHandle (class in system.network)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="I" class="genindex-section">
+  <h2>I</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.hardware.html#lua-system.hardware.info">info (function in system.hardware)</a>
+
+        <ul>
+          <li><a href="system/system.log.html#lua-system.log.info">(function in system.log)</a>
+</li>
+          <li><a href="system/system.log.html#lua-system.log.log.info">(staticmethod in system.log.log)</a>
+</li>
+        </ul></li>
+        <li><a href="system/system.keys.html#lua-system.keys.insert">insert (data in system.keys)</a>
+</li>
+        <li><a href="system/system.network.html#lua-system.network.ipconfig">ipconfig (function in system.network)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.terminal.html#lua-system.terminal.Terminal.isColor">isColor (staticmethod in system.terminal.Terminal)</a>
+</li>
+        <li><a href="system/system.filesystem.html#lua-system.filesystem.isDir">isDir (function in system.filesystem)</a>
+</li>
+        <li><a href="system/system.filesystem.html#lua-system.filesystem.isFile">isFile (function in system.filesystem)</a>
+</li>
+        <li><a href="system/system.filesystem.html#lua-system.filesystem.isLink">isLink (function in system.filesystem)</a>
+</li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.istty">istty (function in system.terminal)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="J" class="genindex-section">
+  <h2>J</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.serialization.html#lua-system.serialization.json">json (module in system.serialization)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="K" class="genindex-section">
+  <h2>K</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.keys.html#lua-system.keys.kana">kana (data in system.keys)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.keys.html#lua-system.keys.kanji">kanji (data in system.keys)</a>
+</li>
+        <li><a href="system/system.ipc.html#lua-system.ipc.kill">kill (function in system.ipc)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="L" class="genindex-section">
+  <h2>L</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.keys.html#lua-system.keys.left">left (data in system.keys)</a>
+
+        <ul>
+          <li><a href="system/system.sync.html#lua-system.sync.barrier.left">(data in system.sync.barrier)</a>
+</li>
+        </ul></li>
+        <li><a href="system/system.keys.html#lua-system.keys.leftAlt">leftAlt (data in system.keys)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.leftBracket">leftBracket (data in system.keys)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.leftCtrl">leftCtrl (data in system.keys)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.leftShift">leftShift (data in system.keys)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.leftSuper">leftSuper (data in system.keys)</a>
+</li>
+        <li><a href="system/system.log.html#lua-system.log.levels">levels (data in system.log)</a>
+</li>
+        <li><a href="system/system.network.html#lua-system.network.Handle.lines">lines (method in system.network.Handle)</a>
+</li>
+        <li><a href="system/system.filesystem.html#lua-system.filesystem.link">link (function in system.filesystem)</a>
+</li>
+        <li><a href="system/system.filesystem.html#lua-system.filesystem.list">list (function in system.filesystem)</a>
+</li>
+        <li><a href="system/system.hardware.html#lua-system.hardware.listen">listen (function in system.hardware)</a>
+
+        <ul>
+          <li><a href="system/system.network.html#lua-system.network.listen">(function in system.network)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.serialization.html#lua-system.serialization.json.load">load (function in system.serialization.json)</a>
+
+        <ul>
+          <li><a href="system/system.serialization.html#lua-system.serialization.lua.load">(function in system.serialization.lua)</a>
+</li>
+          <li><a href="system/system.serialization.html#lua-system.serialization.toml.load">(function in system.serialization.toml)</a>
+</li>
+        </ul></li>
+        <li><a href="system/system.hardware.html#lua-system.hardware.lock">lock (function in system.hardware)</a>
+
+        <ul>
+          <li><a href="system/system.sync.html#lua-system.sync.mutex.lock">(method in system.sync.mutex)</a>
+</li>
+        </ul></li>
+        <li><a href="system/system.sync.html#lua-system.sync.lockGuard">lockGuard (function in system.sync)</a>
+</li>
+        <li><a href="system/system.sync.html#lua-system.sync.rwLock.lockRead">lockRead (method in system.sync.rwLock)</a>
+</li>
+        <li><a href="system/system.sync.html#lua-system.sync.rwLock.lockWrite">lockWrite (method in system.sync.rwLock)</a>
+</li>
+        <li><a href="system/system.log.html#lua-system.log.log">log (class in system.log)</a>
+
+        <ul>
+          <li><a href="system/system.log.html#lua-system.log.log.log">(staticmethod in system.log.log)</a>
+</li>
+        </ul></li>
+        <li><a href="system/system.ipc.html#lua-system.ipc.lookup">lookup (function in system.ipc)</a>
+</li>
+        <li><a href="system/system.serialization.html#lua-system.serialization.lua">lua (module in system.serialization)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="M" class="genindex-section">
+  <h2>M</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.expect.html#lua-system.expect.match">match (function in system.expect)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.menu">menu (data in system.keys)</a>
+</li>
+        <li><a href="system/system.hardware.html#lua-system.hardware.methods">methods (function in system.hardware)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.minus">minus (data in system.keys)</a>
+</li>
+        <li><a href="system/system.filesystem.html#lua-system.filesystem.mkdir">mkdir (function in system.filesystem)</a>
+</li>
+        <li><a href="system/system.filesystem.html#lua-system.filesystem.mkfifo">mkfifo (function in system.filesystem)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.terminal.html#lua-system.terminal.mktty">mktty (function in system.terminal)</a>
+</li>
+        <li><a href="system/system.filesystem.html#lua-system.filesystem.FileStat.modified">modified (data in system.filesystem.FileStat)</a>
+</li>
+        <li><a href="system/system.filesystem.html#lua-system.filesystem.mount">mount (function in system.filesystem)</a>
+</li>
+        <li><a href="system/system.filesystem.html#lua-system.filesystem.mountlist">mountlist (function in system.filesystem)</a>
+</li>
+        <li><a href="system/system.filesystem.html#lua-system.filesystem.move">move (function in system.filesystem)</a>
+</li>
+        <li><a href="system/system.sync.html#lua-system.sync.mutex">mutex (class in system.sync)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="N" class="genindex-section">
+  <h2>N</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.sync.html#lua-system.sync.barrier.new">new (staticmethod in system.sync.barrier)</a>
+
+        <ul>
+          <li><a href="system/system.sync.html#lua-system.sync.conditionVariable.new">(staticmethod in system.sync.conditionVariable)</a>
+</li>
+          <li><a href="system/system.sync.html#lua-system.sync.mutex.new">(staticmethod in system.sync.mutex)</a>
+</li>
+          <li><a href="system/system.sync.html#lua-system.sync.rwLock.new">(staticmethod in system.sync.rwLock)</a>
+</li>
+          <li><a href="system/system.sync.html#lua-system.sync.semaphore.new">(staticmethod in system.sync.semaphore)</a>
+</li>
+        </ul></li>
+        <li><a href="system/system.process.html#lua-system.process.newthread">newthread (function in system.process)</a>
+</li>
+        <li><a href="system/system.process.html#lua-system.process.nice">nice (function in system.process)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.nine">nine (data in system.keys)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.noconvert">noconvert (data in system.keys)</a>
+</li>
+        <li><a href="system/system.log.html#lua-system.log.notice">notice (function in system.log)</a>
+
+        <ul>
+          <li><a href="system/system.log.html#lua-system.log.log.notice">(staticmethod in system.log.log)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.sync.html#lua-system.sync.conditionVariable.notifyAll">notifyAll (method in system.sync.conditionVariable)</a>
+</li>
+        <li><a href="system/system.sync.html#lua-system.sync.conditionVariable.notifyOne">notifyOne (method in system.sync.conditionVariable)</a>
+</li>
+        <li><a href="system/system.serialization.html#lua-system.serialization.json.null">null (data in system.serialization.json)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.numLock">numLock (data in system.keys)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.numPadAdd">numPadAdd (data in system.keys)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.numPadDecimal">numPadDecimal (data in system.keys)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.numPadDivide">numPadDivide (data in system.keys)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.numPadEnter">numPadEnter (data in system.keys)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.numPadEqual">numPadEqual (data in system.keys)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.numPadMultiply">numPadMultiply (data in system.keys)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.numPadSubtract">numPadSubtract (data in system.keys)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="O" class="genindex-section">
+  <h2>O</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.keys.html#lua-system.keys.one">one (data in system.keys)</a>
+</li>
+        <li><a href="system/system.filesystem.html#lua-system.filesystem.open">open (function in system.filesystem)</a>
+
+        <ul>
+          <li><a href="system/system.log.html#lua-system.log.open">(function in system.log)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.terminal.html#lua-system.terminal.opengfx">opengfx (function in system.terminal)</a>
+</li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.openterm">openterm (function in system.terminal)</a>
+</li>
+        <li><a href="system/system.network.html#lua-system.network.options">options (function in system.network)</a>
+</li>
+        <li><a href="system/system.filesystem.html#lua-system.filesystem.FileStat.owner">owner (data in system.filesystem.FileStat)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="P" class="genindex-section">
+  <h2>P</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.keys.html#lua-system.keys.pageDown">pageDown (data in system.keys)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.pageUp">pageUp (data in system.keys)</a>
+</li>
+        <li><a href="system/system.network.html#lua-system.network.parseURI">parseURI (function in system.network)</a>
+</li>
+        <li><a href="system/system.hardware.html#lua-system.hardware.path">path (function in system.hardware)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.pause">pause (data in system.keys)</a>
+</li>
+        <li><a href="system/system.util.html#lua-system.util.peekEvent">peekEvent (function in system.util)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.keys.html#lua-system.keys.period">period (data in system.keys)</a>
+</li>
+        <li><a href="system/system.filesystem.html#lua-system.filesystem.FileStat.permissions">permissions (data in system.filesystem.FileStat)</a>
+</li>
+        <li><a href="system/system.network.html#lua-system.network.post">post (function in system.network)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.printScreen">printScreen (data in system.keys)</a>
+</li>
+        <li><a href="system/system.hardware.html#lua-system.hardware.properties">properties (function in system.hardware)</a>
+</li>
+        <li><a href="system/system.util.html#lua-system.util.pullEvent">pullEvent (function in system.util)</a>
+</li>
+        <li><a href="system/system.network.html#lua-system.network.put">put (function in system.network)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="Q" class="genindex-section">
+  <h2>Q</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.util.html#lua-system.util.queueEvent">queueEvent (function in system.util)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="R" class="genindex-section">
+  <h2>R</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.expect.html#lua-system.expect.range">range (function in system.expect)</a>
+</li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.read">read (function in system.terminal)</a>
+
+        <ul>
+          <li><a href="system/system.ipc.html#lua-system.ipc.socket.read">(method in system.ipc.socket)</a>
+</li>
+          <li><a href="system/system.network.html#lua-system.network.Handle.read">(method in system.network.Handle)</a>
+</li>
+        </ul></li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.readline">readline (function in system.terminal)</a>
+</li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.readline2">readline2 (function in system.terminal)</a>
+</li>
+        <li><a href="system/system.ipc.html#lua-system.ipc.receiveEvent">receiveEvent (function in system.ipc)</a>
+</li>
+        <li><a href="system/system.ipc.html#lua-system.ipc.register">register (function in system.ipc)</a>
+</li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.release">release (function in system.terminal)</a>
+
+        <ul>
+          <li><a href="system/system.sync.html#lua-system.sync.semaphore.release">(method in system.sync.semaphore)</a>
+</li>
+        </ul></li>
+        <li><a href="system/system.process.html#lua-system.process.releasechild">releasechild (function in system.process)</a>
+</li>
+        <li><a href="system/system.filesystem.html#lua-system.filesystem.remove">remove (function in system.filesystem)</a>
+
+        <ul>
+          <li><a href="system/system.log.html#lua-system.log.remove">(function in system.log)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.util.html#lua-system.util.removeEventListener">removeEventListener (function in system.util)</a>
+</li>
+        <li><a href="system/system.filesystem.html#lua-system.filesystem.rename">rename (function in system.filesystem)</a>
+</li>
+        <li><a href="system/system.network.html#lua-system.network.HTTPHandle.responseCode">responseCode (method in system.network.HTTPHandle)</a>
+</li>
+        <li><a href="system/system.network.html#lua-system.network.HTTPHandle.responseHeaders">responseHeaders (method in system.network.HTTPHandle)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.right">right (data in system.keys)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.rightAlt">rightAlt (data in system.keys)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.rightBracket">rightBracket (data in system.keys)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.rightCtrl">rightCtrl (data in system.keys)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.rightShift">rightShift (data in system.keys)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.rightSuper">rightSuper (data in system.keys)</a>
+</li>
+        <li><a href="system/system.process.html#lua-system.process.run">run (function in system.process)</a>
+</li>
+        <li><a href="system/system.util.html#lua-system.util.runEvents">runEvents (function in system.util)</a>
+</li>
+        <li><a href="system/system.sync.html#lua-system.sync.rwLock">rwLock (class in system.sync)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="S" class="genindex-section">
+  <h2>S</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.serialization.html#lua-system.serialization.json.save">save (function in system.serialization.json)</a>
+
+        <ul>
+          <li><a href="system/system.serialization.html#lua-system.serialization.lua.save">(function in system.serialization.lua)</a>
+</li>
+          <li><a href="system/system.serialization.html#lua-system.serialization.toml.save">(function in system.serialization.toml)</a>
+</li>
+        </ul></li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.Terminal.scroll">scroll (staticmethod in system.terminal.Terminal)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.scrollLock">scrollLock (data in system.keys)</a>
+</li>
+        <li><a href="system/system.network.html#lua-system.network.Handle.seek">seek (method in system.network.Handle)</a>
+</li>
+        <li><a href="system/system.sync.html#lua-system.sync.semaphore">semaphore (class in system.sync)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.semicolon">semicolon (data in system.keys)</a>
+</li>
+        <li><a href="system/system.ipc.html#lua-system.ipc.sendEvent">sendEvent (function in system.ipc)</a>
+</li>
+        <li><a href="system/system.ipc.html#lua-system.ipc.sendServiceEvent">sendServiceEvent (function in system.ipc)</a>
+</li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.Terminal.setBackgroundColor">setBackgroundColor (staticmethod in system.terminal.Terminal)</a>
+</li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.Terminal.setCursorBlink">setCursorBlink (staticmethod in system.terminal.Terminal)</a>
+</li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.Terminal.setCursorPos">setCursorPos (staticmethod in system.terminal.Terminal)</a>
+</li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.GFXTerminal.setFrozen">setFrozen (staticmethod in system.terminal.GFXTerminal)</a>
+</li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.GFXTerminal.setPaletteColor">setPaletteColor (staticmethod in system.terminal.GFXTerminal)</a>
+
+        <ul>
+          <li><a href="system/system.terminal.html#lua-system.terminal.Terminal.setPaletteColor">(staticmethod in system.terminal.Terminal)</a>
+</li>
+        </ul></li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.GFXTerminal.setPixel">setPixel (staticmethod in system.terminal.GFXTerminal)</a>
+</li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.Terminal.setTextColor">setTextColor (staticmethod in system.terminal.Terminal)</a>
+</li>
+        <li><a href="system/system.log.html#lua-system.log.setTTY">setTTY (function in system.log)</a>
+</li>
+        <li><a href="system/system.process.html#lua-system.process.setuser">setuser (function in system.process)</a>
+</li>
+        <li><a href="system/system.network.html#lua-system.network.Handle.setvbuf">setvbuf (method in system.network.Handle)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.seven">seven (data in system.keys)</a>
+</li>
+        <li><a href="system/system.ipc.html#lua-system.ipc.sigaction">sigaction (function in system.ipc)</a>
+</li>
+        <li><a href="system/system.ipc.html#lua-system.ipc.signal">signal (data in system.ipc)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.six">six (data in system.keys)</a>
+</li>
+        <li><a href="system/system.filesystem.html#lua-system.filesystem.FileStat.size">size (data in system.filesystem.FileStat)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.slash">slash (data in system.keys)</a>
+</li>
+        <li><a href="system/system.util.html#lua-system.util.sleep">sleep (function in system.util)</a>
+</li>
+        <li><a href="system/system.ipc.html#lua-system.ipc.socket">socket (class in system.ipc)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.space">space (data in system.keys)</a>
+</li>
+        <li><a href="system/system.filesystem.html#lua-system.filesystem.FileStat.special">special (data in system.filesystem.FileStat)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.util.html#lua-system.util.split">split (function in system.util)</a>
+</li>
+        <li><a href="system/system.process.html#lua-system.process.start">start (function in system.process)</a>
+</li>
+        <li><a href="system/system.process.html#lua-system.process.startbg">startbg (function in system.process)</a>
+</li>
+        <li><a href="system/system.util.html#lua-system.util.startEvents">startEvents (function in system.util)</a>
+</li>
+        <li><a href="system/system.filesystem.html#lua-system.filesystem.stat">stat (function in system.filesystem)</a>
+</li>
+        <li><a href="system/system.ipc.html#lua-system.ipc.socket.status">status (method in system.ipc.socket)</a>
+
+        <ul>
+          <li><a href="system/system.network.html#lua-system.network.Handle.status">(method in system.network.Handle)</a>
+</li>
+        </ul></li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.stderr">stderr (function in system.terminal)</a>
+</li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.stdin">stdin (function in system.terminal)</a>
+</li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.stdout">stdout (function in system.terminal)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.stop">stop (data in system.keys)</a>
+</li>
+        <li><a href="system/system.expect.html#lua-system.expect.struct">struct (function in system.expect)</a>
+
+        <ul>
+          <li><a href="system/system.serialization.html#lua-system.serialization.struct">(function in system.serialization)</a>
+</li>
+        </ul></li>
+        <li><a href="system/system.sync.html#lua-system.sync.synctab">synctab (function in system.sync)</a>
+</li>
+        <li><a href="system/system.util.html#lua-system.util.syscall">syscall (data in system.util)</a>
+</li>
+        <li><a href="system/index.html#lua-system">system (module)</a>
+</li>
+        <li><a href="system/system.expect.html#lua-system.expect">system.expect (module)</a>
+</li>
+        <li><a href="system/system.filesystem.html#lua-system.filesystem">system.filesystem (module)</a>
+</li>
+        <li><a href="system/system.framebuffer.html#lua-system.framebuffer">system.framebuffer (module)</a>
+</li>
+        <li><a href="system/system.graphics.html#lua-system.graphics">system.graphics (module)</a>
+</li>
+        <li><a href="system/system.hardware.html#lua-system.hardware">system.hardware (module)</a>
+</li>
+        <li><a href="system/system.ipc.html#lua-system.ipc">system.ipc (module)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys">system.keys (module)</a>
+</li>
+        <li><a href="system/system.log.html#lua-system.log">system.log (module)</a>
+</li>
+        <li><a href="system/system.network.html#lua-system.network">system.network (module)</a>
+</li>
+        <li><a href="system/system.pretty.html#lua-system.pretty">system.pretty (module)</a>
+</li>
+        <li><a href="system/system.process.html#lua-system.process">system.process (module)</a>
+</li>
+        <li><a href="system/system.serialization.html#lua-system.serialization">system.serialization (module)</a>
+</li>
+        <li><a href="system/system.sync.html#lua-system.sync">system.sync (module)</a>
+</li>
+        <li><a href="system/system.terminal.html#lua-system.terminal">system.terminal (module)</a>
+</li>
+        <li><a href="system/system.util.html#lua-system.util">system.util (module)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="T" class="genindex-section">
+  <h2>T</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.keys.html#lua-system.keys.tab">tab (data in system.keys)</a>
+</li>
+        <li><a href="system/system.expect.html#lua-system.expect.table">table (function in system.expect)</a>
+</li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.termctl">termctl (function in system.terminal)</a>
+</li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.Terminal">Terminal (class in system.terminal)</a>
+</li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.termsize">termsize (function in system.terminal)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.three">three (data in system.keys)</a>
+</li>
+        <li><a href="system/system.util.html#lua-system.util.timer">timer (function in system.util)</a>
+</li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.toEscape">toEscape (function in system.terminal)</a>
+</li>
+        <li><a href="system/system.serialization.html#lua-system.serialization.toml">toml (module in system.serialization)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.log.html#lua-system.log.traceback">traceback (function in system.log)</a>
+
+        <ul>
+          <li><a href="system/system.log.html#lua-system.log.log.traceback">(staticmethod in system.log.log)</a>
+</li>
+        </ul></li>
+        <li><a href="system/system.hardware.html#lua-system.hardware.tree">tree (data in system.hardware)</a>
+</li>
+        <li><a href="system/system.sync.html#lua-system.sync.semaphore.tryAcquireFor">tryAcquireFor (method in system.sync.semaphore)</a>
+</li>
+        <li><a href="system/system.sync.html#lua-system.sync.mutex.tryLock">tryLock (method in system.sync.mutex)</a>
+</li>
+        <li><a href="system/system.sync.html#lua-system.sync.mutex.tryLockFor">tryLockFor (method in system.sync.mutex)</a>
+</li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.TTY">TTY (class in system.terminal)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.two">two (data in system.keys)</a>
+</li>
+        <li><a href="system/system.filesystem.html#lua-system.filesystem.FileStat.type">type (data in system.filesystem.FileStat)</a>
+
+        <ul>
+          <li><a href="system/system.util.html#lua-system.util.type">(function in system.util)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="U" class="genindex-section">
+  <h2>U</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.keys.html#lua-system.keys.underscore">underscore (data in system.keys)</a>
+</li>
+        <li><a href="system/system.network.html#lua-system.network.unlisten">unlisten (function in system.network)</a>
+</li>
+        <li><a href="system/system.hardware.html#lua-system.hardware.unlock">unlock (function in system.hardware)</a>
+
+        <ul>
+          <li><a href="system/system.sync.html#lua-system.sync.mutex.unlock">(method in system.sync.mutex)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.sync.html#lua-system.sync.rwLock.unlockRead">unlockRead (method in system.sync.rwLock)</a>
+</li>
+        <li><a href="system/system.sync.html#lua-system.sync.rwLock.unlockWrite">unlockWrite (method in system.sync.rwLock)</a>
+</li>
+        <li><a href="system/system.filesystem.html#lua-system.filesystem.unmount">unmount (function in system.filesystem)</a>
+</li>
+        <li><a href="system/system.keys.html#lua-system.keys.up">up (data in system.keys)</a>
+</li>
+        <li><a href="system/system.network.html#lua-system.network.urlEncode">urlEncode (function in system.network)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="W" class="genindex-section">
+  <h2>W</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.sync.html#lua-system.sync.barrier.wait">wait (method in system.sync.barrier)</a>
+
+        <ul>
+          <li><a href="system/system.sync.html#lua-system.sync.conditionVariable.wait">(method in system.sync.conditionVariable)</a>
+</li>
+        </ul></li>
+        <li><a href="system/system.sync.html#lua-system.sync.conditionVariable.waitFor">waitFor (method in system.sync.conditionVariable)</a>
+</li>
+        <li><a href="system/system.sync.html#lua-system.sync.conditionVariable.waiting">waiting (data in system.sync.conditionVariable)</a>
+</li>
+        <li><a href="system/system.log.html#lua-system.log.warn">warn (data in system.log)</a>
+
+        <ul>
+          <li><a href="system/system.log.html#lua-system.log.log.warn">(data in system.log.log)</a>
+</li>
+        </ul></li>
+        <li><a href="system/system.log.html#lua-system.log.warning">warning (function in system.log)</a>
+
+        <ul>
+          <li><a href="system/system.log.html#lua-system.log.log.warning">(staticmethod in system.log.log)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.framebuffer.html#lua-system.framebuffer.window">window (function in system.framebuffer)</a>
+</li>
+        <li><a href="system/system.filesystem.html#lua-system.filesystem.FileStat.worldPermissions">worldPermissions (data in system.filesystem.FileStat)</a>
+</li>
+        <li><a href="system/system.hardware.html#lua-system.hardware.wrap">wrap (function in system.hardware)</a>
+</li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.write">write (function in system.terminal)</a>
+
+        <ul>
+          <li><a href="system/system.ipc.html#lua-system.ipc.socket.write">(method in system.ipc.socket)</a>
+</li>
+          <li><a href="system/system.network.html#lua-system.network.Handle.write">(method in system.network.Handle)</a>
+</li>
+          <li><a href="system/system.terminal.html#lua-system.terminal.Terminal.write">(staticmethod in system.terminal.Terminal)</a>
+</li>
+        </ul></li>
+        <li><a href="system/system.terminal.html#lua-system.terminal.writeerr">writeerr (function in system.terminal)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="Y" class="genindex-section">
+  <h2>Y</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.keys.html#lua-system.keys.yen">yen (data in system.keys)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="Z" class="genindex-section">
+  <h2>Z</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="system/system.keys.html#lua-system.keys.zero">zero (data in system.keys)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2021-2026 JackMacWindows
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=58050c01"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>

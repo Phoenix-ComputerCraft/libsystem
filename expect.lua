@@ -1,7 +1,7 @@
 --- The expect module provides error checking functions for other libraries.
---
--- @module system.expect
-
+---
+--- !doctype module
+--- @class system.expect
 local expect = {}
 
 local native_types = {["nil"] = true, boolean = true, number = true, string = true, table = true, ["function"] = true, userdata = true, thread = true}
@@ -37,27 +37,30 @@ local function check_type(msg, value, ...)
 end
 
 --- Check that a numbered argument matches the expected type(s). If the type
--- doesn't match, throw an error.
--- This function supports custom types by checking the __name metaproperty.
--- Passing the result of @{expect.struct}, @{expect.array}, or @{expect.match}
--- as a type parameter will use that function as a validator.
--- @tparam number index The index of the argument to check
--- @tparam any value The value to check
--- @tparam string|function(v):boolean ... The types to check for
--- @treturn any `value`
+--- doesn't match, throw an error.
+--- 
+--- This function supports custom types by checking the __name metaproperty.
+--- Passing the result of `expect.struct`, `expect.array`, or `expect.match`
+--- as a type parameter will use that function as a validator.
+--- @generic T
+--- @param index number The index of the argument to check
+--- @param value T The value to check
+--- @param ... string|fun(v):boolean The types to check for
+--- @return T result `value`
 function expect.expect(index, value, ...)
     return check_type("bad argument #" .. index, value, ...)
 end
 
 --- Check that a key in a table matches the expected type(s). If the type
--- doesn't match, throw an error.
--- This function supports custom types by checking the __name metaproperty.
--- Passing the result of @{expect.struct}, @{expect.array}, or @{expect.match}
--- as a type parameter will use that function as a validator.
--- @tparam any tbl The table (or other indexable value) to search through
--- @tparam any key The key of the table to check
--- @tparam string|function(v):boolean ... The types to check for
--- @treturn any The indexed value in the table
+--- doesn't match, throw an error.
+--- 
+--- This function supports custom types by checking the __name metaproperty.
+--- Passing the result of `expect.struct`, `expect.array`, or `expect.match`
+--- as a type parameter will use that function as a validator.
+--- @param tbl any The table (or other indexable value) to search through
+--- @param key any The key of the table to check
+--- @param ... string|fun(v):boolean The types to check for
+--- @return any result The indexed value in the table
 function expect.field(tbl, key, ...)
     local ok, str = pcall(string.format, "%q", key)
     if not ok then str = tostring(key) end
@@ -65,11 +68,11 @@ function expect.field(tbl, key, ...)
 end
 
 --- Check that a number is between the specified minimum and maximum values. If
--- the number is out of bounds, throw an error.
--- @tparam number num The number to check
--- @tparam[opt=-math.huge] number min The minimum value of the number (inclusive)
--- @tparam[opt=math.huge] number max The maximum value of the number (inclusive)
--- @treturn number `num`
+--- the number is out of bounds, throw an error.
+--- @param num number The number to check
+--- @param min? number The minimum value of the number (inclusive) (defaults to -math.huge)
+--- @param max? number The maximum value of the number (inclusive) (defaults to math.huge)
+--- @return number result `num`
 function expect.range(num, min, max)
     expect.expect(1, num, "number")
     expect.expect(2, min, "number", "nil")
@@ -114,35 +117,36 @@ local struct_mt = {
 }
 
 --- Provides a special type that can check all of the fields of a table at once.
--- 
--- The `struct` parameter defines the structure of the table. This is a key-
--- value table, where the key is the name of the field and the value is the
--- expected type(s) of the field.
--- - If the value is a single string, the field must be that type.
--- - If the value is a list of strings, the field must be one of those types.
--- - Any type can be replaced by one of the special types as with @{expect.expect}.
---         
--- @tparam table struct The expected structure of the table
--- @treturn function(v):boolean A checker function, to be passed to @{expect.expect}
--- @usage Checks the structure of a complex table.
---     
---     expect(1, tbl, expect.struct {
---         name = "string",
---         age = "number",
---         phone = {expect.match "%d%d%d%-%d%d%d%-%d%d%d%d", "number"},
---         address = expect.struct {
---             address = "string",
---             state = "string",
---             zip = {"number", "nil"},
---             country = "string"
---         },
---         children = expect.array "string",
---         jobs = expect.array {"string", expect.struct {
---             title = "string",
---             employer = "string",
---             salary = {"number", "nil"}
---         }}
---     })
+---
+--- The `struct` parameter defines the structure of the table. This is a key-
+--- value table, where the key is the name of the field and the value is the
+--- expected type(s) of the field.
+--- - If the value is a single string, the field must be that type.
+--- - If the value is a list of strings, the field must be one of those types.
+--- - Any type can be replaced by one of the special types as with `expect.expect`.
+---        
+--- @param struct table The expected structure of the table
+--- @return fun(v):boolean result A checker function, to be passed to `expect.expect`
+--- @usage Checks the structure of a complex table.
+--- ```lua
+--- expect(1, tbl, expect.struct {
+---     name = "string",
+---     age = "number",
+---     phone = {expect.match "%d%d%d%-%d%d%d%-%d%d%d%d", "number"},
+---     address = expect.struct {
+---         address = "string",
+---         state = "string",
+---         zip = {"number", "nil"},
+---         country = "string"
+---     },
+---     children = expect.array "string",
+---     jobs = expect.array {"string", expect.struct {
+---         title = "string",
+---         employer = "string",
+---         salary = {"number", "nil"}
+---     }}
+--- })
+--- ```
 function expect.struct(struct)
     expect.expect(1, struct, "table")
     return setmetatable({struct = struct}, struct_mt)
@@ -181,8 +185,8 @@ local array_mt = {
 }
 
 --- Provides a special type that can check for an array.
--- @tparam string|string[] types The type(s) to check for in each member
--- @treturn function(v):boolean A checker function, to be passed to @{expect.expect}
+--- @param types string|string[] The type(s) to check for in each member
+--- @return fun(v):boolean result A checker function, to be passed to `expect.expect`
 function expect.array(types)
     expect.expect(1, types, "string", "table")
     if type(types) == "string" or funclike(types) then types = {types} end
@@ -222,8 +226,8 @@ local table_mt = {
 }
 
 --- Provides a special type that can check for a table with all entries.
--- @tparam string|string[] types The type(s) to check for in each member
--- @treturn function(v):boolean A checker function, to be passed to @{expect.expect}
+--- @param types string|string[] The type(s) to check for in each member
+--- @return fun(v):boolean result A checker function, to be passed to `expect.expect`
 function expect.table(types)
     expect.expect(1, types, "string", "table")
     if type(types) == "string" then types = {types} end
@@ -238,8 +242,8 @@ local match_mt = {
 }
 
 --- Provides a special type that can check for a string matching a pattern.
--- @tparam string pattern The pattern to check on the string
--- @treturn function(v):boolean A checker function, to be passed to @{expect.expect}
+--- @param pattern string The pattern to check on the string
+--- @return fun(v):boolean result A checker function, to be passed to `expect.expect`
 function expect.match(pattern)
     expect.expect(1, pattern, "string")
     return setmetatable({pattern = pattern}, match_mt)

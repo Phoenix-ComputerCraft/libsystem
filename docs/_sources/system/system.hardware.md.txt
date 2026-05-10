@@ -1,0 +1,18 @@
+# Module `system.hardware`
+
+```{lua:currentmodule} None
+```
+
+```{lua:autoobject} system.hardware
+:undoc-members: 
+:protected-members: 
+:globals: 
+:inherited-members-table: 
+:title: API Reference
+:members: 
+:recursive: 
+:index-table: 
+:exclude-members: 
+
+```
+

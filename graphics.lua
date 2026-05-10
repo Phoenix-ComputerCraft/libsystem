@@ -1,20 +1,20 @@
---- The graphics module provides functions to draw primitive geometry on a locked
--- terminal object. It supports both text and graphics mode terminals.
--- The state of text terminals is preserved, so using these functions doesn't
--- change the cursor position or colors.
---
--- @module system.graphics
-
 local expect = require "expect"
 local util = require "util"
 
+--- The graphics module provides functions to draw primitive geometry on a locked
+--- terminal object. It supports both text and graphics mode terminals.
+--- The state of text terminals is preserved, so using these functions doesn't
+--- change the cursor position or colors.
+---
+--- !doctype module
+--- @class system.graphics
 local graphics = {}
 
 --- Draws a single pixel on screen.
--- @tparam Terminal|GFXTerminal term The terminal to draw on
--- @tparam number x The X coordinate to draw at
--- @tparam number y The Y coordinate to draw at
--- @tparam number color The color to draw with
+--- @param term system.terminal.Terminal|system.terminal.GFXTerminal The terminal to draw on
+--- @param x number The X coordinate to draw at
+--- @param y number The Y coordinate to draw at
+--- @param color number The color to draw with
 function graphics.drawPixel(term, x, y, color)
     expect(1, term, "Terminal", "GFXTerminal")
     expect(2, x, "number")
@@ -79,12 +79,12 @@ local function drawLineInternal(sp, x1, y1, x2, y2)
 end
 
 --- Draws a line between two points.
--- @tparam Terminal|GFXTerminal term The terminal to draw on
--- @tparam number x1 The start X coordinate to draw at
--- @tparam number y1 The start Y coordinate to draw at
--- @tparam number x2 The end X coordinate to draw at
--- @tparam number y2 The end Y coordinate to draw at
--- @tparam number color The color to draw with
+--- @param term system.terminal.Terminal|system.terminal.GFXTerminal The terminal to draw on
+--- @param x1 number The start X coordinate to draw at
+--- @param y1 number The start Y coordinate to draw at
+--- @param x2 number The end X coordinate to draw at
+--- @param y2 number The end Y coordinate to draw at
+--- @param color number The color to draw with
 function graphics.drawLine(term, x1, y1, x2, y2, color)
     expect(1, term, "Terminal", "GFXTerminal")
     expect(2, x1, "number")
@@ -127,12 +127,12 @@ function graphics.drawLine(term, x1, y1, x2, y2, color)
 end
 
 --- Draws an outlined rectangle on screen.
--- @tparam Terminal|GFXTerminal term The terminal to draw on
--- @tparam number x The upper-left X coordinate to draw at
--- @tparam number y The upper-left Y coordinate to draw at
--- @tparam number width The width of the rectangle
--- @tparam number height The height of the rectangle
--- @tparam number color The color to draw with
+--- @param term system.terminal.Terminal|system.terminal.GFXTerminal The terminal to draw on
+--- @param x number The upper-left X coordinate to draw at
+--- @param y number The upper-left Y coordinate to draw at
+--- @param width number The width of the rectangle
+--- @param height number The height of the rectangle
+--- @param color number The color to draw with
 function graphics.drawBox(term, x, y, width, height, color)
     expect(1, term, "Terminal", "GFXTerminal")
     expect(2, x, "number")
@@ -165,12 +165,12 @@ function graphics.drawBox(term, x, y, width, height, color)
 end
 
 --- Draws a filled rectangle on screen.
--- @tparam Terminal|GFXTerminal term The terminal to draw on
--- @tparam number x The upper-left X coordinate to draw at
--- @tparam number y The upper-left Y coordinate to draw at
--- @tparam number width The width of the rectangle
--- @tparam number height The height of the rectangle
--- @tparam number color The color to draw with
+--- @param term system.terminal.Terminal|system.terminal.GFXTerminal The terminal to draw on
+--- @param x number The upper-left X coordinate to draw at
+--- @param y number The upper-left Y coordinate to draw at
+--- @param width number The width of the rectangle
+--- @param height number The height of the rectangle
+--- @param color number The color to draw with
 function graphics.drawFilledBox(term, x, y, width, height, color)
     expect(1, term, "Terminal", "GFXTerminal")
     expect(2, x, "number")
@@ -196,14 +196,14 @@ function graphics.drawFilledBox(term, x, y, width, height, color)
 end
 
 --- Draws an outlined circle (or arc) on screen.
--- @tparam Terminal|GFXTerminal term The terminal to draw on
--- @tparam number x The upper-left X coordinate to draw at
--- @tparam number y The upper-left Y coordinate to draw at
--- @tparam number width The width of the circle
--- @tparam number height The height of the circle
--- @tparam number color The color to draw with
--- @tparam[opt=0] number startAngle The angle to start from in radians (starting at the right side)
--- @tparam[opt=2*math.pi] number arcCircumference The amount of the arc to draw in radians
+--- @param term system.terminal.Terminal|system.terminal.GFXTerminal The terminal to draw on
+--- @param x number The upper-left X coordinate to draw at
+--- @param y number The upper-left Y coordinate to draw at
+--- @param width number The width of the circle
+--- @param height number The height of the circle
+--- @param color number The color to draw with
+--- @param startAngle? number The angle to start from in radians (starting at the right side) (defaults to 0)
+--- @param arcCircumference? number The amount of the arc to draw in radians (defaults to 2*math.pi)
 function graphics.drawCircle(term, x, y, width, height, color, startAngle, arcCircumference)
     expect(1, term, "Terminal", "GFXTerminal")
     expect(2, x, "number")
@@ -237,14 +237,14 @@ function graphics.drawCircle(term, x, y, width, height, color, startAngle, arcCi
 end
 
 --- Draws a filled triangle on screen.
--- @tparam Terminal|GFXTerminal term The terminal to draw on
--- @tparam number x1 The first X coordinate to draw at
--- @tparam number y1 The first Y coordinate to draw at
--- @tparam number x2 The second X coordinate to draw at
--- @tparam number y2 The second Y coordinate to draw at
--- @tparam number x3 The third X coordinate to draw at
--- @tparam number y3 The third Y coordinate to draw at
--- @tparam number color The color to draw with
+--- @param term system.terminal.Terminal|system.terminal.GFXTerminal The terminal to draw on
+--- @param x1 number The first X coordinate to draw at
+--- @param y1 number The first Y coordinate to draw at
+--- @param x2 number The second X coordinate to draw at
+--- @param y2 number The second Y coordinate to draw at
+--- @param x3 number The third X coordinate to draw at
+--- @param y3 number The third Y coordinate to draw at
+--- @param color number The color to draw with
 function graphics.drawFilledTriangle(term, x1, y1, x2, y2, x3, y3, color)
     expect(1, term, "Terminal", "GFXTerminal")
     expect(2, x1, "number")
@@ -353,13 +353,15 @@ function graphics.drawFilledTriangle(term, x1, y1, x2, y2, x3, y3, color)
     rst()
 end
 
---- Draws an image on screen. The image may be either a valid graphics mode
--- pixel region (using either string or table rows), or a blit table with
--- {text, text color, background color} table rows (text mode only).
--- @tparam Terminal|GFXTerminal term The terminal to draw on
--- @tparam number x The X coordinate to draw at
--- @tparam number y The Y coordinate to draw at
--- @tparam table image The image to draw
+--- Draws an image on screen.
+--- 
+--- The image may be either a valid graphics mode
+--- pixel region (using either string or table rows), or a blit table with
+--- {text, text color, background color} table rows (text mode only).
+--- @param term system.terminal.Terminal|system.terminal.GFXTerminal The terminal to draw on
+--- @param x number The X coordinate to draw at
+--- @param y number The Y coordinate to draw at
+--- @param image table The image to draw
 function graphics.drawImage(term, x, y, image)
     expect(1, term, "Terminal", "GFXTerminal")
     expect(2, x, "number")
